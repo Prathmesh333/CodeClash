@@ -499,14 +499,38 @@ body {
 }
 .cc-bottom-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin-top: 16px;
 }
 .cc-feature-card {
-  background:
-    url('/brand/patterns/grid-bg.svg') bottom right/cover,
-    #0a151d;
+  display: flex;
+  flex-direction: column;
+  background: var(--cc-surface);
+  min-width: 0;
+}
+.cc-feature-card > .button,
+.cc-feature-card > .cc-soon {
+  margin-top: auto;
+  align-self: flex-start;
+}
+.cc-feature-card .cc-card-body {
+  flex: 1;
+  margin: 20px 0 24px;
+}
+.cc-feature-card .cc-icon-box {
+  width: 48px;
+  height: 48px;
+  color: var(--cc-cyan);
+}
+.cc-feature-card .cc-card-body section {
+  min-width: 0;
+}
+.cc-feature-card .cc-soon {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  letter-spacing: 1px;
 }
 .cc-feature-card > div {
   display: flex;
@@ -573,20 +597,18 @@ body {
   align-items: center;
   gap: 20px;
   margin-top: 16px;
-  border: 1px solid #234535;
+  border: 1px solid var(--cc-border);
   border-radius: 10px;
   padding: 20px 28px;
-  background:
-    url('/brand/patterns/hero-lines.svg') center/cover,
-    #09191b;
+  background: var(--cc-surface);
 }
 .cc-banner > img {
   width: 56px;
 }
 .cc-banner .cc-eyebrow {
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 2px;
-  color: #8ca8b7;
+  color: var(--cc-cyan);
 }
 .cc-banner h2 {
   font-size: 24px;
@@ -594,8 +616,9 @@ body {
   margin: 4px 0;
 }
 .cc-banner p:last-child {
-  color: #9eb4c3;
-  font-size: 11px;
+  color: var(--cc-muted);
+  font-size: 12px;
+  line-height: 1.65;
 }
 .cc-banner .button {
   margin-left: auto;

@@ -223,7 +223,7 @@ export default function Home({
       <section className="cc-bottom-grid">
         <article className="cc-panel cc-feature-card">
           <p className="cc-eyebrow">YOUR CODING JOURNEY</p>
-          <div>
+          <div className="cc-card-body">
             <div className="cc-icon-box">
               <AssetIcon name="file-code" />
             </div>
@@ -238,7 +238,7 @@ export default function Home({
         </article>
         <article className="cc-panel cc-feature-card">
           <p className="cc-eyebrow">ON THE HORIZON</p>
-          <div>
+          <div className="cc-card-body">
             <div className="cc-icon-box">
               <AssetIcon name="trophy" />
             </div>
@@ -249,11 +249,8 @@ export default function Home({
           </div>
           <span className="cc-soon">COMING LATER</span>
         </article>
-        <article className="cc-panel cc-leaders">
-          <div className="cc-section-title">
-            <h2>THE RANKED LADDER</h2>
-            <button onClick={() => navigate('leaderboard')}>View all →</button>
-          </div>
+        <article className="cc-panel cc-feature-card cc-leaders">
+          <p className="cc-eyebrow">THE RANKED LADDER</p>
           {players.filter((p) => p.games_played > 0).length ? (
             <ol>
               {players
@@ -267,17 +264,24 @@ export default function Home({
                 ))}
             </ol>
           ) : (
-            <div className="cc-ladder-empty">
-              <AssetIcon name="chart" />
-              <strong>The climb is still ahead.</strong>
-              <p>
-                Verified ranked results will appear here. Casual duels don’t affect this ladder.
-              </p>
+            <div className="cc-card-body">
+              <div className="cc-icon-box">
+                <AssetIcon name="chart" />
+              </div>
+              <section>
+                <h3>The climb is still ahead.</h3>
+                <p>
+                  Verified ranked results will appear here. Casual duels don’t affect this ladder.
+                </p>
+              </section>
             </div>
           )}
+          <button className="button secondary" onClick={() => navigate('leaderboard')}>
+            View leaderboard <span>→</span>
+          </button>
         </article>
       </section>
-      <footer className="cc-banner">
+      <footer className="cc-banner cc-panel">
         <img src="/brand/logo/codeclash-mark.svg" alt="" />
         <div>
           <p className="cc-eyebrow">BUILT FOR YOUR NEXT BREAKTHROUGH</p>
