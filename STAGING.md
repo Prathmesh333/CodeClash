@@ -4,9 +4,11 @@ URL: https://ranked-dsa-staging.shortlistd.workers.dev
 
 The staging Worker and its own D1 database were created on 2026-09-30. Both migrations are applied. The database contains 20 questions with 499 distinct example/hidden cases. Demo users were not copied from local development. Ranked judging remains disabled; no Sandbox container was deployed.
 
-## Finish GitHub login
+## GitHub login
 
-Create a GitHub OAuth app at https://github.com/settings/applications/new:
+GitHub OAuth is configured. A real sign-in has created one GitHub account and an active session in staging; the hosted account boundary checks passed. Sign-out/re-login and cross-browser persistence still need verification.
+
+For credential rotation or a fresh environment, create a GitHub OAuth app at https://github.com/settings/applications/new:
 
 - Name: CodeClash Staging
 - Homepage URL: https://ranked-dsa-staging.shortlistd.workers.dev
@@ -44,7 +46,7 @@ Keep the existing `pnpm test:staging` gate strict: it requires a working real ju
 
 ## Remaining
 
-- Configure GitHub OAuth credentials and verify real login and persistent identity.
+- Verify sign-out/re-login and cross-browser persistence (initial real login is verified).
 - Verify the isolated server judge before enabling ranked queue access.
 - Test server verdict races, recovery and hosted execution budgets.
 - Add backups/restore verification, abuse controls and spend monitoring before broad access.
