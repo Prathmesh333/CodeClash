@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  // Test-only configuration: same script, bindings and migrations as wrangler.jsonc plus
+  // Worker static assets, so the browser suite runs against one origin without a dev proxy.
+  // scripts/test-server.mjs fails fast if this file drifts from wrangler.jsonc.
+  "name": "ranked-dsa-local", "main": "src/index.ts", "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": { "APP_ENV": "local", "APP_ORIGIN": "http://127.0.0.1:8790", "JUDGE_ENABLED": "false", "TEST_EVIDENCE": "true" },
+  "assets": { "directory": "../../dist/web", "binding": "ASSETS", "run_worker_first": true, "not_found_handling": "none", "html_handling": "auto-trailing-slash" },
+  "d1_databases": [{ "binding": "DB", "database_name": "ranked-dsa-local", "database_id": "00000000-0000-0000-0000-000000000001", "migrations_dir": "../../database/migrations" }],
+  "durable_objects": { "bindings": [{ "name": "MATCHMAKER", "class_name": "MatchmakerDO" }, { "name": "MATCHES", "class_name": "MatchDO" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["MatchmakerDO", "MatchDO"] }],
+  "observability": { "enabled": true }
+}

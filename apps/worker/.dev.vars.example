@@ -1,0 +1,3 @@
+# Optional GitHub OAuth, not needed for localhost demo identities.
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=

@@ -1,0 +1,56 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "ranked-dsa-staging",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "vars": {
+    "APP_ENV": "staging",
+    "APP_ORIGIN": "https://ranked-dsa-staging.shortlistd.workers.dev",
+    "JUDGE_ENABLED": "false",
+    "TEST_EVIDENCE": "false"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ranked-dsa-staging",
+      "database_id": "cbb5e0c6-1ba2-490f-b449-5e2f35923ab3",
+      "migrations_dir": "../../database/migrations"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MATCHMAKER",
+        "class_name": "MatchmakerDO"
+      },
+      {
+        "name": "MATCHES",
+        "class_name": "MatchDO"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "MatchmakerDO",
+        "MatchDO"
+      ]
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "../../dist/web",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "not_found_handling": "none",
+    "html_handling": "auto-trailing-slash"
+  },
+  "workers_dev": true,
+  "account_id": "7447e0e5c2ec96ece6059c89855c639f"
+}

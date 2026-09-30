@@ -1,0 +1,10 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "ranked-dsa-local", "main": "src/index.ts", "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": { "APP_ENV": "local", "APP_ORIGIN": "http://127.0.0.1:5173", "JUDGE_ENABLED": "false" },
+  "d1_databases": [{ "binding": "DB", "database_name": "ranked-dsa-local", "database_id": "00000000-0000-0000-0000-000000000001", "migrations_dir": "../../database/migrations" }],
+  "durable_objects": { "bindings": [{ "name": "MATCHMAKER", "class_name": "MatchmakerDO" }, { "name": "MATCHES", "class_name": "MatchDO" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["MatchmakerDO", "MatchDO"] }],
+  "observability": { "enabled": true }
+}

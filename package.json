@@ -1,0 +1,63 @@
+{
+  "name": "codeclash",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:web": "vite --config apps/web/vite.config.ts",
+    "dev:api": "wrangler dev --config apps/worker/wrangler.jsonc --ip 127.0.0.1 --port 8787",
+    "dev:judge": "wrangler dev --config apps/judge-worker/wrangler.jsonc --port 8788",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local --config apps/worker/wrangler.jsonc",
+    "db:seed:local": "node scripts/seed.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "build": "vite build --config apps/web/vite.config.ts",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "node --experimental-strip-types --test tests/integration/*.test.ts",
+    "test:e2e": "playwright test",
+    "test:multiplayer": "vitest run tests/unit/game.test.ts",
+    "test:judge": "node scripts/judge-check.mjs",
+    "test:security": "node scripts/judge-check.mjs --security",
+    "simulate": "node scripts/simulate.mjs",
+    "check": "pnpm typecheck && pnpm test:unit && pnpm build",
+    "preview": "vite preview --config apps/web/vite.config.ts --host 127.0.0.1",
+    "test:staging": "node scripts/staging-check.mjs",
+    "evidence:verify": "node scripts/evidence.mjs",
+    "test:problems": "node scripts/verify-problems.mjs",
+    "problems:solutions": "node scripts/export-solutions.mjs",
+    "staging:check": "node scripts/staging.mjs check",
+    "staging:migrate": "node scripts/staging.mjs migrate",
+    "staging:seed": "node scripts/staging.mjs seed",
+    "deploy:staging": "pnpm build && node scripts/staging.mjs deploy",
+    "test:staging:accounts": "node scripts/staging-accounts-check.mjs"
+  },
+  "dependencies": {
+    "@cloudflare/sandbox": "0.12.10",
+    "@monaco-editor/react": "4.7.0",
+    "monaco-editor": "0.57.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20260927.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.6.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "prettier": "3.9.9",
+    "pyodide": "314.0.7",
+    "typescript": "7.0.2",
+    "vite": "8.3.1",
+    "vitest": "5.0.2",
+    "wrangler": "4.141.0",
+    "ws": "8.22.0"
+  }
+}
