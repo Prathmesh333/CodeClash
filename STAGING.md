@@ -53,3 +53,13 @@ Keep the existing `pnpm test:staging` gate strict: it requires a working real ju
 - Complete the repeated 100-player gate before claiming multiplayer capacity.
 
 No Workers Paid upgrade or container purchase was requested by this deployment. Cloudflare quotas still apply; this is not a guarantee of zero future charges.
+
+## Verification update — 2026-09-30
+
+- Real GitHub OAuth sign-in persisted an account and active session. Account boundary checks passed.
+- All 17 local integration tests passed after correcting a test that treated other tests' active matches as settlement failures. The tested settled match must still have a closed row and exactly one rating update.
+- GitHub application job passed on run 36686330244, including browser tests.
+- Judge fixtures now override the Sandbox image entrypoint to execute the runner directly.
+- The judge image builds Bubblewrap v0.13.0 from pinned revision 52d23329a689f64a8b601f8b999affb69b9339ac, preserving the bounded temporary filesystem option missing in Ubuntu Jammy's package.
+- Run 36686701082 builds the image successfully but judge fixtures fail closed: the CI container refuses creation of the required user namespace. No isolation checks were bypassed. Cloudflare judge compatibility remains unverified, and JUDGE_ENABLED remains false.
+- Next: validate the judge on an environment supporting its required namespaces, or implement and validate a different server-side isolation backend. Browser WASM execution alone cannot establish trusted ranked verdicts.
