@@ -4,4 +4,9 @@ import App from './App';
 import './styles.css';
 import './home.css';
 import './theme-motion.css';
-createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);
+import './light-theme.css';
+createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);

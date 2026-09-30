@@ -910,7 +910,9 @@ function MatchView({
                 {tab === 'problem' ? (
                   <div className="problem-content">
                     <div className="problem-tags">
-                      <span>{game.problem.difficulty}</span>
+                      <span data-difficulty={game.problem.difficulty.toLowerCase()}>
+                        {game.problem.difficulty}
+                      </span>
                       <span>{game.problem.topic}</span>
                     </div>
                     <h2>{game.problem.title}</h2>

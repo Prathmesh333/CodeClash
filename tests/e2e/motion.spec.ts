@@ -30,7 +30,7 @@ test('motion is available without moving content outside the mobile viewport', a
   await expect(page.getByRole('button', { name: /Start competing/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await expect(page.getByRole('dialog')).toHaveCSS('background-color', 'rgb(11, 22, 32)');
+  await expect(page.getByRole('dialog')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
   await expect(page.getByRole('dialog')).toHaveCSS('animation-name', 'cc-dialog-in');
   await expect(page.getByRole('dialog')).toHaveCSS('opacity', '1');
   await page.screenshot({ path: 'artifacts/motion-signin-mobile.png' });

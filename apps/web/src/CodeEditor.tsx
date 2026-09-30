@@ -17,24 +17,26 @@ export default function CodeEditor({
     <Editor
       height="100%"
       language="python"
-      theme="vs-dark"
+      theme="arena"
       value={value}
       onChange={(v) => onChange(v ?? '')}
       loading={<div className="editor-loading">Loading Python editor…</div>}
       beforeMount={(m) =>
         m.editor.defineTheme('arena', {
-          base: 'vs-dark',
+          base: 'vs',
           inherit: true,
           rules: [
-            { token: 'comment', foreground: '8199AA' },
-            { token: 'keyword', foreground: 'B7FF3C' },
-            { token: 'string', foreground: 'F3C74B' },
+            { token: 'comment', foreground: '64748B' },
+            { token: 'keyword', foreground: '2563EB' },
+            { token: 'string', foreground: '15803D' },
           ],
           colors: {
-            'editor.background': '#0B1620',
-            'editorLineNumber.foreground': '#6C8596',
-            'editor.lineHighlightBackground': '#122532',
-            'editorCursor.foreground': '#B7FF3C',
+            'editor.background': '#FFFFFF',
+            'editor.foreground': '#0F172A',
+            'editor.selectionBackground': '#DBEAFE',
+            'editorLineNumber.foreground': '#64748B',
+            'editor.lineHighlightBackground': '#F1F5F9',
+            'editorCursor.foreground': '#2563EB',
           },
         })
       }

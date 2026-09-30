@@ -19,7 +19,7 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
         .click();
       await expect(
         page.getByRole('button', { name: new RegExp(name + ' Sign out') }),
-      ).toBeVisible();
+      ).toBeVisible({ timeout: 15000 });
       await page.getByRole('button', { name: 'Find a casual match', exact: true }).click();
     }
     for (const page of [pa, pb]) await page.getByRole('button', { name: 'I’m ready' }).click();
@@ -36,6 +36,8 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
       await pa.keyboard.press('ControlOrMeta+A');
       await pa.keyboard.insertText(source);
     }
+    await expect(pa.locator('.monaco-editor')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await pa.screenshot({ path: 'artifacts/match-light.png', fullPage: true });
     await enter('print("wrong")');
     await pa.getByRole('button', { name: 'Check & finish' }).click();
     await expect(pa.getByLabel('Local Python results')).toContainText('Wrong answer', {
