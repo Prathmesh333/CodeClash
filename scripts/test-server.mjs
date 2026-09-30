@@ -35,7 +35,7 @@ run(['node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB',
 run(['scripts/seed.mjs', '--config', CONFIG, '--persist-to', state]);
 // Mirror the Worker output into work/ so a failing browser run can be diagnosed after the fact.
 const log = createWriteStream(resolve('work', 'e2e-worker.log'), { flags: 'w' });
-const worker = spawn(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'dev', '--config', CONFIG, '--port', String(PORT), '--ip', '127.0.0.1', '--persist-to', state], { stdio: ['ignore', 'pipe', 'pipe'] });
+const worker = spawn(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'dev', '--config', CONFIG, '--port', String(PORT), '--ip', '127.0.0.1', '--persist-to', state, '--var', `APP_ORIGIN:${BASE}`, '--var', `CASUAL_WASM:${process.env.CASUAL_E2E === 'true'}`], { stdio: ['ignore', 'pipe', 'pipe'] });
 for (const stream of [worker.stdout, worker.stderr]) stream?.on('data', chunk => { log.write(chunk); process.stdout.write(chunk); });
 function stop() { worker.kill(); process.exit(); }
 process.on('SIGINT', stop);

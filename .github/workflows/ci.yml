@@ -24,6 +24,9 @@ jobs:
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+      - run: pnpm exec playwright test casual.spec.ts
+        env:
+          CASUAL_E2E: "true"
       - run: node -e "const p=require('./package.json');console.log(JSON.stringify({node:process.version,pnpm:require('child_process').execSync('pnpm --version').toString().trim(),deps:{...p.dependencies,...p.devDependencies}},null,2))" > version-manifest.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

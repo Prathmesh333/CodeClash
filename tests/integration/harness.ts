@@ -22,7 +22,7 @@ export type Arena = {
 
 const freePort = () => 8800 + Math.floor(Math.random() * 180);
 
-export async function startArena(): Promise<Arena> {
+export async function startArena(casual = false): Promise<Arena> {
   await mkdir('work', { recursive: true });
   // The integration config duplicates the base config on purpose; fail loudly rather than testing a
   // topology that no longer matches the local Worker.
@@ -56,7 +56,7 @@ export async function startArena(): Promise<Arena> {
   const worker: ChildProcess = spawn(process.execPath, [
     'node_modules/wrangler/bin/wrangler.js', 'dev', '--config', CONFIG,
     '--port', String(port), '--ip', '127.0.0.1', '--persist-to', state,
-    '--var', `APP_ORIGIN:${base}`,
+    '--var', `APP_ORIGIN:${base}`, '--var', `CASUAL_WASM:${casual}`, 
   ], { stdio: ['ignore', 'pipe', 'pipe'] });
   worker.stdout?.on('data', record);
   worker.stderr?.on('data', record);

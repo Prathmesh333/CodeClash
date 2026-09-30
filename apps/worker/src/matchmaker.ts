@@ -79,11 +79,16 @@ export class MatchmakerDO extends DurableObject<Env> {
           heartbeat: Date.now(),
           matchId: id,
           problemId: problem,
-          mode: 'unrated',
+          mode: this.env.CASUAL_WASM === 'true' ? 'casual' : 'unrated',
         };
       await this.ctx.storage.put({ tickets: tickets, ['rematch:' + sourceMatchId]: id });
       await this.ctx.storage.setAlarm(Date.now() + 1000);
-      await this.create(id, players, problem, 'unrated');
+      await this.create(
+        id,
+        players,
+        problem,
+        this.env.CASUAL_WASM === 'true' ? 'casual' : 'unrated',
+      );
       return json({ matchId: id });
     }
     const previous = tickets[user.id];
@@ -141,8 +146,9 @@ export class MatchmakerDO extends DurableObject<Env> {
         b.matchId = id;
         a.problemId = problem;
         b.problemId = problem;
+        a.mode = b.mode = this.env.CASUAL_WASM === 'true' ? 'casual' : 'ranked';
         await this.ctx.storage.put('tickets', tickets);
-        await this.create(id, [a.user, b.user], problem, 'ranked');
+        await this.create(id, [a.user, b.user], problem, a.mode);
         break;
       }
     }

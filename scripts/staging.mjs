@@ -12,7 +12,7 @@ if (
   settings.vars.TEST_EVIDENCE !== 'false' ||
   settings.vars.JUDGE_ENABLED !== 'false'
 )
-  throw new Error('Expected the staging account-only configuration.');
+  throw new Error('Expected staging with server judging disabled.');
 if (
   !/^https:\/\/[a-z0-9.-]+$/.test(settings.vars.APP_ORIGIN) ||
   settings.vars.APP_ORIGIN.includes('YOUR_')

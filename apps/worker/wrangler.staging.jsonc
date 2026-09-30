@@ -10,7 +10,8 @@
     "APP_ENV": "staging",
     "APP_ORIGIN": "https://ranked-dsa-staging.shortlistd.workers.dev",
     "JUDGE_ENABLED": "false",
-    "TEST_EVIDENCE": "false"
+    "TEST_EVIDENCE": "false",
+    "CASUAL_WASM": "true"
   },
   "d1_databases": [
     {

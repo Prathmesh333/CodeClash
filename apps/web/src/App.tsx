@@ -5,7 +5,7 @@ import { rank } from '../../../packages/shared/game';
 import type { Snapshot } from '../../../packages/protocol';
 import { api } from './api';
 const CodeEditor = lazy(() => import('./CodeEditor'));
-type Health = { local: boolean; judge: string; github?: boolean };
+type Health = { local: boolean; judge: string; github?: boolean; casual?: boolean };
 type Queue = {
   state: 'IDLE' | 'QUEUED' | 'MATCHED';
   joinedAt?: number;
@@ -325,7 +325,7 @@ export default function App() {
                       <br />
                       Code better.
                       <br />
-                      <span>Find your rank.</span>
+                      <span>{health?.casual ? 'Challenge a friend.' : 'Find your rank.'}</span>
                     </h1>
                     <p>
                       Same problem. Same clock. Just you, your code,
@@ -338,14 +338,19 @@ export default function App() {
                         disabled={
                           busy ||
                           queue.state === 'QUEUED' ||
-                          (!!health && !health.local && health.judge !== 'configured')
+                          (!!health &&
+                            !health.local &&
+                            !health.casual &&
+                            health.judge !== 'configured')
                         }
                       >
-                        {health && !health.local && health.judge !== 'configured'
+                        {health && !health.local && !health.casual && health.judge !== 'configured'
                           ? 'Ranked matches coming soon'
                           : queue.state === 'QUEUED'
                             ? 'Finding your opponent…'
-                            : 'Find a match'}
+                            : health?.casual
+                              ? 'Find a casual match'
+                              : 'Find a match'}
                         <Icon name="arrow" />
                       </button>
                       <span className="hero-caption">20 min · 1v1 · Python</span>
@@ -433,13 +438,21 @@ export default function App() {
                       n="02"
                       icon="code"
                       title="Make it pass"
-                      text="Solve the same problem. Test your approach, then submit it against the hidden cases."
+                      text={
+                        health?.casual
+                          ? 'Solve the same problem and check the public examples in your browser.'
+                          : 'Solve the same problem. Test your approach, then submit it against the hidden cases.'
+                      }
                     />
                     <Step
                       n="03"
                       icon="leaderboard"
                       title="Earn your place"
-                      text="The first correct submission wins. See your result, learn from the round, go again."
+                      text={
+                        health?.casual
+                          ? 'First browser-reported completion wins the casual round. Results are unverified; ratings stay unchanged.'
+                          : 'The first correct submission wins. See your result, learn from the round, go again.'
+                      }
                     />
                   </div>
                 </section>
@@ -454,7 +467,12 @@ export default function App() {
                   <div className="setup-note">
                     <Icon name="code" />
                     <span>
-                      {health.local ? (
+                      {health.casual ? (
+                        <>
+                          <strong>Casual beta.</strong> Python runs in your browser. Completion uses
+                          public examples and is unverified. No rating changes.
+                        </>
+                      ) : health.local ? (
                         <>
                           <strong>Local setup in progress.</strong> Matchmaking and the coding room
                           are available. Run uses Python on your device; ranked Submit needs the
@@ -851,6 +869,20 @@ function MatchView({
     }
   }
   const localRun = usePythonRun();
+  async function completeCasual() {
+    if (!game?.problem || busy || localRun.status) return;
+    setBusy(true);
+    onError('');
+    setTab('results');
+    try {
+      const results = await localRun.run(source, game.problem.examples);
+      if (results?.length && results.every((result) => result.verdict === 'PASS')) {
+        await mutate('claim');
+      } else onError('Pass every public example before reporting completion.');
+    } finally {
+      setBusy(false);
+    }
+  }
   async function execute(kind: 'submit') {
     setBusy(true);
     onError('');
@@ -897,7 +929,8 @@ function MatchView({
       <div className="match-heading">
         <div>
           <div className="page-eyebrow">
-            {game.mode.toUpperCase()} DUEL <span className="alpha-tag">PYTHON</span>
+            {game.mode === 'casual' ? 'CASUAL · UNVERIFIED' : game.mode.toUpperCase()} DUEL{' '}
+            <span className="alpha-tag">PYTHON</span>
           </div>
           <h1>
             {done
@@ -995,7 +1028,7 @@ function MatchView({
                 </h2>
                 <p>
                   {game.outcome?.reason}{' '}
-                  {game.settled ? 'Result saved.' : 'Rating settlement pending…'}
+                  {game.settled ? 'Result saved.' : 'Saving result…'}
                 </p>
               </div>
               <div className="result-actions">
@@ -1131,17 +1164,20 @@ function MatchView({
                     </button>
                     <button
                       className="button primary"
-                      disabled={!editable || busy || pending}
-                      onClick={() => void execute('submit')}
+                      disabled={!editable || busy || pending || !!localRun.status}
+                      onClick={() =>
+                        void (game.mode === 'casual' ? completeCasual() : execute('submit'))
+                      }
                     >
-                      Submit <Icon name="arrow" />
+                      {game.mode === 'casual' ? 'Check & finish' : 'Submit'} <Icon name="arrow" />
                     </button>
                   </div>
                 </div>
                 {health?.judge === 'unavailable' && (
                   <div className="editor-notice">
-                    Run examples on your device. Ranked Submit needs the server judge, which is not
-                    configured yet.
+                    {game.mode === 'casual'
+                      ? 'Pass the public examples to report completion. Results are unverified and never change ratings.'
+                      : 'Run examples on your device. Ranked Submit needs the server judge, which is not configured yet.'}
                   </div>
                 )}
               </section>

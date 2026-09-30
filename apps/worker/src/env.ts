@@ -1,6 +1,6 @@
 export interface Env {
   DB: D1Database; MATCHMAKER: DurableObjectNamespace; MATCHES: DurableObjectNamespace; JUDGE?: Fetcher; ASSETS?: Fetcher;
-  APP_ENV: string; APP_ORIGIN: string; JUDGE_ENABLED: string; GITHUB_CLIENT_ID?: string; GITHUB_CLIENT_SECRET?: string; TEST_EVIDENCE?: string;
+  APP_ENV: string; APP_ORIGIN: string; JUDGE_ENABLED: string; CASUAL_WASM?: string; GITHUB_CLIENT_ID?: string; GITHUB_CLIENT_SECRET?: string; TEST_EVIDENCE?: string;
 }
 export const json = (data: unknown, status = 200) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store' } });
 export class ApiError extends Error { constructor(public status: number, public code: string, message: string) { super(message); } }

@@ -25,7 +25,10 @@ export function usePythonRun() {
       const results = await runExamples(source, examples, abort.signal, (message) => {
         if (generation.current === token) setStatus(message);
       });
-      if (generation.current === token) setResults(results);
+      if (generation.current === token) {
+        setResults(results);
+        return results;
+      }
     } catch (e) {
       if (generation.current === token)
         setError((e as Error).name === 'AbortError' ? 'Run stopped.' : (e as Error).message);

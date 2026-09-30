@@ -161,6 +161,7 @@ describe('settlement integrity', () => {
     const { a, b } = await pair();
     const { matchId } = await pairUp(arena, a, b);
     await waitFor(arena, a, matchId, s => s.phase === 'ACTIVE');
+    assert.equal((await arena.call(a, `/match/${matchId}/claim`, {})).status, 403, 'ranked matches must reject browser verdicts');
     const before = await testState(arena);
     const beforeA = before.users.find(row => row.id === a.id)!;
     const beforeB = before.users.find(row => row.id === b.id)!;

@@ -63,3 +63,13 @@ No Workers Paid upgrade or container purchase was requested by this deployment. 
 - The judge image builds Bubblewrap v0.13.0 from pinned revision 52d23329a689f64a8b601f8b999affb69b9339ac, preserving the bounded temporary filesystem option missing in Ubuntu Jammy's package.
 - Run 36686701082 builds the image successfully but judge fixtures fail closed: the CI container refuses creation of the required user namespace. No isolation checks were bypassed. Cloudflare judge compatibility remains unverified, and JUDGE_ENABLED remains false.
 - Next: validate the judge on an environment supporting its required namespaces, or implement and validate a different server-side isolation backend. Browser WASM execution alone cannot establish trusted ranked verdicts.
+
+## Casual browser beta
+
+Staging uses `CASUAL_WASM=true`. Matchmaking creates `casual` rooms, including rematches. Python executes using the existing browser WASM runtime. Check & finish reruns the public examples; after they pass the browser reports completion to `/api/match/:id/claim`.
+
+These are unverified self-reported results, not proof of a correct solution. Users can bypass browser checks. The server permits this endpoint only for casual rooms, checks membership and match phase, records one immutable result, and never changes ranked ratings or statistics. Public examples stay public; private judge cases are not sent to the browser. History includes casual results. Concurrent reports are ordered by the room, not client runtime measurements.
+
+`JUDGE_ENABLED=false` remains in force. Existing ranked rooms reject browser claims. This beta does not satisfy the real-judge or repeated 100-player release gate. No paid container was deployed. Browser workers do not provide physical CPU-core allocation guarantees.
+
+Validation: `pnpm test:integration`; for the dedicated browser test set `CASUAL_E2E=true` and run `pnpm exec playwright test casual.spec.ts`. Normal browser tests leave that flag unset.

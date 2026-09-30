@@ -127,7 +127,30 @@ export class MatchDO extends DurableObject<Env> {
         g.cutoff ??= now;
         resolve(g, now);
       }
+    } else if (path === '/claim') {
+      assert(
+        g.mode === 'casual' && this.env.CASUAL_WASM === 'true',
+        403,
+        'CASUAL_ONLY',
+        'Browser completion is only available in casual matches.',
+      );
+      // Client reports are deliberately untrusted. They can end only an unrated casual match.
+      if (!terminal(g)) {
+        assert(
+          g.phase === 'ACTIVE' && now < g.endsAt!,
+          409,
+          'MATCH_CLOSED',
+          'This match is not accepting completion reports.',
+        );
+        finish(g, now, uid!, 'Browser-reported completion · unverified');
+      }
     } else if (path === '/run' || path === '/submit') {
+      assert(
+        g.mode !== 'casual',
+        403,
+        'CASUAL_ONLY',
+        'Use browser execution for this casual match.',
+      );
       const parsed = submissionSchema.safeParse(await body(req));
       assert(
         parsed.success,

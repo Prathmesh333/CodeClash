@@ -35,6 +35,7 @@ export default {
           environment: env.APP_ENV,
           judge: env.JUDGE_ENABLED === 'true' && !!env.JUDGE ? 'configured' : 'unavailable',
           local: localRequest(req, env),
+          casual: env.CASUAL_WASM === 'true',
           github: Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET),
         });
       // Read-only evidence for automated assertions; local environment and opt-in flag only.
@@ -106,7 +107,7 @@ export default {
         );
         if (action === 'join' && env.APP_ENV !== 'local')
           assert(
-            env.JUDGE_ENABLED === 'true' && env.JUDGE,
+            env.CASUAL_WASM === 'true' || (env.JUDGE_ENABLED === 'true' && env.JUDGE),
             503,
             'JUDGE_UNAVAILABLE',
             'The arena is temporarily unavailable.',
@@ -117,7 +118,7 @@ export default {
         });
       }
       const match = path.match(
-        /^\/api\/match\/([\w-]+)(?:\/(ready|run|submit|forfeit|rematch|ws))?$/,
+        /^\/api\/match\/([\w-]+)(?:\/(ready|run|submit|claim|forfeit|rematch|ws))?$/,
       );
       if (match) {
         const [, id, action] = match;

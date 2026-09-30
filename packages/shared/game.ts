@@ -37,7 +37,7 @@ export type Game = {
   startedAt?: number;
   endsAt?: number;
   problemId: string;
-  mode: 'ranked' | 'unrated';
+  mode: 'ranked' | 'unrated' | 'casual';
   revision: number;
   submissions: Submission[];
   resolutionAt?: number;
