@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useTheme, type Theme } from './themes';
 import Editor, { loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor/editor/editor.api';
 import 'monaco-editor/languages/definitions/python/register';
@@ -13,6 +15,10 @@ export default function CodeEditor({
   onChange: (value: string) => void;
   disabled: boolean;
 }) {
+  const theme = useTheme();
+  useEffect(() => {
+    applyEditorTheme(theme);
+  }, [theme]);
   return (
     <Editor
       height="100%"
@@ -21,27 +27,9 @@ export default function CodeEditor({
       value={value}
       onChange={(v) => onChange(v ?? '')}
       loading={<div className="editor-loading">Loading Python editor…</div>}
-      beforeMount={(m) =>
-        m.editor.defineTheme('arena', {
-          base: 'vs',
-          inherit: true,
-          rules: [
-            { token: 'comment', foreground: '64748B' },
-            { token: 'keyword', foreground: '2563EB' },
-            { token: 'string', foreground: '15803D' },
-          ],
-          colors: {
-            'editor.background': '#FFFFFF',
-            'editor.foreground': '#0F172A',
-            'editor.selectionBackground': '#DBEAFE',
-            'editorLineNumber.foreground': '#64748B',
-            'editor.lineHighlightBackground': '#F1F5F9',
-            'editorCursor.foreground': '#2563EB',
-          },
-        })
-      }
+      beforeMount={() => applyEditorTheme(theme)}
       onMount={(editor) => {
-        monaco.editor.setTheme('arena');
+        applyEditorTheme(theme);
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {});
       }}
       options={{
@@ -62,4 +50,26 @@ export default function CodeEditor({
       }}
     />
   );
+}
+
+function applyEditorTheme(theme: Theme) {
+  const dark = theme.mode === 'dark';
+  monaco.editor.defineTheme('arena', {
+    base: dark ? 'vs-dark' : 'vs',
+    inherit: true,
+    rules: [
+      { token: 'comment', foreground: theme.muted.slice(1) },
+      { token: 'keyword', foreground: theme.secondary.slice(1) },
+      { token: 'string', foreground: dark ? '79DFB3' : '15803D' },
+    ],
+    colors: {
+      'editor.background': theme.surface,
+      'editor.foreground': theme.text,
+      'editorLineNumber.foreground': theme.muted,
+      'editor.lineHighlightBackground': theme.alt,
+      'editorCursor.foreground': theme.secondary,
+      'editor.selectionBackground': dark ? '#354559' : '#DBEAFE',
+    },
+  });
+  monaco.editor.setTheme('arena');
 }

@@ -1,3 +1,4 @@
+import { useTheme } from './themes';
 import { useSectionMotion } from './useSectionMotion';
 import type { User } from '../../../packages/shared/game';
 
@@ -34,6 +35,7 @@ export default function Home({
   navigate,
 }: Props) {
   const motionRef = useSectionMotion();
+  const theme = useTheme();
   const label = unavailable
     ? 'Ranked matches coming soon'
     : queued
@@ -91,7 +93,10 @@ export default function Home({
         </div>
         <div className="cc-preview" aria-label="Illustrative coding match preview">
           <div className="cc-preview-top">
-            <img src="/brand/logo/codeclash-mark.svg" alt="" />
+            <img
+              src={`/brand/logo/codeclash-mark${theme.mode === 'dark' ? '-dark' : ''}.svg`}
+              alt=""
+            />
             <strong>
               CODE<span>CLASH</span>
             </strong>
@@ -282,7 +287,7 @@ export default function Home({
         </article>
       </section>
       <footer className="cc-banner cc-panel">
-        <img src="/brand/logo/codeclash-mark.svg" alt="" />
+        <img src={`/brand/logo/codeclash-mark${theme.mode === 'dark' ? '-dark' : ''}.svg`} alt="" />
         <div>
           <p className="cc-eyebrow">BUILT FOR YOUR NEXT BREAKTHROUGH</p>
           <h2>Ready to enter the arena?</h2>

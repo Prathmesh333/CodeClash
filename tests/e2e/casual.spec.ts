@@ -17,9 +17,9 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
         .getByRole('dialog')
         .getByRole('button', { name: new RegExp(name) })
         .click();
-      await expect(
-        page.getByRole('button', { name: new RegExp(name + ' Sign out') }),
-      ).toBeVisible({ timeout: 15000 });
+      await expect(page.getByRole('button', { name: new RegExp(name + ' Sign out') })).toBeVisible({
+        timeout: 15000,
+      });
       await page.getByRole('button', { name: 'Find a casual match', exact: true }).click();
     }
     for (const page of [pa, pb]) await page.getByRole('button', { name: 'I’m ready' }).click();
@@ -38,6 +38,21 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
     }
     await expect(pa.locator('.monaco-editor')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
     await pa.screenshot({ path: 'artifacts/match-light.png', fullPage: true });
+    await pa.getByRole('button', { name: 'Change theme' }).click();
+    await pa
+      .getByRole('dialog', { name: 'Make the arena yours.' })
+      .getByRole('button', { name: /Midnight Mint/ })
+      .click();
+    await expect(pa.locator('.monaco-editor')).toHaveCSS('background-color', 'rgb(20, 28, 40)');
+    await pa
+      .getByRole('dialog', { name: 'Make the arena yours.' })
+      .getByRole('button', { name: /CodeClash Light/ })
+      .click();
+    await pa
+      .getByRole('dialog', { name: 'Make the arena yours.' })
+      .getByRole('button', { name: 'Done', exact: true })
+      .click();
+
     await enter('print("wrong")');
     await pa.getByRole('button', { name: 'Check & finish' }).click();
     await expect(pa.getByLabel('Local Python results')).toContainText('Wrong answer', {

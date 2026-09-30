@@ -1,3 +1,5 @@
+import { useTheme } from './themes';
+import ThemePicker from './ThemePicker';
 import Home from './Home';
 import { usePythonRun, PythonResults } from './python/usePythonRun';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
@@ -69,7 +71,15 @@ function Icon({ name }: { name: keyof typeof icons }) {
   );
 }
 function Mark() {
-  return <img src="/brand/logo/codeclash-mark.svg" width="40" height="44" alt="" />;
+  const theme = useTheme();
+  return (
+    <img
+      src={`/brand/logo/codeclash-mark${theme.mode === 'dark' ? '-dark' : ''}.svg`}
+      width="40"
+      height="44"
+      alt=""
+    />
+  );
 }
 function RankBadge({ small = false }: { small?: boolean }) {
   return (
@@ -91,6 +101,7 @@ function RankBadge({ small = false }: { small?: boolean }) {
   );
 }
 export default function App() {
+  const theme = useTheme();
   const [user, setUser] = useState<User | null>(null),
     [health, setHealth] = useState<Health | null>(null),
     [page, setPage] = useState<Page>('arena');
@@ -197,7 +208,10 @@ export default function App() {
             setPage('arena');
           }}
         >
-          <img src="/brand/logo/codeclash-wordmark.svg" alt="CodeClash" />
+          <img
+            src={`/brand/logo/codeclash-wordmark${theme.mode === 'dark' ? '-dark' : ''}.svg`}
+            alt="CodeClash"
+          />
         </a>
         <nav aria-label="Main navigation">
           {(['arena', 'leaderboard', 'history'] as Page[]).map((p) => (
@@ -212,6 +226,7 @@ export default function App() {
           ))}
         </nav>
         <div className="topbar-right">
+          <ThemePicker />
           <span className="language-pill">
             <span className="python-dot" />
             Python only
