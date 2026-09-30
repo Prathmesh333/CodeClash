@@ -1,3 +1,4 @@
+import Home from './Home';
 import { usePythonRun, PythonResults } from './python/usePythonRun';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import type { User } from '../../../packages/shared/game';
@@ -68,13 +69,7 @@ function Icon({ name }: { name: keyof typeof icons }) {
   );
 }
 function Mark() {
-  return (
-    <span className="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 28 28" fill="none">
-        <path d="M7 22V6h10l5 5-5 5H7m8 0 7 6" stroke="currentColor" strokeWidth="2.8" />
-      </svg>
-    </span>
-  );
+  return <img src="/brand/logo/codeclash-mark.svg" width="40" height="44" alt="" />;
 }
 function RankBadge({ small = false }: { small?: boolean }) {
   return (
@@ -150,7 +145,7 @@ export default function App() {
     };
   }, [user?.id, matchId, busy, queue.state]);
   useEffect(() => {
-    if (page === 'leaderboard')
+    if (page === 'leaderboard' || page === 'arena')
       api<{ players: User[] }>('/leaderboard')
         .then((r) => setPlayers(r.players))
         .catch((e) => setError(e.message));
@@ -192,91 +187,61 @@ export default function App() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <aside className="sidebar">
+      <header className="cc-header">
         <a
-          className="brand"
+          className="cc-brand"
           href="#"
+          aria-label="CodeClash home"
           onClick={(e) => {
             e.preventDefault();
             setPage('arena');
           }}
         >
-          <Mark />
-          <span>
-            CODE<span className="brand-dsa">CLASH</span>
-          </span>
+          <img src="/brand/logo/codeclash-wordmark.svg" alt="CodeClash" />
         </a>
-        <div className="sidebar-label">YOUR PLAYGROUND</div>
         <nav aria-label="Main navigation">
           {(['arena', 'leaderboard', 'history'] as Page[]).map((p) => (
             <button
               key={p}
-              className={'nav-item ' + (page === p ? 'active' : '')}
+              aria-current={page === p ? 'page' : undefined}
+              className={page === p ? 'active' : ''}
               onClick={() => setPage(p)}
             >
-              <Icon name={p} />
-              <span>
-                {p === 'arena' ? 'The arena' : p === 'history' ? 'Match history' : 'Leaderboard'}
-              </span>
-              {p === 'arena' && <span className="nav-dot" />}
+              {p === 'arena' ? 'The arena' : p === 'history' ? 'Match history' : 'Leaderboard'}
             </button>
           ))}
         </nav>
-        <div className="sidebar-bottom">
-          <div className="season-label">
-            <span className="tiny-dot" /> PYTHON ALPHA
-          </div>
-          <p>
-            Good code.
-            <br />
-            Great competition.
-          </p>
-          <div className="sidebar-rule" />
-          <span className="muted small-text">One problem. Equal ground.</span>
+        <div className="topbar-right">
+          <span className="language-pill">
+            <span className="python-dot" />
+            Python only
+          </span>
+          {user ? (
+            <button
+              className="account-button"
+              onClick={() =>
+                void action(async () => {
+                  await api('/auth/logout', {});
+                  clearDrafts();
+                  setUser(null);
+                  setMatchId(null);
+                  setQueue({ state: 'IDLE' });
+                })
+              }
+              title="Sign out"
+            >
+              <span className="avatar">{user.username.slice(0, 2).toUpperCase()}</span>
+              <span>{user.username}</span>
+              <span className="logout-label">Sign out</span>
+            </button>
+          ) : (
+            <button className="button small secondary" onClick={() => setLogin(true)}>
+              Sign in <Icon name="arrow" />
+            </button>
+          )}
         </div>
-      </aside>
+      </header>
       <div className="main-shell">
-        <header className="topbar">
-          <div className="breadcrumb">
-            Play <span>/</span>{' '}
-            <strong>
-              {page === 'arena'
-                ? 'The arena'
-                : page === 'history'
-                  ? 'Match history'
-                  : 'Leaderboard'}
-            </strong>
-          </div>
-          <div className="topbar-right">
-            <span className="language-pill">
-              <span className="python-dot" />
-              Python only
-            </span>
-            {user ? (
-              <button
-                className="account-button"
-                onClick={() =>
-                  void action(async () => {
-                    await api('/auth/logout', {});
-                    clearDrafts();
-                    setUser(null);
-                    setMatchId(null);
-                    setQueue({ state: 'IDLE' });
-                  })
-                }
-                title="Sign out"
-              >
-                <span className="avatar">{user.username.slice(0, 2).toUpperCase()}</span>
-                <span>{user.username}</span>
-                <span className="logout-label">Sign out</span>
-              </button>
-            ) : (
-              <button className="button small secondary" onClick={() => setLogin(true)}>
-                Sign in <Icon name="arrow" />
-              </button>
-            )}
-          </div>
-        </header>
         <main
           id="main"
           className={matchId && page === 'arena' ? 'main-content in-match' : 'main-content'}
@@ -314,76 +279,18 @@ export default function App() {
           ) : page === 'arena' ? (
             matchId && user ? null : (
               <>
-                <div className="page-eyebrow">
-                  <span className="eyebrow-line" /> THE 1V1 CODING ARENA{' '}
-                  <span className="alpha-tag">ALPHA</span>
-                </div>
-                <section className="hero-grid">
-                  <div className="hero-copy">
-                    <h1>
-                      Think fast.
-                      <br />
-                      Code better.
-                      <br />
-                      <span>{health?.casual ? 'Challenge a friend.' : 'Find your rank.'}</span>
-                    </h1>
-                    <p>
-                      Same problem. Same clock. Just you, your code,
-                      <br className="desktop-break" /> and a worthy opponent.
-                    </p>
-                    <div className="hero-actions">
-                      <button
-                        className="button primary large"
-                        onClick={join}
-                        disabled={
-                          busy ||
-                          queue.state === 'QUEUED' ||
-                          (!!health &&
-                            !health.local &&
-                            !health.casual &&
-                            health.judge !== 'configured')
-                        }
-                      >
-                        {health && !health.local && !health.casual && health.judge !== 'configured'
-                          ? 'Ranked matches coming soon'
-                          : queue.state === 'QUEUED'
-                            ? 'Finding your opponent…'
-                            : health?.casual
-                              ? 'Find a casual match'
-                              : 'Find a match'}
-                        <Icon name="arrow" />
-                      </button>
-                      <span className="hero-caption">20 min · 1v1 · Python</span>
-                    </div>
-                    <div className="fairness-note">
-                      <Icon name="check" />
-                      Skill-based matchmaking. Every win earned.
-                    </div>
-                  </div>
-                  <div className="rank-card">
-                    <div className="card-heading">
-                      <span>YOUR COMPETITIVE RANK</span>
-                      <span className="corner-icon">↗</span>
-                    </div>
-                    <RankBadge />
-                    <div className="rank-name">
-                      {user ? rank(user.rating) : 'Your climb starts here'}
-                    </div>
-                    <div className="rating-value">
-                      {user ? user.rating.toLocaleString() : '1,200'}
-                      <span>MMR</span>
-                    </div>
-                    <div className="rank-divider" />
-                    <div className="rank-card-footer">
-                      <span>
-                        {user && user.games_played
-                          ? `${user.games_played} ranked matches played`
-                          : 'A fresh start. An open ladder.'}
-                      </span>
-                      <span className="tiny-dot" />
-                    </div>
-                  </div>
-                </section>
+                <Home
+                  user={user}
+                  players={players}
+                  casual={health?.casual ?? false}
+                  unavailable={
+                    !!health && !health.local && !health.casual && health.judge !== 'configured'
+                  }
+                  busy={busy}
+                  queued={queue.state === 'QUEUED'}
+                  join={join}
+                  navigate={setPage}
+                />
                 {queue.state === 'QUEUED' && (
                   <QueueCard
                     queue={queue}
@@ -392,77 +299,6 @@ export default function App() {
                     }
                   />
                 )}
-                <section className="stats-strip" aria-label="Your statistics">
-                  <Stat
-                    label="Matches played"
-                    value={user?.games_played ?? 0}
-                    detail="Your journey so far"
-                  />
-                  <Stat
-                    label="Victories"
-                    value={user?.wins ?? 0}
-                    detail="Solutions that landed first"
-                  />
-                  <Stat
-                    label="Win rate"
-                    value={
-                      user?.games_played
-                        ? Math.round((user.wins / user.games_played) * 100) + '%'
-                        : '—'
-                    }
-                    detail={
-                      user?.games_played ? 'Across ranked matches' : 'Play your first ranked match'
-                    }
-                  />
-                  <div className="stat stat-format">
-                    <Icon name="code" />
-                    <div>
-                      <strong>One language. Pure skill.</strong>
-                      <span>Python 3 · Standard library</span>
-                    </div>
-                  </div>
-                </section>
-                <section className="how-section">
-                  <div className="section-heading">
-                    <h2>A duel in three moves.</h2>
-                    <span>No distractions. Just the problem.</span>
-                  </div>
-                  <div className="steps-grid">
-                    <Step
-                      n="01"
-                      icon="arena"
-                      title="Meet your match"
-                      text="Queue up against a programmer near your skill level. Both players start on equal ground."
-                    />
-                    <Step
-                      n="02"
-                      icon="code"
-                      title="Make it pass"
-                      text={
-                        health?.casual
-                          ? 'Solve the same problem and check the public examples in your browser.'
-                          : 'Solve the same problem. Test your approach, then submit it against the hidden cases.'
-                      }
-                    />
-                    <Step
-                      n="03"
-                      icon="leaderboard"
-                      title="Earn your place"
-                      text={
-                        health?.casual
-                          ? 'First browser-reported completion wins the casual round. Results are unverified; ratings stay unchanged.'
-                          : 'The first correct submission wins. See your result, learn from the round, go again.'
-                      }
-                    />
-                  </div>
-                </section>
-                <div className="arena-footer">
-                  <span>
-                    <span className="tiny-dot" />{' '}
-                    {health?.local ? 'Local development arena' : 'CodeClash alpha'}
-                  </span>
-                  <span>Outside AI assistance is not allowed in ranked play.</span>
-                </div>
                 {health?.judge === 'unavailable' && (
                   <div className="setup-note">
                     <Icon name="code" />
@@ -1027,8 +863,7 @@ function MatchView({
                           : 'An even match.'}
                 </h2>
                 <p>
-                  {game.outcome?.reason}{' '}
-                  {game.settled ? 'Result saved.' : 'Saving result…'}
+                  {game.outcome?.reason} {game.settled ? 'Result saved.' : 'Saving result…'}
                 </p>
               </div>
               <div className="result-actions">

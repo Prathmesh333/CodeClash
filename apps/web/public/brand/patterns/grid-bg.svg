@@ -1,0 +1,14 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" stroke="#16313B" stroke-width="1" opacity=".45"/>
+      <circle cx="0" cy="0" r="1" fill="#27D7FF" opacity=".25"/>
+    </pattern>
+    <linearGradient id="fade" x1="0" y1="0" x2="320" y2="320">
+      <stop stop-color="#B7FF3C" stop-opacity=".06"/>
+      <stop offset="1" stop-color="#27D7FF" stop-opacity=".02"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="320" fill="url(#grid)"/>
+  <rect width="320" height="320" fill="url(#fade)"/>
+</svg>

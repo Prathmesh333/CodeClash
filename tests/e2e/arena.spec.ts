@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 test('arena is responsive and sign-in has real local accounts', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: /Think fast/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Compete. Solve./ })).toBeVisible();
   await expect(page.getByText('Local setup in progress.')).toBeVisible();
+  await page.waitForLoadState('networkidle');
   await page.screenshot({ path: 'artifacts/arena-desktop.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByRole('button', { name: 'Find a match' })).toBeVisible();

@@ -1,6 +1,6 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="310" height="64" viewBox="0 0 310 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="g" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+    <linearGradient id="g" x1="2" y1="2" x2="58" y2="58" gradientUnits="userSpaceOnUse">
       <stop stop-color="#B7FF3C"/>
       <stop offset="1" stop-color="#27D7FF"/>
     </linearGradient>
@@ -9,4 +9,6 @@
   <path d="M25 22L16 32L25 42" stroke="#B7FF3C" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M39 22L48 32L39 42" stroke="#27D7FF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M35.5 20L28.5 44" stroke="#F8FAFC" stroke-width="4.5" stroke-linecap="round"/>
+  <text x="76" y="39" fill="#F8FAFC" font-size="28" font-weight="800" font-family="Inter, ui-sans-serif, system-ui, sans-serif" letter-spacing="0.5">CODE</text>
+  <text x="153" y="39" fill="#B7FF3C" font-size="28" font-weight="800" font-family="Inter, ui-sans-serif, system-ui, sans-serif" letter-spacing="0.5">CLASH</text>
 </svg>

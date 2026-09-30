@@ -1,0 +1,36 @@
+:root {
+  --cc-bg: #071016;
+  --cc-surface: #0B1620;
+  --cc-surface-2: #0E1C27;
+  --cc-border: #18303C;
+  --cc-text: #F4F7FA;
+  --cc-muted: #97A6B2;
+  --cc-lime: #B7FF3C;
+  --cc-cyan: #27D7FF;
+  --cc-yellow: #F3C74B;
+  --cc-danger: #FF5D67;
+  --cc-radius-sm: 10px;
+  --cc-radius-md: 16px;
+  --cc-radius-lg: 22px;
+  --cc-shadow: 0 18px 50px rgba(0,0,0,.28);
+}
+
+.cc-card {
+  background: linear-gradient(180deg, rgba(14,28,39,.96), rgba(9,18,26,.96));
+  border: 1px solid var(--cc-border);
+  border-radius: var(--cc-radius-md);
+}
+
+.cc-primary {
+  background: var(--cc-lime);
+  color: #071016;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.cc-secondary {
+  background: transparent;
+  color: var(--cc-text);
+  border: 1px solid #284656;
+  border-radius: 12px;
+}
