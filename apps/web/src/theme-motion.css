@@ -1,0 +1,409 @@
+/* CodeClash motion identity: crisp, controlled; based on LottieFiles motion-design skill.
+   Primary: staged hero/reveals. Secondary: icon and press feedback.
+   Ambient: one four-second grid settle, never a distracting infinite decoration. */
+:root {
+  --cc-bg: #071016;
+  --cc-surface: #0b1620;
+  --cc-surface-2: #10222e;
+  --cc-border: #25404f;
+  --cc-text: #f4f7fa;
+  --cc-muted: #a0b3c2;
+  --cc-lime: #b7ff3c;
+  --cc-cyan: #27d7ff;
+  --cc-yellow: #f3c74b;
+  --cc-danger: #ff8e99;
+  --cc-success: #79dfb3;
+  --cc-ease: cubic-bezier(0.2, 0, 0, 1);
+  --cc-quick: 120ms;
+  --cc-standard: 240ms;
+  --cc-slow: 360ms;
+  --danger: var(--cc-danger);
+  --success: var(--cc-success);
+  --warning: var(--cc-yellow);
+}
+::selection {
+  background: var(--cc-lime);
+  color: var(--cc-bg);
+}
+:is(button, a, input, textarea):focus-visible {
+  outline: 2px solid var(--cc-cyan);
+  outline-offset: 4px;
+}
+:is(
+  .page-intro,
+  .empty-state p,
+  .queue-card p,
+  .dialog-footnote,
+  .login-dialog p,
+  .problem-content > p,
+  .problem-content ul,
+  .editor-toolbar,
+  .editor-toolbar > span + span,
+  .editor-bottom > span,
+  .match-foot,
+  .local-results > p,
+  .result-banner p
+) {
+  color: var(--cc-muted);
+}
+:is(
+  .table-card,
+  .history-list,
+  .problem-panel,
+  .editor-panel,
+  .login-dialog,
+  .versus-bar,
+  .ready-screen
+) {
+  background: var(--cc-surface);
+  border-color: var(--cc-border);
+}
+th {
+  background: var(--cc-surface-2);
+  color: var(--cc-muted);
+}
+.table-card td {
+  color: var(--cc-text);
+}
+.table-card tr.you-row,
+.history-row:hover {
+  background: #122c32;
+}
+:is(.avatar, .avatar.rival) {
+  background: #143442;
+  color: #8ceaff;
+  border: 1px solid #2c596a;
+}
+.demo-players button {
+  background: var(--cc-surface-2);
+  border-color: var(--cc-border);
+  border-radius: 8px;
+}
+.demo-players button:hover {
+  background: #153340;
+  border-color: var(--cc-cyan);
+}
+.login-dialog {
+  border-radius: 16px;
+  color: var(--cc-text);
+}
+.login-dialog::backdrop {
+  background: #020a12c9;
+  backdrop-filter: blur(5px);
+}
+.problem-tags span {
+  color: var(--cc-lime);
+  border-color: #49652b;
+  background: #172519;
+}
+.problem-tags span + span {
+  color: var(--cc-muted);
+  background: var(--cc-surface);
+  border-color: var(--cc-border);
+}
+.panel-tabs button.selected {
+  color: var(--cc-cyan);
+  border-bottom-color: var(--cc-cyan);
+}
+.panel-tabs button span {
+  background: #15303e;
+  color: #c3e5f3;
+}
+.example > div,
+.submission pre {
+  background: var(--cc-bg);
+  border-color: var(--cc-border);
+  color: #c3d7e4;
+}
+.example pre {
+  color: #c3d7e4;
+}
+.example label {
+  color: var(--cc-muted);
+}
+.editor-notice,
+.setup-note {
+  background: #102530;
+  color: #b1d5e5;
+  border-color: var(--cc-border);
+}
+.editor-notice {
+  line-height: 1.8;
+}
+.local-results {
+  border-color: var(--cc-border);
+}
+.submission strong {
+  color: var(--cc-yellow);
+}
+.submission strong.accepted {
+  color: var(--cc-success);
+}
+.result-banner {
+  background: #102b28;
+  border-color: #286553;
+  border-radius: 12px;
+}
+.error-banner {
+  background: #2c1722;
+  border-color: #7c3d50;
+  color: var(--cc-danger);
+  border-radius: 9px;
+}
+.queue-card {
+  background: #0e2732;
+  border-color: #30778d;
+  border-radius: 12px;
+}
+.cc-metrics article,
+.cc-panel {
+  border-color: var(--cc-border);
+}
+.cc-home
+  :is(
+    .cc-disclosure,
+    .cc-example-note,
+    .cc-preview-top small,
+    .cc-preview-players > small,
+    .cc-preview-tabs span,
+    .cc-preview-foot small,
+    .cc-section-title > span,
+    .cc-soon
+  ) {
+  color: var(--cc-muted);
+}
+.cc-metrics h2,
+.cc-preview-top small,
+.cc-preview-foot small {
+  font-size: 10px;
+}
+.cc-preview-top small {
+  letter-spacing: 0;
+}
+.cc-preview-foot small {
+  line-height: 1.4;
+}
+.cc-home .cc-eyebrow {
+  color: var(--cc-cyan);
+}
+.cc-hero-copy > .cc-eyebrow {
+  color: var(--cc-lime);
+}
+.cc-icon-box {
+  background: var(--cc-surface-2);
+  border-color: var(--cc-border);
+}
+.cc-preview {
+  background: var(--cc-bg);
+  transform: none;
+}
+.cc-preview .cc-problem {
+  background: var(--cc-surface);
+}
+.cc-preview .cc-code {
+  background: var(--cc-bg);
+}
+.cc-preview .cc-problem pre {
+  background: var(--cc-surface-2);
+  border-color: var(--cc-border);
+}
+.button.primary:disabled {
+  background: #536943;
+  color: #e1eacb;
+  box-shadow: none;
+  opacity: 1;
+}
+.button.secondary:disabled {
+  color: #8ba0ae;
+  opacity: 0.65;
+}
+.cc-header nav button {
+  position: relative;
+  border-bottom-color: transparent !important;
+}
+.cc-header nav button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--cc-lime);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--cc-standard) var(--cc-ease);
+}
+.cc-header nav button.active::after {
+  transform: scaleX(1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cc-hero-copy {
+    animation: cc-arrive var(--cc-slow) var(--cc-ease) both;
+  }
+  .cc-preview {
+    animation: cc-arrive var(--cc-slow) var(--cc-ease) 90ms both;
+  }
+  .cc-metrics {
+    animation: cc-arrive var(--cc-slow) var(--cc-ease) 180ms both;
+  }
+  .cc-hero::before {
+    animation: cc-grid-settle 4s ease-in-out both;
+  }
+  .button,
+  .account-button,
+  .demo-players button {
+    transition:
+      transform var(--cc-quick) var(--cc-ease),
+      background 100ms ease-out,
+      border-color 100ms ease-out,
+      color 100ms ease-out;
+  }
+  .button:not(:disabled):active,
+  .account-button:active,
+  .demo-players button:active {
+    transform: scale(0.98);
+  }
+  .button > svg,
+  .button > .asset-icon,
+  .button > span:last-child {
+    transition: translate var(--cc-standard) var(--cc-ease);
+  }
+  .login-dialog[open] {
+    animation: cc-dialog-in var(--cc-slow) var(--cc-ease) both;
+  }
+  .login-dialog[open]::backdrop {
+    animation: cc-backdrop-in var(--cc-standard) ease-out both;
+  }
+  .queue-card,
+  .result-banner,
+  .error-banner {
+    animation: cc-feedback-in var(--cc-standard) var(--cc-ease) both;
+  }
+  .cc-metrics article,
+  .cc-feature-card,
+  .history-row {
+    transition:
+      border-color var(--cc-quick) ease-out,
+      translate var(--cc-standard) var(--cc-ease),
+      background var(--cc-quick) ease-out;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .button:not(:disabled):hover {
+      transform: translateY(-2px);
+    }
+    .button:not(:disabled):hover > svg:last-child,
+    .button:not(:disabled):hover > span:last-child:not(.asset-icon) {
+      translate: 3px 0;
+    }
+    .cc-feature-card:hover,
+    .cc-metrics article:hover {
+      translate: 0 -3px;
+      border-color: #3b6a7a;
+    }
+  }
+  @media (max-width: 600px) {
+    .cc-hero-copy,
+    .cc-preview,
+    .cc-metrics {
+      animation-duration: 240ms;
+    }
+    .cc-preview {
+      animation-delay: 60ms;
+    }
+    .cc-metrics {
+      animation-delay: 120ms;
+    }
+    .cc-hero::before {
+      animation: none;
+    }
+  }
+}
+@keyframes cc-arrive {
+  from {
+    opacity: 0.2;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes cc-grid-settle {
+  from {
+    opacity: 0.08;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 0.19;
+    transform: translateX(0);
+  }
+}
+@keyframes cc-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes cc-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cc-feedback-in {
+  from {
+    opacity: 0.3;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .cc-header nav button.active::after {
+    transform: scaleX(1);
+  }
+}
+
+.versus-bar,
+.ready-screen,
+.workspace {
+  border-color: var(--cc-border);
+  background: var(--cc-surface);
+}
+:is(.ready-screen p, .duelist > div > span, .connection, .history-row > div > span) {
+  color: var(--cc-muted);
+}
+.connection.online {
+  color: var(--cc-success);
+}
+:is(.alpha-tag, .you-tag) {
+  background: #152f3b;
+  color: var(--cc-cyan);
+  border-color: var(--cc-border);
+}
+.cc-home .cc-intro,
+.cc-home .cc-feature-card p:not(.cc-eyebrow),
+.cc-home .cc-steps p,
+.cc-home .cc-banner p:last-child {
+  color: var(--cc-muted);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .button:not(:disabled):active {
+    transform: scale(0.98);
+  }
+}

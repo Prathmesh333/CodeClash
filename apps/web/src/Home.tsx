@@ -1,3 +1,4 @@
+import { useSectionMotion } from './useSectionMotion';
 import type { User } from '../../../packages/shared/game';
 
 type Props = {
@@ -32,6 +33,7 @@ export default function Home({
   join,
   navigate,
 }: Props) {
+  const motionRef = useSectionMotion();
   const label = unavailable
     ? 'Ranked matches coming soon'
     : queued
@@ -47,7 +49,7 @@ export default function Home({
     </button>
   );
   return (
-    <div className="cc-home">
+    <div className="cc-home" ref={motionRef}>
       <section className="cc-hero">
         <div className="cc-hero-copy">
           <p className="cc-eyebrow">YOUR NEXT CHALLENGE STARTS HERE</p>
