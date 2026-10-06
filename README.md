@@ -1,65 +1,65 @@
 # CodeClash
 
-A Python-only 1v1 coding arena built with React/Vite, Cloudflare Workers, Durable Objects and D1. Public examples run on the player’s device using Pyodide/WebAssembly. The private ranked Python judge uses Cloudflare Sandbox/Containers.
+**One problem. Two programmers. A live coding duel.**
 
-## Run locally
+CodeClash is a multiplayer coding arena where two players receive the same algorithm problem, write Python against a shared clock, and compete to finish. It brings the focus of solving a programming challenge into a real-time, head-to-head match.
 
-Requirements: Node 22.18 or newer and pnpm 11.25.0.
+[Try the live demo](https://ranked-dsa-staging.shortlistd.workers.dev/) · [GitHub repository](https://github.com/Prathmesh333/CodeClash) · [Report an issue](https://github.com/Prathmesh333/CodeClash/issues) · [Development guide](DEVELOPMENT.md)
 
-```sh
-pnpm install --frozen-lockfile
-pnpm db:migrate:local
-pnpm db:seed:local
-pnpm dev
-```
+## The match experience
 
-Open http://127.0.0.1:5173. Sign in as two different demo players in separate browser profiles (or one normal window and one private window). Find a match, acknowledge the ready check, and enter the coding room.
+1. **Sign in with GitHub** and join the matchmaking queue.
+2. **Meet your opponent.** Both players confirm they are ready before the countdown begins.
+3. **Solve the same problem.** Write Python in the editor and run the public examples on your device.
+4. **Finish the duel.** In the current casual beta, passing the examples lets you report completion. The first completion received by the server ends the match.
+5. **Revisit the result** in match history or queue for another opponent.
 
-Matchmaking, ready checks, WebSockets, forfeit results, ratings, history and rematches run locally. **Run works in the browser without Docker. Ranked Submit stays disabled until the isolated server judge is configured and verified.** The first Run downloads the bundled Python runtime. Demo sign-in is restricted to the local environment.
+The clock and match state are shared through WebSockets. Players can reconnect to an existing match or forfeit if they need to leave.
 
-## Verify changes
+## Available today
 
-```sh
-pnpm typecheck
-pnpm test:unit
-pnpm test:problems
-python -m unittest discover -s tests/unit -p "*_test.py"
-pnpm test:integration
-pnpm test:e2e
-pnpm build
-```
+- **Live 1v1 matches** with matchmaking, ready checks, a synchronized countdown, and a shared 20-minute clock.
+- **Python coding workspace** with a Monaco editor, locally saved drafts, example checks, and execution cancellation.
+- **Browser Python execution** powered by Pyodide and WebAssembly, keeping public example runs on the player’s device.
+- **20 original algorithm problems** covering easy and medium challenges. Hidden tests and reference solutions stay out of the browser.
+- **GitHub sign-in and saved match history**, backed by Cloudflare D1.
+- **11 selectable color themes**, including light and dark palettes, with a saved device preference and an editor that follows the selected theme.
+- **Responsive layouts and reduced-motion support** for desktop and mobile browsers.
 
-The Python unit tests mock process creation and never execute contestant code. Integration tests start an isolated local Worker/D1/DO instance. Browser tests rebuild and serve the app on port 8790; Chrome is used locally and Playwright Chromium in CI.
+## Current stage: casual beta
 
-On a Docker host, separately run `pnpm test:judge` and `pnpm test:security`. A successful local test does not certify Cloudflare Sandbox isolation: repeat the security suite on staging before enabling public code execution.
+The [live demo](https://ranked-dsa-staging.shortlistd.workers.dev/) runs on Cloudflare staging. Matches use **browser-reported, unverified results** and **do not change ratings**. Passing public examples does not prove a solution passes hidden tests.
 
-## Project guide
+Verified ranked judging is implemented in part but remains disabled pending server isolation and security validation. The ranked leaderboard will reflect verified results when that mode is enabled. Tournaments are planned for a future release.
 
-- [Cloudflare staging and GitHub login setup](STAGING.md)
+The repeated **100-fake-player simulation gate** and gameplay fairness checks remain outstanding. The beta is not a claim of production capacity or ranked competitive fairness.
 
-- [Ranked question bank](RANKED_QUESTIONS.md) — 20 original questions and 499 verified cases.
+## How it is built
 
-- [Browser Python execution and limits](BROWSER_PYTHON.md)
+| Layer | Technology | Role |
+| --- | --- | --- |
+| Interface | React, Vite, TypeScript | Homepage, match room, editor, themes, history |
+| API | Cloudflare Workers | Authentication and application routes |
+| Multiplayer | Cloudflare Durable Objects + WebSockets | Matchmaking and authoritative per-match state |
+| Persistence | Cloudflare D1 | Accounts, problems, matches, results |
+| Browser execution | Pyodide / WebAssembly | Python runs against public examples on the player’s device |
+| Planned verified judge | Cloudflare Sandbox / Containers | Isolated server execution against hidden tests; currently disabled |
 
-- [Implementation and remaining work](IMPLEMENTATION_STATUS.md)
-- [Review fixes and verification](REVIEW_REPORT.md)
-- [Release evidence](RELEASE_EVIDENCE.md)
-- [Operational runbooks](RUNBOOKS.md)
-- [Original execution brief](Ranked-DSA-Docs/START_HERE.md)
-- [Complete requirements](Ranked-DSA-Docs/README.md)
+Cloudflare coordinates matches and stores results. The player’s browser handles public Python example runs. This keeps the casual beta lightweight while leaving a separate path for trusted ranked judging.
 
-## Release status
+## Project documentation
 
-Not ready for public deployment. Docker execution, deployed Sandbox isolation, staging credentials, a reviewed problem bank, spend/admission controls and the repeated 100-player capacity gate remain outstanding. No 100-player run has been claimed as passing.
+- [Development guide](DEVELOPMENT.md) — local setup, verification commands, and LAN access.
+- [Cloudflare staging and GitHub login](STAGING.md) — deployment and authentication configuration.
+- [Problem bank](RANKED_QUESTIONS.md) — question format, test cases, and selection rules.
+- [Browser Python execution](BROWSER_PYTHON.md) — runtime, isolation boundaries, and limits.
+- [Release evidence](RELEASE_EVIDENCE.md) — release gates and recorded verification.
+- [Operational runbooks](RUNBOOKS.md) — recovery and operational procedures.
+- [Full project documentation](Ranked-DSA-Docs/README.md) — architecture, testing, deployment, capacity, fairness, and roadmap.
+- [Execution brief](Ranked-DSA-Docs/START_HERE.md) — implementation requirements and acceptance gates.
 
-## Share on the same local network
+CodeClash began as **Ranked DSA**; some infrastructure names and original documentation retain that name.
 
-The Vite development server listens on all interfaces. With `pnpm dev` running, other devices on the same Wi-Fi can open `http://<this-computer-LAN-IP>:5173`. The current Wi-Fi address is `192.168.1.46`; DHCP can change it. The API remains on loopback and is forwarded by Vite, including WebSockets. Same-origin LAN demo sign-in is supported; foreign origins remain rejected.
+## Contributing
 
-If Windows Firewall blocks access, run this once in an administrator PowerShell:
-
-```powershell
-New-NetFirewallRule -DisplayName "CodeClash LAN 5173" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 5173 -RemoteAddress LocalSubnet -Profile Any
-```
-
-Choose different demo players on different devices. Keep this PC awake and the development server running. This address is for the local network, not an internet deployment. Browser Python Run works over this LAN HTTP address; ranked Submit still needs the server judge.
+See the [development guide](DEVELOPMENT.md) to run the project and verify changes. Report bugs and suggest improvements through [GitHub issues](https://github.com/Prathmesh333/CodeClash/issues). Include the steps to reproduce a bug, the browser used, and the expected behavior.
