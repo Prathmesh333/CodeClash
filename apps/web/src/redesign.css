@@ -989,3 +989,28 @@ td {
     font-size: 10px;
   }
 }
+/* Keep the arena card's breathing room consistent in every palette. */
+.cc-home .cc-hero {
+  padding: clamp(32px, 3vw, 48px);
+  background: var(--cc-surface);
+  border: 1px solid var(--cc-border);
+  border-radius: 20px;
+  gap: clamp(32px, 3vw, 48px);
+}
+.cc-hero-copy,
+.cc-demo-stage {
+  min-width: 0;
+}
+@media (max-width: 900px) {
+  .cc-home .cc-hero {
+    padding: 28px;
+    gap: 30px;
+  }
+}
+@media (max-width: 540px) {
+  .cc-home .cc-hero {
+    padding: 22px 18px;
+    gap: 26px;
+    border-radius: 16px;
+  }
+}
