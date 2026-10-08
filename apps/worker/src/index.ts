@@ -1,5 +1,6 @@
+import { requestEmail, verifyEmail } from './email-auth';
 import { assert, ApiError, body, hash, json, localRequest, type Env } from './env';
-import { cookie, currentUser, github, loginLocal, logout } from './auth';
+import { cookie, currentUser, google, github, loginLocal, logout } from './auth';
 import { testState } from './evidence';
 import type { Game, User } from '../../../packages/shared/game';
 export { MatchmakerDO } from './matchmaker';
@@ -43,6 +44,8 @@ export default {
           local: localRequest(req, env),
           casual: env.CASUAL_WASM === 'true',
           github: Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET),
+          google: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET),
+          email: Boolean(env.RESEND_API_KEY && env.EMAIL_FROM),
         });
       // Read-only evidence for automated assertions; local environment and opt-in flag only.
       if (
@@ -59,6 +62,12 @@ export default {
         return await loginLocal(req, env, (await body(req, 1024)).id);
       if (['/api/auth/github', '/api/auth/github/callback'].includes(path) && req.method === 'GET')
         return await github(req, env);
+      if (['/api/auth/google', '/api/auth/google/callback'].includes(path) && req.method === 'GET')
+        return await google(req, env);
+      if (path === '/api/auth/email' && req.method === 'POST')
+        return await requestEmail(req, env, (await body(req, 1024)).email);
+      if (path === '/api/auth/email/verify' && ['GET', 'POST'].includes(req.method))
+        return await verifyEmail(req, env);
       if (path === '/api/auth/logout' && req.method === 'POST') return await logout(req, env);
       const user = await currentUser(req, env);
       if (path === '/api/me')

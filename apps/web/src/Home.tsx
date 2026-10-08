@@ -199,7 +199,7 @@ export default function Home({
             [
               'users',
               'Get matched',
-              'Sign in with GitHub and join the queue. Both players ready up before the clock starts.',
+              'Sign in and join the queue. Both players ready up before the clock starts.',
             ],
             [
               'code',

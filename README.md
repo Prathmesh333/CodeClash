@@ -49,6 +49,7 @@ Cloudflare coordinates matches and stores results. The player’s browser handle
 
 ## Project documentation
 
+- [Additional sign-in setup](LOGIN_SETUP.md) — Google OAuth and email links; activation and verification required.
 - [Development guide](DEVELOPMENT.md) — local setup, verification commands, and LAN access.
 - [Cloudflare staging and GitHub login](STAGING.md) — deployment and authentication configuration.
 - [Problem bank](RANKED_QUESTIONS.md) — question format, test cases, and selection rules.

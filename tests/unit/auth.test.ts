@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { github, loginLocal } from '../../apps/worker/src/auth';
+import { google, github, loginLocal } from '../../apps/worker/src/auth';
 import type { Env } from '../../apps/worker/src/env';
 afterEach(() => vi.unstubAllGlobals());
 function fixture() {
@@ -90,4 +90,65 @@ it('disables demo sign-in outside the local environment', async () => {
   await expect(
     loginLocal(new Request('http://localhost/api/auth/local'), f.env, 'alice'),
   ).rejects.toThrow('Not found');
+});
+
+it('Google persists a namespaced identity and rejects callback replay', async () => {
+  const f = fixture();
+  f.env.GOOGLE_CLIENT_ID = 'google-id';
+  f.env.GOOGLE_CLIENT_SECRET = 'google-secret';
+  const start = await google(new Request(f.env.APP_ORIGIN + '/api/auth/google'), f.env);
+  const url = new URL(start.headers.get('location')!);
+  expect(url.origin).toBe('https://accounts.google.com');
+  expect(url.searchParams.get('scope')).toBe('openid profile email');
+  expect(url.searchParams.get('code_challenge_method')).toBe('S256');
+  const request = new Request(
+    f.env.APP_ORIGIN + '/api/auth/google/callback?code=test&state=' + url.searchParams.get('state'),
+    {
+      headers: {
+        Cookie: start.headers
+          .getSetCookie()
+          .map((c) => c.split(';')[0])
+          .join('; '),
+      },
+    },
+  );
+  const fetch = vi
+    .fn()
+    .mockResolvedValueOnce(Response.json({ access_token: 'token' }))
+    .mockResolvedValueOnce(Response.json({ sub: '123', name: 'Coder', email_verified: true }));
+  vi.stubGlobal('fetch', fetch);
+  const result = await google(request, f.env);
+  expect(result.status).toBe(302);
+  expect([...f.users][0]).toMatch(/^google-[a-f0-9]{64}$/);
+  expect(f.sessions).toHaveLength(1);
+  expect(new URLSearchParams(fetch.mock.calls[0][1].body).get('code_verifier')).toHaveLength(72);
+  await expect(google(request, f.env)).rejects.toThrow('Sign-in expired');
+});
+it('Google rejects unverified identities without creating a session', async () => {
+  const f = fixture();
+  f.env.GOOGLE_CLIENT_ID = 'id';
+  f.env.GOOGLE_CLIENT_SECRET = 'secret';
+  const start = await google(new Request(f.env.APP_ORIGIN + '/api/auth/google'), f.env);
+  const state = new URL(start.headers.get('location')!).searchParams.get('state');
+  vi.stubGlobal(
+    'fetch',
+    vi
+      .fn()
+      .mockResolvedValueOnce(Response.json({ access_token: 'token' }))
+      .mockResolvedValueOnce(Response.json({ sub: '123', email_verified: false })),
+  );
+  await expect(
+    google(
+      new Request(f.env.APP_ORIGIN + '/api/auth/google/callback?code=test&state=' + state, {
+        headers: {
+          Cookie: start.headers
+            .getSetCookie()
+            .map((c) => c.split(';')[0])
+            .join('; '),
+        },
+      }),
+      f.env,
+    ),
+  ).rejects.toThrow('verified Google account');
+  expect(f.sessions).toHaveLength(0);
 });

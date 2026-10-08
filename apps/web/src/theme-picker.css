@@ -144,3 +144,34 @@
     font-size: 22px;
   }
 }
+.signin-options {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+.signin-options > a,
+.signin-options > button {
+  width: 100%;
+  justify-content: space-between;
+  padding: 13px 16px;
+}
+.signin-options form {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--cc-border);
+  padding-top: 20px;
+  margin-top: 8px;
+}
+.signin-options label {
+  font-size: 13px;
+  color: var(--cc-secondary);
+}
+.signin-options input {
+  padding: 12px;
+  border-radius: 10px;
+  width: 100%;
+}
+.signin-options form .button {
+  justify-content: center;
+  padding: 13px;
+}

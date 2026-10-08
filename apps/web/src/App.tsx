@@ -8,7 +8,14 @@ import { rank } from '../../../packages/shared/game';
 import type { Snapshot } from '../../../packages/protocol';
 import { api } from './api';
 const CodeEditor = lazy(() => import('./CodeEditor'));
-type Health = { local: boolean; judge: string; github?: boolean; casual?: boolean };
+type Health = {
+  local: boolean;
+  judge: string;
+  github?: boolean;
+  google?: boolean;
+  email?: boolean;
+  casual?: boolean;
+};
 type Queue = {
   state: 'IDLE' | 'QUEUED' | 'MATCHED';
   joinedAt?: number;
@@ -449,6 +456,8 @@ export default function App() {
       {login && (
         <LoginModal
           githubReady={health?.github === true}
+          googleReady={health?.google === true}
+          emailReady={health?.email === true}
           local={health?.local ?? false}
           busy={busy}
           close={() => setLogin(false)}
@@ -519,6 +528,8 @@ function QueueCard({ queue, cancel }: { queue: Queue; cancel: () => void }) {
 }
 function LoginModal({
   githubReady,
+  googleReady,
+  emailReady,
   local,
   busy,
   close,
@@ -526,10 +537,15 @@ function LoginModal({
 }: {
   local: boolean;
   githubReady: boolean;
+  googleReady: boolean;
+  emailReady: boolean;
   busy: boolean;
   close: () => void;
   choose: (id: string) => void;
 }) {
+  const [email, setEmail] = useState('');
+  const [emailBusy, setEmailBusy] = useState(false);
+  const [emailMessage, setEmailMessage] = useState('');
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     dialog.current?.showModal();
@@ -561,12 +577,61 @@ function LoginModal({
             </button>
           ))}
         </div>
-      ) : githubReady ? (
-        <a className="button primary" href="/api/auth/github">
-          Continue with GitHub <Icon name="arrow" />
-        </a>
       ) : (
-        <p role="status">GitHub sign-in is being connected. Please check back shortly.</p>
+        <div className="signin-options">
+          {githubReady && (
+            <a className="button secondary" href="/api/auth/github">
+              Continue with GitHub <Icon name="arrow" />
+            </a>
+          )}
+          {googleReady ? (
+            <a className="button secondary" href="/api/auth/google">
+              Continue with Google <Icon name="arrow" />
+            </a>
+          ) : (
+            <button className="button secondary" disabled>
+              Google · Coming soon
+            </button>
+          )}
+          {emailReady ? (
+            <form
+              onSubmit={async (event) => {
+                event.preventDefault();
+                if (emailBusy) return;
+                setEmailBusy(true);
+                setEmailMessage('');
+                try {
+                  const result = await api<{ message: string }>('/auth/email', { email });
+                  setEmailMessage(result.message);
+                } catch (error) {
+                  setEmailMessage(error instanceof Error ? error.message : 'Please try again.');
+                } finally {
+                  setEmailBusy(false);
+                }
+              }}
+            >
+              <label htmlFor="signin-email">Or use your email</label>
+              <input
+                id="signin-email"
+                type="email"
+                autoComplete="email"
+                maxLength={254}
+                required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="you@example.com"
+              />
+              <button className="button primary" disabled={emailBusy}>
+                {emailBusy ? 'Sending…' : 'Email me a sign-in link'}
+              </button>
+              {emailMessage && <p role="status">{emailMessage}</p>}
+            </form>
+          ) : (
+            <button className="button secondary" disabled>
+              Email sign-in · Coming soon
+            </button>
+          )}
+        </div>
       )}
       <span className="dialog-footnote">
         {local
