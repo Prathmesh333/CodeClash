@@ -1,6 +1,6 @@
 import { exportData, requestPrivacy } from './privacy';
 import { requestEmail, verifyEmail } from './email-auth';
-import { assert, ApiError, body, hash, json, localRequest, type Env } from './env';
+import { assert, ApiError, body, hash, json, localRequest, rateLimit, type Env } from './env';
 import { cookie, currentUser, google, github, loginLocal, logout } from './auth';
 import { testState } from './evidence';
 import type { Game, User } from '../../../packages/shared/game';
@@ -75,6 +75,11 @@ const application = {
             ['http://localhost:5173', 'http://127.0.0.1:5173'].includes(origin ?? ''));
         assert(allowed, 403, 'ORIGIN_DENIED', 'Request origin is not allowed.');
       }
+      if (['/api/auth/github', '/api/auth/google'].includes(path) && req.method === 'GET') {
+        const ip = req.headers.get('CF-Connecting-IP') ?? 'local';
+        await rateLimit(env, 'oauth-ip:' + ip, 20, 600000);
+        await rateLimit(env, 'oauth-global', 600, 600000);
+      }
       if (path === '/api/health')
         return json({
           ok: true,
@@ -140,6 +145,8 @@ const application = {
         });
       }
       assert(user, 401, 'AUTH_REQUIRED', 'Sign in to enter the arena.');
+      if (req.method === 'POST' || req.headers.get('Upgrade'))
+        await rateLimit(env, 'player:' + user.id, 60, 60000);
       if (path === '/api/privacy/export' && req.method === 'GET') {
         const offset = Number(url.searchParams.get('offset') ?? 0);
         assert(
@@ -154,7 +161,7 @@ const application = {
         return json({
           requests: (
             await env.DB.prepare(
-              'SELECT id,kind,status,response,created_at FROM privacy_requests WHERE user_id=? ORDER BY created_at DESC',
+              'SELECT id,kind,status,response,created_at FROM privacy_requests WHERE user_id=? ORDER BY created_at DESC LIMIT 100',
             )
               .bind(user.id)
               .all()
@@ -293,14 +300,44 @@ export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const response = await application.fetch(req, env);
     if (response.status === 101) return response;
-    const protectedResponse = new Response(response.body, response);
+    let protectedResponse = new Response(response.body, response);
+    if (
+      response.headers.get('Content-Type')?.includes('text/html') &&
+      !response.headers.has('Content-Security-Policy') &&
+      env.ASSETS
+    ) {
+      const nonce = crypto.randomUUID().replaceAll('-', '');
+      const html = (await response.text()).replace(
+        '<head>',
+        `<head><meta name="csp-nonce" content="${nonce}">`,
+      );
+      protectedResponse = new Response(html, response);
+      protectedResponse.headers.delete('Content-Length');
+      protectedResponse.headers.delete('ETag');
+      const origin = new URL(req.url).origin;
+      const socketOrigin = origin.replace(/^http/, 'ws');
+      protectedResponse.headers.set(
+        'Content-Security-Policy',
+        `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'wasm-unsafe-eval' blob: ${origin}/python-runtime/; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' ${socketOrigin} ${origin}/python-runtime/; worker-src 'self' blob:; frame-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'`,
+      );
+    }
     protectedResponse.headers.set('X-Content-Type-Options', 'nosniff');
-    protectedResponse.headers.set('Referrer-Policy', 'same-origin');
+    if (!protectedResponse.headers.has('Referrer-Policy'))
+      protectedResponse.headers.set('Referrer-Policy', 'same-origin');
     protectedResponse.headers.set('X-Frame-Options', 'DENY');
-    protectedResponse.headers.set(
-      'Content-Security-Policy',
-      "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'",
-    );
+    if (!protectedResponse.headers.has('Content-Security-Policy'))
+      protectedResponse.headers.set(
+        'Content-Security-Policy',
+        "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'",
+      );
+    // Auth-dependent redirects and documents must never be shared by a cache.
+    const path = new URL(req.url).pathname;
+    if (
+      path.startsWith('/api/') ||
+      (protectedResponse.status >= 300 && protectedResponse.status < 400) ||
+      protectedResponse.headers.get('Content-Type')?.includes('text/html')
+    )
+      protectedResponse.headers.set('Cache-Control', 'no-store');
     protectedResponse.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
     if (new URL(req.url).protocol === 'https:')
       protectedResponse.headers.set('Strict-Transport-Security', 'max-age=31536000');

@@ -255,7 +255,8 @@ describe('settlement integrity', () => {
       assert.ok(match.problemTitle, 'history rows carry a problem title');
       assert.notEqual(JSON.parse(match.outcome_json).winnerId, undefined);
     }
-    const leaderboard = await arena.call(null, '/leaderboard');
+    assert.equal((await arena.call(null, '/leaderboard')).status, 401);
+    const leaderboard = await arena.call(b, '/leaderboard');
     assert.equal(leaderboard.status, 200);
     const players = leaderboard.body.players;
     const ratings = players.map((p: any) => p.rating);
@@ -265,7 +266,7 @@ describe('settlement integrity', () => {
         assert.ok(players[index - 1].id < players[index].id, 'ties break deterministically by user id');
       }
     }
-    const paged = await arena.call(null, '/leaderboard?offset=0');
+    const paged = await arena.call(b, '/leaderboard?offset=0');
     assert.deepEqual(paged.body.players.map((p: any) => p.id), players.map((p: any) => p.id), 'leaderboard order is stable');
   });
 });

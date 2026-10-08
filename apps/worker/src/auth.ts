@@ -105,7 +105,13 @@ export async function github(req: Request, env: Env) {
   const code = url.searchParams.get('code');
   const verifier = cookie(req, 'rdsa_pkce');
   assert(
-    state && code && verifier && cookie(req, 'rdsa_oauth') === state,
+    state &&
+      state.length === 36 &&
+      code &&
+      code.length <= 1024 &&
+      verifier &&
+      verifier.length === 72 &&
+      cookie(req, 'rdsa_oauth') === state,
     400,
     'INVALID_STATE',
     'Sign-in expired. Try again.',
@@ -117,6 +123,7 @@ export async function github(req: Request, env: Env) {
     .first();
   assert(consumed, 400, 'INVALID_STATE', 'Sign-in expired. Try again.');
   const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+    signal: AbortSignal.timeout(10000),
     method: 'POST',
     headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -131,6 +138,7 @@ export async function github(req: Request, env: Env) {
   const token = (await tokenResponse.json()) as { access_token?: string };
   assert(token.access_token, 401, 'AUTH_FAILED', 'Could not sign in.');
   const profileResponse = await fetch('https://api.github.com/user', {
+    signal: AbortSignal.timeout(10000),
     headers: {
       Authorization: `Bearer ${token.access_token}`,
       Accept: 'application/vnd.github+json',
@@ -196,7 +204,13 @@ export async function google(req: Request, env: Env) {
   const code = url.searchParams.get('code');
   const verifier = cookie(req, 'rdsa_google_pkce');
   assert(
-    state && code && verifier && cookie(req, 'rdsa_google_oauth') === state,
+    state &&
+      state.length === 36 &&
+      code &&
+      code.length <= 1024 &&
+      verifier &&
+      verifier.length === 72 &&
+      cookie(req, 'rdsa_google_oauth') === state,
     400,
     'INVALID_STATE',
     'Sign-in expired. Try again.',
@@ -208,6 +222,7 @@ export async function google(req: Request, env: Env) {
     .first();
   assert(consumed, 400, 'INVALID_STATE', 'Sign-in expired. Try again.');
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    signal: AbortSignal.timeout(10000),
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
@@ -228,6 +243,7 @@ export async function google(req: Request, env: Env) {
     'Could not sign in.',
   );
   const profileResponse = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+    signal: AbortSignal.timeout(10000),
     headers: { Authorization: `Bearer ${token.access_token}` },
   });
   assert(profileResponse.ok, 401, 'AUTH_FAILED', 'Could not verify your account.');

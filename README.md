@@ -72,3 +72,4 @@ CodeClash began as **Ranked DSA**; some infrastructure names and original docume
 ## Contributing
 
 See the [development guide](DEVELOPMENT.md) to run the project and verify changes. Report bugs and suggest improvements through [GitHub issues](https://github.com/Prathmesh333/CodeClash/issues). Include the steps to reproduce a bug, the browser used, and the expected behavior.
+- [Security review and reporting](SECURITY.md) — verified fixes, security boundaries, and remaining release gates.

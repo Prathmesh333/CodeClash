@@ -62,10 +62,26 @@ export async function body(req: Request, max = 70000) {
     offset += chunk.length;
   }
   try {
-    return JSON.parse(new TextDecoder().decode(bytes));
+    const parsed = JSON.parse(new TextDecoder().decode(bytes));
+    assert(
+      parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed),
+      400,
+      'INVALID_JSON',
+      'Provide a JSON object.',
+    );
+    return parsed;
   } catch {
     throw new ApiError(400, 'INVALID_JSON', 'Invalid JSON.');
   }
+}
+export async function rateLimit(env: Env, key: string, limit: number, windowMs: number) {
+  const bucket = Math.floor(Date.now() / windowMs);
+  const admitted = await env.DB.prepare(
+    'INSERT INTO auth_rate_limits(key,count,expires_at) VALUES (?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1 WHERE count<? RETURNING count',
+  )
+    .bind(await hash(`api:${key}:${bucket}`), (bucket + 1) * windowMs, limit)
+    .first();
+  assert(admitted, 429, 'RATE_LIMITED', 'Too many requests. Please try again later.');
 }
 export function localRequest(req: Request, env: Env) {
   return (

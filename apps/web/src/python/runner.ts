@@ -57,7 +57,8 @@ function runOne(
     // Runtime assets are the only permitted network destination. No same-origin flag.
     const csp = `default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' blob: ${runtime}; worker-src blob:; connect-src ${runtime}; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'`;
     const bootstrap = `addEventListener('message',function start(event){if(event.source!==parent||!event.ports[0])return;removeEventListener('message',start);const port=event.ports[0];const worker=new Worker(URL.createObjectURL(new Blob([${JSON.stringify(workerSource).replace(/</g, '\\u003c')}],{type:'text/javascript'})));worker.onmessage=e=>port.postMessage(e.data);worker.onerror=()=>port.postMessage({type:'failure',error:'Python runtime failed to start.'});worker.postMessage(event.data);});`;
-    frame.srcdoc = `<!doctype html><meta http-equiv="Content-Security-Policy" content="${csp}"><script>${bootstrap}</script>`;
+    const nonce = document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content ?? '';
+    frame.srcdoc = `<!doctype html><meta http-equiv="Content-Security-Policy" content="${csp}"><script nonce="${nonce}">${bootstrap}</script>`;
     channel.port1.onmessage = ({ data }) => {
       if (finished || !data || typeof data !== 'object') return;
       if (data.type === 'ready' && !started) {

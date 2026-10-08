@@ -45,7 +45,7 @@ export async function startArena(casual = false): Promise<Arena> {
   // Every test gets its own accounts so a leftover ticket or match can never leak between tests.
   const extraUsers = Array.from({ length: 32 }, (_, index) => {
     const id = `player-${String(index + 1).padStart(2, '0')}`;
-    return `INSERT OR IGNORE INTO users(id,auth_subject,username,created_at) VALUES ('${id}','local:${id}','Player ${String(index + 1).padStart(2, '0')}',0);`;
+    return `INSERT OR IGNORE INTO users(id,auth_subject,username,created_at,profile_complete) VALUES ('${id}','local:${id}','Player${String(index + 1).padStart(2, '0')}',0,1);`;
   }).join('\n');
   const extraFile = resolve(state, 'extra-users.sql');
   await writeFile(extraFile, extraUsers + '\n');

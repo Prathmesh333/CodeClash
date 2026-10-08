@@ -18,9 +18,9 @@ export async function requestEmail(req: Request, env: Env, value: unknown) {
   const hour = Math.floor(now / 3600000);
   // Atomic limits bound email bombing and total sender usage before any outbound request.
   for (const [key, limit] of [
-    [`email:${email}:${hour}`, 3],
     [`ip:${req.headers.get('CF-Connecting-IP') ?? 'local'}:${hour}`, 10],
     [`global:${Math.floor(now / 86400000)}`, 100],
+    [`email:${email}:${hour}`, 3],
   ] as const) {
     const admitted = await env.DB.prepare(
       'INSERT INTO auth_rate_limits(key,count,expires_at) VALUES (?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1 WHERE count<? RETURNING count',
@@ -42,6 +42,7 @@ export async function requestEmail(req: Request, env: Env, value: unknown) {
   const link = env.APP_ORIGIN + '/api/auth/email/verify?token=' + token;
   try {
     const sent = await fetch('https://api.resend.com/emails', {
+      signal: AbortSignal.timeout(10000),
       method: 'POST',
       headers: {
         Authorization: `Bearer ${env.RESEND_API_KEY}`,

@@ -1,7 +1,7 @@
 import { updateProfile, validateProfile } from './profile';
 import { DurableObject } from 'cloudflare:workers';
 import { compatible, terminal, type User, type Game } from '../../../packages/shared/game';
-import { ApiError, json, type Env } from './env';
+import { ApiError, assert, json, type Env } from './env';
 type Ticket = {
   user: User;
   joinedAt: number;
@@ -11,6 +11,7 @@ type Ticket = {
   mode?: string;
 };
 export class MatchmakerDO extends DurableObject<Env> {
+  private statusWindows = new Map<string, { start: number; count: number }>();
   async fetch(req: Request) {
     // Errors must be caught inside the callback: workerd does not route a rejected
     // blockConcurrencyWhile callback back to the awaiting request's try/catch.
@@ -43,6 +44,19 @@ export class MatchmakerDO extends DurableObject<Env> {
       players?: [User, User];
       sourceMatchId?: string;
     };
+    if (action === 'status') {
+      const now = Date.now();
+      let window = this.statusWindows.get(user.id);
+      if (!window || now - window.start >= 60000) {
+        window = { start: now, count: 0 };
+        this.statusWindows.delete(user.id);
+        // Bound transient admission memory; room authority and tickets remain durable.
+        if (this.statusWindows.size >= 1000)
+          this.statusWindows.delete(this.statusWindows.keys().next().value!);
+        this.statusWindows.set(user.id, window);
+      }
+      assert(++window.count <= 60, 429, 'RATE_LIMITED', 'Wait before checking matchmaking again.');
+    }
     const tickets = (await this.ctx.storage.get<Record<string, Ticket>>('tickets')) ?? {};
     if (action === 'update-profile') {
       const next = validateProfile(profile);
@@ -106,6 +120,13 @@ export class MatchmakerDO extends DurableObject<Env> {
           problemId: problem,
           mode: this.env.CASUAL_WASM === 'true' ? 'casual' : 'unrated',
         };
+      assert(
+        Object.keys(tickets).length <= 200 &&
+          new TextEncoder().encode(JSON.stringify(tickets)).length < 96000,
+        503,
+        'QUEUE_FULL',
+        'The arena is busy. Try again shortly.',
+      );
       await this.ctx.storage.put({ tickets: tickets, ['rematch:' + sourceMatchId]: id });
       await this.ctx.storage.setAlarm(Date.now() + 1000);
       await this.create(
@@ -132,8 +153,29 @@ export class MatchmakerDO extends DurableObject<Env> {
       if (!t.matchId && (now - t.heartbeat > 30000 || now - t.joinedAt >= 120000))
         delete tickets[id];
     if (action === 'leave') delete tickets[user.id];
-    if (action === 'join' && !tickets[user.id])
+    if (action === 'join' && !tickets[user.id]) {
+      assert(
+        Object.keys(tickets).length < 200,
+        503,
+        'QUEUE_FULL',
+        'The arena is busy. Try again shortly.',
+      );
+      assert(
+        new TextEncoder().encode(JSON.stringify(tickets)).length +
+          new TextEncoder().encode(JSON.stringify(user)).length <
+          96000,
+        503,
+        'QUEUE_FULL',
+        'The arena is busy. Try again shortly.',
+      );
       tickets[user.id] = { user, joinedAt: now, heartbeat: now };
+      assert(
+        new TextEncoder().encode(JSON.stringify(tickets)).length < 96000,
+        503,
+        'QUEUE_FULL',
+        'The arena is busy. Try again shortly.',
+      );
+    }
     if (tickets[user.id]) tickets[user.id].heartbeat = now;
     // Persist membership before any external room creation. Recovery reuses its ID.
     await this.ctx.storage.put('tickets', tickets);

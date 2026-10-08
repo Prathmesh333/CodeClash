@@ -103,6 +103,8 @@ export class MatchDO extends DurableObject<Env> {
       server.serializeAttachment({
         uid,
         sessionHash: req.headers.get('X-Session-Hash'),
+        messageWindow: now,
+        messageCount: 0,
         expiresAt: Math.min(now + 3600000, Number(req.headers.get('X-Session-Expires'))),
       });
       this.ctx.acceptWebSocket(server, [uid!]);
@@ -474,7 +476,7 @@ export class MatchDO extends DurableObject<Env> {
     g.settled = true;
   }
   async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer) {
-    if (typeof message !== 'string' || message.length > 16384) {
+    if (typeof message !== 'string' || new TextEncoder().encode(message).length > 1024) {
       ws.close(1009, 'Frame too large');
       return;
     }
@@ -489,7 +491,21 @@ export class MatchDO extends DurableObject<Env> {
       uid: string;
       expiresAt: number;
       sessionHash: string;
+      messageWindow?: number;
+      messageCount?: number;
     };
+    const now = Date.now();
+    if (!auth.messageWindow || now - auth.messageWindow >= 10000) {
+      auth.messageWindow = now;
+      auth.messageCount = 0;
+    }
+    auth.messageCount = (auth.messageCount ?? 0) + 1;
+    if (auth.messageCount > 12) {
+      ws.close(1008, 'Message rate exceeded');
+      return;
+    }
+    // Commit admission before awaiting D1 so concurrent frames cannot bypass the limit.
+    ws.serializeAttachment(auth);
     if (auth.expiresAt < Date.now()) {
       ws.close(1008, 'Session expired');
       return;

@@ -15,6 +15,7 @@ jobs:
           node-version: '22.18.0'
       - run: npm install --global pnpm@11.25.0
       - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --audit-level low
       - run: pnpm typecheck
       - run: pnpm test:unit
       - run: pnpm test:problems

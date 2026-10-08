@@ -87,6 +87,15 @@ function fixture() {
   };
 }
 describe('durable room recovery', () => {
+  it('refuses another participant’s room even with a forged player header', async () => {
+    const f = fixture();
+    await f.storage.put('game', f.game);
+    const response = await f.room.fetch(
+      new Request('https://room/snapshot', { headers: { 'X-Player': 'outsider' } }),
+    );
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({ code: 'FORBIDDEN' });
+  });
   it('stores maximum-length sources outside the bounded room record and restores example output', async () => {
     const f = fixture();
     f.game.submissions = Array.from({ length: 100 }, (_, i) => ({
@@ -206,6 +215,7 @@ describe('durable room recovery', () => {
         sessionHash: 'revoked',
       }),
       close: vi.fn(),
+      serializeAttachment: vi.fn(),
     };
     await f.room.webSocketMessage(ws, JSON.stringify({ protocolVersion: 1, type: 'client.ping' }));
     expect(ws.close).toHaveBeenCalledWith(1008, 'Session expired');
@@ -226,5 +236,31 @@ describe('durable room recovery', () => {
     await f.room.broadcast(f.game);
     expect(ws.close).toHaveBeenCalledWith(1008, 'Session refresh required');
     expect(ws.send).not.toHaveBeenCalled();
+  });
+  it('rejects flooded socket frames before database work, and resets the window', async () => {
+    const f = fixture();
+    const first = vi.fn().mockResolvedValue(null);
+    f.env.DB.prepare = vi.fn(() => ({ bind: () => ({ first }) }));
+    let attachment = {
+      uid: 'a',
+      expiresAt: Date.now() + 60000,
+      sessionHash: 'x',
+      messageWindow: Date.now(),
+      messageCount: 12,
+    };
+    const ws: any = {
+      deserializeAttachment: () => attachment,
+      serializeAttachment: (next: typeof attachment) => {
+        attachment = next;
+      },
+      close: vi.fn(),
+    };
+    await f.room.webSocketMessage(ws, JSON.stringify({ protocolVersion: 1, type: 'client.ping' }));
+    expect(ws.close).toHaveBeenCalledWith(1008, 'Message rate exceeded');
+    expect(first).not.toHaveBeenCalled();
+    attachment.messageWindow = Date.now() - 11000;
+    await f.room.webSocketMessage(ws, JSON.stringify({ protocolVersion: 1, type: 'client.ping' }));
+    expect(first).toHaveBeenCalledOnce();
+    expect(attachment.messageCount).toBe(1);
   });
 });
