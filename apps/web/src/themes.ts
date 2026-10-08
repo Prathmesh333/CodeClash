@@ -223,8 +223,12 @@ export function initializeTheme() {
 export function setTheme(id: string) {
   const next = themes.find((t) => t.id === id);
   if (!next) return;
+  const root = document.documentElement;
+  root.setAttribute('data-theme-switching', '');
   selected = next;
   apply(next);
+  void root.offsetHeight;
+  requestAnimationFrame(() => root.removeAttribute('data-theme-switching'));
   try {
     if (preferencesAllowed()) localStorage.setItem(key, id);
   } catch {}

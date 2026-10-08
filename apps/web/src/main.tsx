@@ -12,6 +12,7 @@ import './redesign.css';
 import './legal.css';
 import './auth.css';
 import './dashboard.css';
+import './motion.css';
 import { initializeTheme } from './themes';
 initializeStorage();
 initializeTheme();

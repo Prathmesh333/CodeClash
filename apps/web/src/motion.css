@@ -1,0 +1,169 @@
+/* Shared motion: compositor-friendly entrances, immediate controls, quiet during coding. */
+:root {
+  --motion-enter: cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-theme-switching] *:not(dialog),
+[data-theme-switching] *::before,
+[data-theme-switching] *::after {
+  transition: none !important;
+}
+@keyframes surface-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes panel-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes search-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .auth-hero > h1,
+  .auth-intro,
+  .auth-details,
+  .auth-alpha,
+  .auth-access,
+  .auth-match,
+  .legal-page,
+  .dashboard-match,
+  .dashboard-profile,
+  .dashboard-history {
+    animation: surface-arrive 360ms var(--motion-enter) backwards;
+  }
+  .auth-intro {
+    animation-delay: 40ms;
+  }
+  .auth-details {
+    animation-delay: 80ms;
+  }
+  .auth-alpha {
+    animation-delay: 110ms;
+  }
+  .auth-access {
+    animation-delay: 100ms;
+  }
+  .auth-match {
+    animation-delay: 150ms;
+  }
+  .dashboard-profile {
+    animation-delay: 40ms;
+  }
+  .dashboard-history {
+    animation-delay: 80ms;
+  }
+  .ready-screen,
+  .result-banner,
+  .local-results,
+  .auth-status {
+    animation: panel-arrive 240ms var(--motion-enter) backwards;
+  }
+  .queue-card .radar {
+    animation: search-pulse 1400ms ease-in-out infinite;
+  }
+  /* Entry and exit stay paired, including native dialog Escape/close behavior. */
+  .theme-dialog,
+  .profile-dialog {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+    transition:
+      opacity 180ms ease-out,
+      transform 220ms var(--motion-enter),
+      display 220ms allow-discrete;
+    animation: none;
+  }
+  .theme-dialog[open],
+  .profile-dialog[open] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    animation: none;
+  }
+  .theme-dialog::backdrop,
+  .profile-dialog::backdrop {
+    opacity: 0;
+    transition:
+      opacity 180ms ease-out,
+      display 220ms allow-discrete;
+    animation: none;
+  }
+  .theme-dialog[open]::backdrop,
+  .profile-dialog[open]::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    .theme-dialog[open],
+    .profile-dialog[open] {
+      opacity: 0;
+      transform: translateY(8px) scale(0.985);
+    }
+    .theme-dialog[open]::backdrop,
+    .profile-dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+  .button,
+  .account-button,
+  .theme-option,
+  .auth-switch a {
+    touch-action: manipulation;
+    transition:
+      transform 150ms var(--motion-enter),
+      background-color 120ms ease-out,
+      border-color 120ms ease-out,
+      color 120ms ease-out;
+  }
+  .button:not(:disabled):active,
+  .account-button:active,
+  .theme-option:active {
+    transform: scale(0.975);
+    transition-duration: 0ms;
+  }
+  /* Keep provider marks and button labels together, overriding old arrow motion. */
+  .button:hover > svg:last-child,
+  .button:hover > span:last-child:not(.asset-icon) {
+    translate: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .button:not(:disabled):hover,
+    .account-button:hover {
+      transform: translateY(-2px);
+    }
+    .theme-option:hover {
+      transform: translateY(-2px);
+    }
+    .button:not(:disabled):active,
+    .account-button:active,
+    .theme-option:active {
+      transform: scale(0.975);
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

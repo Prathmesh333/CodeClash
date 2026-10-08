@@ -124,6 +124,28 @@ export default function App() {
     [matchId, setMatchId] = useState<string | null>(sessionStorage.getItem('matchId'));
   const [players, setPlayers] = useState<User[]>([]),
     [history, setHistory] = useState<History[]>([]);
+  const mainRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const surface = mainRef.current;
+    if (!surface || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Animate the existing surface without remounting the editor or changing focus.
+    const animation = surface.animate(
+      [
+        { opacity: 0.65, transform: 'translateY(8px)' },
+        { opacity: 1, transform: 'translateY(0)' },
+      ],
+      { duration: 260, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+    );
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const cancel = () => {
+      if (preference.matches) animation.cancel();
+    };
+    preference.addEventListener('change', cancel);
+    return () => {
+      animation.cancel();
+      preference.removeEventListener('change', cancel);
+    };
+  }, [page, user?.id, matchId]);
   const refresh = useCallback(async () => {
     const { user: u } = await api<{ user: User | null }>('/me');
     if (u && location.pathname !== '/app') window.history.replaceState(null, '', '/app');
@@ -330,6 +352,7 @@ export default function App() {
       )}
       <div className="main-shell">
         <main
+          ref={mainRef}
           id="main"
           className={matchId && page === 'arena' ? 'main-content in-match' : 'main-content'}
         >
@@ -525,6 +548,25 @@ function Step({
   );
 }
 function QueueCard({ queue, cancel }: { queue: Queue; cancel: () => void }) {
+  const radarRef = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const radar = radarRef.current;
+    if (!radar) return;
+    let visible = false;
+    const visibility = () => {
+      radar.style.animationPlayState = visible && !document.hidden ? 'running' : 'paused';
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      visibility();
+    });
+    observer.observe(radar);
+    document.addEventListener('visibilitychange', visibility);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', visibility);
+    };
+  }, []);
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000);
@@ -532,7 +574,7 @@ function QueueCard({ queue, cancel }: { queue: Queue; cancel: () => void }) {
   }, []);
   return (
     <section className="queue-card" aria-live="polite">
-      <span className="radar" />
+      <span className="radar" ref={radarRef} aria-hidden="true" />
       <div>
         <strong>Looking for your next opponent</strong>
         <p>
