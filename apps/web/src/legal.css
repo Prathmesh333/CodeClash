@@ -182,3 +182,21 @@
     padding-top: 30px;
   }
 }
+/* Selection and interaction colors share the active palette's readable foreground. */
+::selection {
+  background: var(--cc-lime);
+  color: var(--cc-action-text);
+  text-shadow: none;
+}
+.button.secondary:not(:disabled):is(:hover, :active, :focus-visible) {
+  background: var(--cc-surface-2);
+  color: var(--cc-text);
+}
+.button.primary:not(:disabled):is(:hover, :active, :focus-visible) {
+  background: var(--cc-lime);
+  color: var(--cc-action-text);
+}
+:is(button, a, input, textarea, select):focus-visible {
+  outline: 2px solid var(--cc-blue);
+  outline-offset: 4px;
+}
