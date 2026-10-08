@@ -76,6 +76,9 @@ export default {
             ? {
                 id: user.id,
                 username: user.username,
+                bio: user.bio,
+                avatar_color: user.avatar_color,
+                profile_complete: user.profile_complete,
                 rating: user.rating,
                 wins: user.wins,
                 losses: user.losses,
@@ -89,7 +92,7 @@ export default {
         return json({
           players: (
             await env.DB.prepare(
-              'SELECT id,username,rating,wins,losses,draws,games_played FROM users ORDER BY rating DESC,id LIMIT 50 OFFSET ?',
+              'SELECT id,username,avatar_color,rating,wins,losses,draws,games_played FROM users WHERE profile_complete=1 ORDER BY rating DESC,id LIMIT 50 OFFSET ?',
             )
               .bind(offset)
               .all()
@@ -97,6 +100,18 @@ export default {
         });
       }
       assert(user, 401, 'AUTH_REQUIRED', 'Sign in to enter the arena.');
+      if (path === '/api/profile' && req.method === 'POST')
+        return await env.MATCHMAKER.get(env.MATCHMAKER.idFromName('alpha')).fetch(
+          'https://queue/internal',
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'update-profile',
+              user,
+              profile: await body(req, 2048),
+            }),
+          },
+        );
       if (path === '/api/matches')
         return json({
           matches: (
@@ -113,6 +128,13 @@ export default {
         });
       if (path.startsWith('/api/matchmaking/')) {
         const action = path.split('/').pop()!;
+        if (action === 'join')
+          assert(
+            user.profile_complete !== 0,
+            409,
+            'PROFILE_REQUIRED',
+            'Choose your username before finding a match.',
+          );
         assert(['join', 'leave', 'status'].includes(action), 404, 'NOT_FOUND', 'Not found.');
         assert(
           req.method === (action === 'status' ? 'GET' : 'POST'),

@@ -1,3 +1,4 @@
+import { updateProfile, validateProfile } from './profile';
 import { DurableObject } from 'cloudflare:workers';
 import { compatible, terminal, type User, type Game } from '../../../packages/shared/game';
 import { ApiError, json, type Env } from './env';
@@ -35,13 +36,37 @@ export class MatchmakerDO extends DurableObject<Env> {
     });
   }
   private async queue(req: Request) {
-    const { action, user, players, sourceMatchId } = (await req.json()) as {
+    const { action, user, players, sourceMatchId, profile } = (await req.json()) as {
       action: string;
+      profile?: unknown;
       user: User;
       players?: [User, User];
       sourceMatchId?: string;
     };
     const tickets = (await this.ctx.storage.get<Record<string, Ticket>>('tickets')) ?? {};
+    if (action === 'update-profile') {
+      const next = validateProfile(profile);
+      const ticket = tickets[user.id];
+      if (next.username !== user.username && ticket) {
+        if (!ticket.matchId)
+          throw new ApiError(
+            409,
+            'QUEUED',
+            'Leave the matchmaking queue before changing your username.',
+          );
+        const room = await this.env.MATCHES.get(this.env.MATCHES.idFromName(ticket.matchId)).fetch(
+          'https://room/internal',
+        );
+        const game = (await room.json()) as Game;
+        if (!terminal(game) || !game.settled)
+          throw new ApiError(
+            409,
+            'MATCH_ACTIVE',
+            'Finish your current match before changing your username.',
+          );
+      }
+      return await updateProfile(this.env, user.id, next);
+    }
     if (action === 'rematch-status' && sourceMatchId)
       return json({ matchId: await this.ctx.storage.get<string>('rematch:' + sourceMatchId) });
     if (action === 'rematch' && players && sourceMatchId) {

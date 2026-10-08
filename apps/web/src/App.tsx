@@ -1,3 +1,4 @@
+import ProfileDialog from './ProfileDialog';
 import { useTheme } from './themes';
 import ThemePicker from './ThemePicker';
 import Home from './Home';
@@ -109,6 +110,8 @@ function RankBadge({ small = false }: { small?: boolean }) {
 }
 export default function App() {
   const theme = useTheme();
+  const [profileOpen, setProfileOpen] = useState(false);
+  const promptedProfile = useRef<string | null>(null);
   const [user, setUser] = useState<User | null>(null),
     [health, setHealth] = useState<Health | null>(null),
     [page, setPage] = useState<Page>('arena');
@@ -130,6 +133,12 @@ export default function App() {
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, [refresh]);
+  useEffect(() => {
+    if (user && user.profile_complete === 0 && promptedProfile.current !== user.id) {
+      promptedProfile.current = user.id;
+      setProfileOpen(true);
+    }
+  }, [user]);
   useEffect(() => {
     if (matchId) sessionStorage.setItem('matchId', matchId);
     else sessionStorage.removeItem('matchId');
@@ -184,6 +193,10 @@ export default function App() {
     }
   }
   function join() {
+    if (user?.profile_complete === 0) {
+      setProfileOpen(true);
+      return;
+    }
     if (!user) {
       setLogin(true);
       return;
@@ -238,6 +251,15 @@ export default function App() {
             <span className="python-dot" />
             Python only
           </span>
+          {user && (
+            <button
+              className="button secondary profile-trigger"
+              onClick={() => setProfileOpen(true)}
+              aria-label="Edit profile"
+            >
+              Profile
+            </button>
+          )}
           {user ? (
             <button
               className="account-button"
@@ -252,8 +274,10 @@ export default function App() {
               }
               title="Sign out"
             >
-              <span className="avatar">{user.username.slice(0, 2).toUpperCase()}</span>
-              <span>{user.username}</span>
+              <span className={`avatar avatar-${user.avatar_color ?? 'blue'}`}>
+                {(user.profile_complete === 0 ? 'You' : user.username).slice(0, 2).toUpperCase()}
+              </span>
+              <span>{user.profile_complete === 0 ? 'Your account' : user.username}</span>
               <span className="logout-label">Sign out</span>
             </button>
           ) : (
@@ -263,6 +287,15 @@ export default function App() {
           )}
         </div>
       </header>
+      {profileOpen && user && (
+        <ProfileDialog
+          user={user}
+          onClose={() => setProfileOpen(false)}
+          onSaved={async () => {
+            await refresh();
+          }}
+        />
+      )}
       <div className="main-shell">
         <main
           id="main"
@@ -373,7 +406,7 @@ export default function App() {
                       <tr key={p.id} className={p.id === user?.id ? 'you-row' : ''}>
                         <td className="position">{String(i + 1).padStart(2, '0')}</td>
                         <td>
-                          <span className="avatar inline">
+                          <span className={`avatar inline avatar-${p.avatar_color ?? 'blue'}`}>
                             {p.username.slice(0, 2).toUpperCase()}
                           </span>
                           {p.username}
@@ -862,7 +895,7 @@ function MatchView({
       </div>
       <div className="versus-bar">
         <div className="duelist">
-          <span className="avatar">{me.username.slice(0, 2)}</span>
+          <span className={`avatar avatar-${me.avatar_color ?? 'blue'}`}>{me.username.slice(0, 2)}</span>
           <div>
             <strong>
               {me.username} <span className="you-tag">YOU</span>
@@ -893,7 +926,7 @@ function MatchView({
               {rank(opponent.rating)} · {opponent.rating} MMR
             </span>
           </div>
-          <span className="avatar rival">{opponent.username.slice(0, 2)}</span>
+          <span className={`avatar rival avatar-${opponent.avatar_color ?? 'blue'}`}>{opponent.username.slice(0, 2)}</span>
         </div>
       </div>
       {game.phase === 'WAITING_READY' || game.phase === 'COUNTDOWN' ? (

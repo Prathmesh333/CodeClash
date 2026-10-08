@@ -4,6 +4,9 @@ export type Phase =
 export type User = {
   id: string;
   username: string;
+  bio?: string;
+  avatar_color?: string;
+  profile_complete?: number;
   rating: number;
   wins: number;
   losses: number;

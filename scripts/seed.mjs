@@ -10,7 +10,7 @@ for (const [id, name] of [
   ['dan', 'BitWalker'],
 ])
   lines.push(
-    `INSERT OR IGNORE INTO users(id,auth_subject,username,created_at) VALUES (${quote(id)},${quote('local:' + id)},${quote(name)},${Date.now()});`,
+    `INSERT OR IGNORE INTO users(id,auth_subject,username,created_at,profile_complete) VALUES (${quote(id)},${quote('local:' + id)},${quote(name)},${Date.now()},1);`,
   );
 for (const problem of problems) {
   const tests = problem.tests,

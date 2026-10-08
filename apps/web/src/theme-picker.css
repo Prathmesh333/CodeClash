@@ -175,3 +175,97 @@
   justify-content: center;
   padding: 13px;
 }
+.profile-dialog form {
+  display: grid;
+  gap: 10px;
+  margin-top: 24px;
+}
+.profile-dialog label,
+.profile-dialog legend {
+  font-size: 13px;
+  font-weight: 600;
+}
+.profile-dialog label span,
+.profile-dialog small {
+  color: var(--cc-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.profile-dialog input:not([type='radio']),
+.profile-dialog textarea {
+  padding: 12px;
+  border-radius: 10px;
+  width: 100%;
+  font: inherit;
+}
+.profile-dialog textarea {
+  resize: vertical;
+}
+.profile-dialog fieldset {
+  border: 0;
+  margin: 8px 0;
+  padding: 0;
+  min-width: 0;
+}
+.avatar-colors {
+  display: flex;
+  gap: 14px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.avatar-colors label {
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+.avatar-colors input {
+  accent-color: var(--cc-blue);
+}
+.profile-dialog .profile-avatar {
+  width: 54px;
+  height: 54px;
+  font-size: 18px;
+}
+.avatar.avatar-blue {
+  background: var(--cc-blue-soft);
+  color: var(--cc-blue);
+}
+.avatar.avatar-lime {
+  background: var(--cc-lime-soft);
+  color: var(--cc-lime-ink);
+}
+.avatar.avatar-purple {
+  background: var(--cc-purple-soft);
+  color: var(--cc-purple);
+}
+.avatar.avatar-gold {
+  background: var(--cc-gold-soft);
+  color: var(--cc-gold);
+}
+.avatar.avatar-cyan {
+  background: var(--cc-cyan-soft);
+  color: var(--cc-cyan-ink);
+}
+.profile-dialog .profile-error {
+  color: var(--cc-danger-ink);
+}
+.profile-dialog .button {
+  margin-top: 12px;
+  padding: 13px;
+  justify-content: center;
+}
+.profile-trigger {
+  padding: 9px 12px;
+}
+@media (max-width: 600px) {
+  .profile-trigger {
+    font-size: 11px;
+    padding: 8px;
+  }
+  .cc-header .topbar-right {
+    gap: 6px;
+  }
+}

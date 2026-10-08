@@ -22,6 +22,7 @@ The clock and match state are shared through WebSockets. Players can reconnect t
 - **Python coding workspace** with a Monaco editor, locally saved drafts, example checks, and execution cancellation.
 - **Browser Python execution** powered by Pyodide and WebAssembly, keeping public example runs on the player’s device.
 - **20 original algorithm problems** covering easy and medium challenges. Hidden tests and reference solutions stay out of the browser.
+- **Personal player profiles** with case-insensitive unique usernames, editable bios, and avatar colors. Existing accounts retain their history and ratings.
 - **GitHub sign-in and saved match history**, backed by Cloudflare D1.
 - **11 selectable color themes**, including light and dark palettes, with a saved device preference and an editor that follows the selected theme.
 - **Responsive layouts and reduced-motion support** for desktop and mobile browsers.

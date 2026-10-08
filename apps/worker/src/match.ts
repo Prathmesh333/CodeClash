@@ -276,6 +276,7 @@ export class MatchDO extends DurableObject<Env> {
       players: g.players.map((p) => ({
         id: p.id,
         username: p.username,
+        avatar_color: p.avatar_color,
         rating: p.rating,
         ready: p.ready,
         online: Date.now() - p.lastSeen < 15000,
