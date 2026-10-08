@@ -17,7 +17,7 @@ test('policies are public, optional storage is controlled, and privacy records b
     expect(r.headers()['x-content-type-options']).toBe('nosniff');
   }
   expect((await request.get('/api/privacy/export')).status()).toBe(401);
-  await page.goto('/');
+  await page.goto('/app');
   await page.getByRole('button', { name: 'Change theme' }).click();
   await page
     .getByRole('dialog')

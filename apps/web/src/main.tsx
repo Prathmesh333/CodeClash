@@ -10,6 +10,7 @@ import './light-theme.css';
 import './theme-picker.css';
 import './redesign.css';
 import './legal.css';
+import './auth.css';
 import { initializeTheme } from './themes';
 initializeStorage();
 initializeTheme();

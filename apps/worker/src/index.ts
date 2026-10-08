@@ -21,7 +21,19 @@ const application = {
         const asset = env.ASSETS
           ? await env.ASSETS.fetch(req)
           : new Response('Start the Vite frontend on port 5173.');
-        if (env.ASSETS && ['/privacy', '/cookies', '/terms', '/contact', '/safety'].includes(path))
+        if (
+          env.ASSETS &&
+          [
+            '/privacy',
+            '/cookies',
+            '/terms',
+            '/contact',
+            '/safety',
+            '/login',
+            '/register',
+            '/app',
+          ].includes(path)
+        )
           return await env.ASSETS.fetch(new Request(new URL('/', url), req));
         if (path.startsWith('/python-runtime/')) {
           const response = new Response(asset.body, asset);

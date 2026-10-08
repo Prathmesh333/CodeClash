@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 test('all palettes apply, persist, and remain usable on mobile', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/app');
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: 'Change theme' }).click();
   const dialog = page.getByRole('dialog', { name: 'Make the arena yours.' });

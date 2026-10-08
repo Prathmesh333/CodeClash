@@ -24,6 +24,7 @@ The clock and match state are shared through WebSockets. Players can reconnect t
 - **20 original algorithm problems** covering easy and medium challenges. Hidden tests and reference solutions stay out of the browser.
 - **Personal player profiles** with case-insensitive unique usernames, editable bios, and avatar colors. Existing accounts retain their history and ratings.
 - **GitHub and Google sign-in and saved match history**, backed by Cloudflare D1.
+- **Dedicated [sign-in](https://code-clash.com/login) and [registration](https://code-clash.com/register) pages** with an introduction to live duels. Returning signed-in players go directly to the arena; new players choose their unique username after authentication.
 - **11 selectable color themes**, including light and dark palettes, with an optional saved device preference and an editor that follows the selected theme.
 - **Responsive layouts and reduced-motion support** for desktop and mobile browsers.
 - **Privacy controls** with essential-only storage, optional saved preferences, downloadable account records, and tracked privacy requests.

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 test('arena is responsive and sign-in has real local accounts', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/app');
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Compete. Solve./ })).toBeVisible();
   await expect(page.getByText('Local setup in progress.')).toBeVisible();
@@ -21,7 +21,8 @@ test('arena is responsive and sign-in has real local accounts', async ({ page })
 test('two users pair, ready, reconnect, see unavailable judge honestly, and persist a forfeit', async ({
   browser,
 }) => {
-  test.setTimeout(180000);
+  // This also boots fresh Python runtimes for a dozen isolation and cancellation checks.
+  test.setTimeout(300000);
   const a = await browser.newContext(),
     b = await browser.newContext();
   const pa = await a.newPage(),
@@ -34,7 +35,7 @@ test('two users pair, ready, reconnect, see unavailable judge honestly, and pers
       [pa, 'AdaByte'],
       [pb, 'LoopRunner'],
     ] as const) {
-      await page.goto('/');
+      await page.goto('/app');
       await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
       await page.getByRole('button', { name: 'Sign in', exact: true }).click();
       await page

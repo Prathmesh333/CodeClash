@@ -1,3 +1,5 @@
+import AuthPage from './AuthPage';
+import AuthOptions from './AuthOptions';
 import SiteFooter from './SiteFooter';
 import { readDraft, saveDraft, useStorageChoice } from './storage';
 import ProfileDialog from './ProfileDialog';
@@ -127,6 +129,8 @@ export default function App() {
     [history, setHistory] = useState<History[]>([]);
   const refresh = useCallback(async () => {
     const { user: u } = await api<{ user: User | null }>('/me');
+    if (u && ['/', '/login', '/register'].includes(location.pathname))
+      window.history.replaceState(null, '', '/app');
     setUser(u);
     return u;
   }, []);
@@ -174,6 +178,7 @@ export default function App() {
     };
   }, [user?.id, matchId, busy, queue.state]);
   useEffect(() => {
+    if (!user && location.pathname !== '/app') return;
     if (page === 'leaderboard' || page === 'arena')
       api<{ players: User[] }>('/leaderboard')
         .then((r) => setPlayers(r.players))
@@ -214,6 +219,22 @@ export default function App() {
   function clearDrafts() {
     for (const key of Object.keys(localStorage))
       if (key.startsWith('rdsa:')) localStorage.removeItem(key);
+  }
+  if (['/', '/login', '/register'].includes(location.pathname) && !user) {
+    return (
+      <AuthPage
+        loading={loading}
+        error={error}
+        health={health}
+        busy={busy}
+        choose={(id) =>
+          void action(async () => {
+            await api('/auth/local', { id });
+            await refresh();
+          })
+        }
+      />
+    );
   }
   return (
     <div className="app-shell">
@@ -272,6 +293,7 @@ export default function App() {
                   setUser(null);
                   setMatchId(null);
                   setQueue({ state: 'IDLE' });
+                  location.assign('/login');
                 })
               }
               title="Sign out"
@@ -579,9 +601,6 @@ function LoginModal({
   close: () => void;
   choose: (id: string) => void;
 }) {
-  const [email, setEmail] = useState('');
-  const [emailBusy, setEmailBusy] = useState(false);
-  const [emailMessage, setEmailMessage] = useState('');
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     dialog.current?.showModal();
@@ -598,77 +617,7 @@ function LoginModal({
           ? 'Choose a local player. Use a separate browser profile for your opponent.'
           : 'Sign in to find your first opponent and start your climb.'}
       </p>
-      {local ? (
-        <div className="demo-players">
-          {[
-            ['alice', 'AdaByte'],
-            ['bob', 'LoopRunner'],
-            ['cora', 'StackSmith'],
-            ['dan', 'BitWalker'],
-          ].map(([id, name]) => (
-            <button disabled={busy} key={id} onClick={() => choose(id)}>
-              <span className="avatar">{name.slice(0, 2).toUpperCase()}</span>
-              <span>{name}</span>
-              <Icon name="arrow" />
-            </button>
-          ))}
-        </div>
-      ) : (
-        <div className="signin-options">
-          {githubReady && (
-            <a className="button secondary" href="/api/auth/github">
-              Continue with GitHub <Icon name="arrow" />
-            </a>
-          )}
-          {googleReady ? (
-            <a className="button secondary" href="/api/auth/google">
-              Continue with Google <Icon name="arrow" />
-            </a>
-          ) : (
-            <button className="button secondary" disabled>
-              Google · Coming soon
-            </button>
-          )}
-          {emailReady ? (
-            <form
-              onSubmit={async (event) => {
-                event.preventDefault();
-                if (emailBusy) return;
-                setEmailBusy(true);
-                setEmailMessage('');
-                try {
-                  const result = await api<{ message: string }>('/auth/email', { email });
-                  setEmailMessage(result.message);
-                } catch (error) {
-                  setEmailMessage(error instanceof Error ? error.message : 'Please try again.');
-                } finally {
-                  setEmailBusy(false);
-                }
-              }}
-            >
-              <label htmlFor="signin-email">Or use your email</label>
-              <input
-                id="signin-email"
-                type="email"
-                autoComplete="email"
-                maxLength={254}
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="you@example.com"
-              />
-              <button className="button primary" disabled={emailBusy}>
-                {emailBusy ? 'Sending…' : 'Email me a sign-in link'}
-              </button>
-              {emailMessage && <p role="status">{emailMessage}</p>}
-            </form>
-          ) : (
-            <button className="button secondary" disabled>
-              Email sign-in · Coming soon
-            </button>
-          )}
-        </div>
-      )}
+      <AuthOptions {...{ local, githubReady, googleReady, emailReady, busy, choose }} />
       <p className="legal-signin-note">
         By signing in, you agree to the <a href="/terms">Terms</a>. Read how we use your data in our{' '}
         <a href="/privacy">Privacy notice</a>.

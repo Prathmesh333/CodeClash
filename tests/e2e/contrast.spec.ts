@@ -22,7 +22,7 @@ async function contrast(locator: Locator, selection = false) {
 test('selection and cookie/theme button states stay readable in all eleven palettes', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/app');
   await page.getByRole('button', { name: 'Essential only', exact: true }).click();
   for (let index = 0; index < 11; index++) {
     const trigger = page.getByRole('button', { name: 'Change theme' });

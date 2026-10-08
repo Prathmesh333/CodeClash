@@ -1,0 +1,354 @@
+.auth-page {
+  min-height: 100dvh;
+  background: var(--cc-bg);
+  color: var(--cc-text);
+}
+.auth-page .skip-link:not(:focus) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  top: 0;
+}
+.auth-header {
+  max-width: 1440px;
+  margin: auto;
+  padding: 30px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.auth-header > div {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.auth-preview {
+  font-size: 15px;
+  font-weight: 600;
+}
+.auth-preview span {
+  margin-left: 10px;
+  color: var(--cc-blue);
+}
+.auth-layout {
+  max-width: 1328px;
+  margin: 30px auto 70px;
+  padding: 0 56px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.85fr);
+  align-items: center;
+  gap: clamp(48px, 7vw, 110px);
+}
+.auth-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  font-weight: 600;
+}
+.auth-hero h1 {
+  margin-top: 25px;
+  font-size: clamp(46px, 4.8vw, 70px);
+  line-height: 1.06;
+  letter-spacing: -3px;
+  font-weight: 600;
+}
+.auth-hero h1 em {
+  font-style: normal;
+  background: var(--cc-lime);
+  color: var(--cc-action-text);
+  padding: 0 10px 3px;
+  box-decoration-break: clone;
+}
+.auth-intro {
+  margin-top: 27px;
+  max-width: 470px;
+  color: var(--cc-secondary);
+  font-size: 19px;
+  line-height: 1.55;
+}
+.auth-duel {
+  margin-top: 35px;
+  padding: 20px 24px;
+  border: 1px solid var(--cc-border);
+  border-radius: 14px;
+  background: var(--cc-surface);
+  max-width: 510px;
+}
+.duel-player {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.duel-avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--cc-lime);
+  color: var(--cc-action-text);
+}
+.duel-avatar.rival {
+  background: var(--cc-surface-2);
+  color: var(--cc-text);
+  border: 1px solid var(--cc-border);
+}
+.duel-player strong {
+  font-size: 14px;
+}
+.duel-player small {
+  display: block;
+  color: var(--cc-secondary);
+  font-size: 12px;
+  margin-top: 2px;
+}
+.duel-connection {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cc-blue);
+  margin-left: auto;
+}
+.duel-problem {
+  margin: 16px 0;
+  padding: 18px 0;
+  border-block: 1px solid var(--cc-border);
+}
+.duel-problem > span {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--cc-secondary);
+}
+.duel-problem strong {
+  display: block;
+  margin: 9px 0;
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 500;
+}
+.duel-problem code {
+  font-size: 13px;
+}
+.duel-problem code span {
+  color: var(--cc-blue);
+  margin: 0 8px;
+}
+.duel-track {
+  display: flex;
+  gap: 4px;
+  margin-top: 17px;
+  height: 3px;
+}
+.duel-track i {
+  flex: 1;
+  background: var(--cc-lime);
+  transform-origin: left;
+}
+.duel-track i + i {
+  background: var(--cc-blue);
+  transform-origin: right;
+}
+.auth-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  margin-top: 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--cc-secondary);
+}
+.auth-details strong {
+  margin-left: 7px;
+  font-family: 'Source Sans 3', Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cc-text);
+}
+.auth-alpha {
+  color: var(--cc-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 16px;
+}
+.auth-access {
+  padding: 36px;
+  background: var(--cc-surface);
+  border: 1px solid var(--cc-border);
+  border-radius: 18px;
+}
+.auth-access-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.auth-access-top > span:last-child {
+  font-size: 26px;
+  color: var(--cc-blue);
+}
+.auth-access h2 {
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -1.1px;
+  margin: 22px 0 14px;
+  font-weight: 600;
+  white-space: pre-line;
+}
+.auth-access > p {
+  color: var(--cc-secondary);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.auth-switch {
+  display: flex;
+  border-bottom: 1px solid var(--cc-border);
+  gap: 24px;
+  margin: 26px 0;
+}
+.auth-switch a {
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+}
+.auth-switch a[aria-current] {
+  border-bottom-color: var(--cc-blue);
+}
+.auth-options .signin-options {
+  display: grid;
+  gap: 12px;
+}
+.auth-options .button {
+  width: 100%;
+  justify-content: space-between;
+  min-height: 48px;
+  font-size: 15px;
+}
+.auth-options .signin-options form {
+  display: grid;
+  gap: 12px;
+  margin-top: 10px;
+}
+.auth-options label {
+  font-size: 14px;
+  font-weight: 600;
+}
+.auth-options input {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 13px;
+  border-radius: 8px;
+}
+.auth-access .auth-account-note {
+  font-size: 13px;
+  margin: 24px 0 18px;
+}
+.auth-access .auth-legal {
+  font-size: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--cc-border);
+}
+.auth-legal a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--cc-text);
+}
+.auth-status {
+  padding: 16px 0;
+  line-height: 1.5;
+}
+.auth-status button {
+  margin-top: 12px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .duel-track i {
+    animation: duel-connect 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .duel-track i + i {
+    animation-delay: 120ms;
+  }
+  .duel-connection {
+    animation: duel-ready 150ms 650ms both;
+  }
+  .auth-switch a {
+    transition: border-color 150ms;
+  }
+}
+@keyframes duel-connect {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes duel-ready {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (max-width: 1000px) {
+  .auth-layout {
+    padding: 0 28px;
+    gap: 36px;
+  }
+  .auth-header {
+    padding: 25px 28px;
+  }
+  .auth-access {
+    padding: 26px;
+  }
+  .auth-hero h1 {
+    font-size: 52px;
+  }
+}
+@media (max-width: 760px) {
+  .auth-header {
+    padding: 22px;
+  }
+  .auth-header img {
+    width: 154px;
+  }
+  .auth-header > div {
+    gap: 12px;
+  }
+  .auth-preview {
+    display: none;
+  }
+  .auth-layout {
+    grid-template-columns: 1fr;
+    margin: 20px auto 40px;
+    padding: 0 22px;
+    gap: 32px;
+  }
+  .auth-hero h1 {
+    font-size: clamp(40px, 9vw, 60px);
+    letter-spacing: -2px;
+    margin-top: 18px;
+  }
+  .auth-intro {
+    font-size: 17px;
+    margin-top: 21px;
+  }
+  .auth-duel {
+    display: none;
+  }
+  .auth-details {
+    margin-top: 22px;
+  }
+  .auth-access {
+    padding: 26px 22px;
+  }
+  .auth-access h2 {
+    font-size: 29px;
+  }
+}

@@ -11,7 +11,7 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
       [pa, 'AdaByte'],
       [pb, 'LoopRunner'],
     ] as const) {
-      await page.goto('/');
+      await page.goto('/app');
       await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
       await page.getByRole('button', { name: 'Sign in', exact: true }).click();
       await page
