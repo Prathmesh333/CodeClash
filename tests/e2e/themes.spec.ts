@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 test('all palettes apply, persist, and remain usable on mobile', async ({ page }) => {
   await page.goto('/');
+  await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: 'Change theme' }).click();
   const dialog = page.getByRole('dialog', { name: 'Make the arena yours.' });
   await expect(dialog.locator('.theme-option')).toHaveCount(11);
@@ -18,8 +19,13 @@ test('all palettes apply, persist, and remain usable on mobile', async ({ page }
   await page.getByRole('button', { name: 'Change theme' }).click();
   await dialog.getByRole('button', { name: /White \/ Citrus Play/ }).click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await expect(dialog.locator('.theme-option').first()).toHaveCSS('background-color', 'rgb(255, 255, 255)');
-  await dialog.evaluate(node => { node.scrollTop = 0; });
+  await expect(dialog.locator('.theme-option').first()).toHaveCSS(
+    'background-color',
+    'rgb(255, 255, 255)',
+  );
+  await dialog.evaluate((node) => {
+    node.scrollTop = 0;
+  });
   await page.screenshot({ path: 'artifacts/theme-picker-mobile.png' });
   await page.keyboard.press('Escape');
   await expect(dialog).not.toBeVisible();

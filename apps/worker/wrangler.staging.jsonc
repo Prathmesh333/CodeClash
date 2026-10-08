@@ -59,5 +59,10 @@
       "pattern": "code-clash.com",
       "custom_domain": true
     }
-  ]
+  ],
+  "triggers": {
+    "crons": [
+      "0 * * * *"
+    ]
+  }
 }

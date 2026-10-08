@@ -1,3 +1,4 @@
+import { preferencesAllowed } from './storage';
 import { useSyncExternalStore } from 'react';
 export type Theme = {
   id: string;
@@ -206,11 +207,13 @@ function apply(theme: Theme) {
 }
 export function initializeTheme() {
   try {
-    selected = themes.find((t) => t.id === localStorage.getItem(key)) ?? themes[0];
+    selected =
+      (preferencesAllowed() ? themes.find((t) => t.id === localStorage.getItem(key)) : undefined) ??
+      themes[0];
   } catch {}
   apply(selected);
   window.addEventListener('storage', (event) => {
-    if (event.key === key) {
+    if (event.key === key && preferencesAllowed()) {
       selected = themes.find((t) => t.id === event.newValue) ?? themes[0];
       apply(selected);
       listeners.forEach((fn) => fn());
@@ -223,7 +226,7 @@ export function setTheme(id: string) {
   selected = next;
   apply(next);
   try {
-    localStorage.setItem(key, id);
+    if (preferencesAllowed()) localStorage.setItem(key, id);
   } catch {}
   listeners.forEach((fn) => fn());
 }

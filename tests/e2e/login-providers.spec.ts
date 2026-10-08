@@ -17,6 +17,7 @@ test('hosted sign-in exposes configured providers and submits email requests', a
     await route.fulfill({ json: { message: 'Check your inbox.' } });
   });
   await page.goto('/');
+  await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   const dialog = page.getByRole('dialog');
   await expect(dialog.getByRole('link', { name: /Continue with Google/ })).toHaveAttribute(
@@ -38,6 +39,7 @@ test('unconfigured providers cannot start broken login flows', async ({ page }) 
     }),
   );
   await page.goto('/');
+  await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Google · Coming soon' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Email sign-in · Coming soon' })).toBeDisabled();

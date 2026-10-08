@@ -1,3 +1,5 @@
+import SiteFooter from './SiteFooter';
+import { readDraft, saveDraft, useStorageChoice } from './storage';
 import ProfileDialog from './ProfileDialog';
 import { useTheme } from './themes';
 import ThemePicker from './ThemePicker';
@@ -486,6 +488,7 @@ export default function App() {
           )}
         </main>
       </div>
+      <SiteFooter />
       {login && (
         <LoginModal
           githubReady={health?.github === true}
@@ -666,6 +669,10 @@ function LoginModal({
           )}
         </div>
       )}
+      <p className="legal-signin-note">
+        By signing in, you agree to the <a href="/terms">Terms</a>. Read how we use your data in our{' '}
+        <a href="/privacy">Privacy notice</a>.
+      </p>
       <span className="dialog-footnote">
         {local
           ? 'Demo accounts stay on your local development instance.'
@@ -691,11 +698,12 @@ function MatchView({
   onNext: (id: string) => void;
   onSettled: () => void;
 }) {
+  const storageChoice = useStorageChoice();
   const [game, setGame] = useState<Snapshot | null>(null),
     [connected, setConnected] = useState(false),
     [busy, setBusy] = useState(false),
     [tab, setTab] = useState('problem');
-  const [source, setSource] = useState(localStorage.getItem(`rdsa:${user.id}:${id}`) ?? ''),
+  const [source, setSource] = useState(readDraft(`rdsa:${user.id}:${id}`)),
     [now, setNow] = useState(Date.now());
   const offset = useRef(0),
     lastRevision = useRef(-1),
@@ -802,8 +810,8 @@ function MatchView({
     }
   }, [game?.problem]);
   useEffect(() => {
-    if (source) localStorage.setItem(`rdsa:${user.id}:${id}`, source);
-  }, [source, id, user.id]);
+    if (source) saveDraft(`rdsa:${user.id}:${id}`, source);
+  }, [source, id, user.id, storageChoice]);
   async function mutate(action: string, data: unknown = {}) {
     setBusy(true);
     onError('');

@@ -8,7 +8,7 @@ CodeClash is a multiplayer coding arena where two players receive the same algor
 
 ## The match experience
 
-1. **Sign in with GitHub** and join the matchmaking queue.
+1. **Sign in with GitHub or Google** and join the matchmaking queue.
 2. **Meet your opponent.** Both players confirm they are ready before the countdown begins.
 3. **Solve the same problem.** Write Python in the editor and run the public examples on your device.
 4. **Finish the duel.** In the current casual beta, passing the examples lets you report completion. The first completion received by the server ends the match.
@@ -19,13 +19,18 @@ The clock and match state are shared through WebSockets. Players can reconnect t
 ## Available today
 
 - **Live 1v1 matches** with matchmaking, ready checks, a synchronized countdown, and a shared 20-minute clock.
-- **Python coding workspace** with a Monaco editor, locally saved drafts, example checks, and execution cancellation.
+- **Python coding workspace** with a Monaco editor, optional locally saved drafts, example checks, and execution cancellation.
 - **Browser Python execution** powered by Pyodide and WebAssembly, keeping public example runs on the player’s device.
 - **20 original algorithm problems** covering easy and medium challenges. Hidden tests and reference solutions stay out of the browser.
 - **Personal player profiles** with case-insensitive unique usernames, editable bios, and avatar colors. Existing accounts retain their history and ratings.
-- **GitHub sign-in and saved match history**, backed by Cloudflare D1.
-- **11 selectable color themes**, including light and dark palettes, with a saved device preference and an editor that follows the selected theme.
+- **GitHub and Google sign-in and saved match history**, backed by Cloudflare D1.
+- **11 selectable color themes**, including light and dark palettes, with an optional saved device preference and an editor that follows the selected theme.
 - **Responsive layouts and reduced-motion support** for desktop and mobile browsers.
+- **Privacy controls** with essential-only storage, optional saved preferences, downloadable account records, and tracked privacy requests.
+
+[Privacy notice](https://code-clash.com/privacy) · [Cookies](https://code-clash.com/cookies) · [Terms](https://code-clash.com/terms) · [Contact](https://code-clash.com/contact) · [Safety](https://code-clash.com/safety)
+
+The [privacy operations guide](Ranked-DSA-Docs/PRIVACY_OPERATIONS.md) documents request review and remaining operator decisions. These controls do not constitute a legal compliance certification.
 
 ## Current stage: casual beta
 

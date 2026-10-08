@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 test('reduced motion keeps the homepage, navigation and sign-in accessible', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
+  await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Compete. Solve./ })).toBeVisible();
   await expect(page.locator('.cc-hero-copy')).toHaveCSS('animation-name', 'none');
   await page.locator('#how-it-works').scrollIntoViewIfNeeded();
@@ -24,6 +25,7 @@ test('motion is available without moving content outside the mobile viewport', a
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
+  await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Compete. Solve./ })).toBeVisible();
   await expect(page.locator('.cc-demo-stage')).toHaveCSS('animation-name', 'duel-reveal');
   await page.locator('.cc-banner').scrollIntoViewIfNeeded();

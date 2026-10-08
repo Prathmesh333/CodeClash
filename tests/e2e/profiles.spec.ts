@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 test('players can update their profile and retain it after reload', async ({ page }) => {
   await page.goto('/');
+  await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   await page
     .getByRole('dialog')

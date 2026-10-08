@@ -1,3 +1,4 @@
+import { exportData, requestPrivacy } from './privacy';
 import { requestEmail, verifyEmail } from './email-auth';
 import { assert, ApiError, body, hash, json, localRequest, type Env } from './env';
 import { cookie, currentUser, google, github, loginLocal, logout } from './auth';
@@ -5,7 +6,7 @@ import { testState } from './evidence';
 import type { Game, User } from '../../../packages/shared/game';
 export { MatchmakerDO } from './matchmaker';
 export { MatchDO } from './match';
-export default {
+const application = {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const path = url.pathname;
@@ -20,6 +21,8 @@ export default {
         const asset = env.ASSETS
           ? await env.ASSETS.fetch(req)
           : new Response('Start the Vite frontend on port 5173.');
+        if (env.ASSETS && ['/privacy', '/cookies', '/terms', '/contact', '/safety'].includes(path))
+          return await env.ASSETS.fetch(new Request(new URL('/', url), req));
         if (path.startsWith('/python-runtime/')) {
           const response = new Response(asset.body, asset);
           response.headers.set('Access-Control-Allow-Origin', '*');
@@ -100,6 +103,28 @@ export default {
         });
       }
       assert(user, 401, 'AUTH_REQUIRED', 'Sign in to enter the arena.');
+      if (path === '/api/privacy/export' && req.method === 'GET') {
+        const offset = Number(url.searchParams.get('offset') ?? 0);
+        assert(
+          Number.isSafeInteger(offset) && offset >= 0,
+          400,
+          'INVALID_OFFSET',
+          'Invalid export page.',
+        );
+        return await exportData(env, user, offset);
+      }
+      if (path === '/api/privacy/requests' && req.method === 'GET')
+        return json({
+          requests: (
+            await env.DB.prepare(
+              'SELECT id,kind,status,response,created_at FROM privacy_requests WHERE user_id=? ORDER BY created_at DESC',
+            )
+              .bind(user.id)
+              .all()
+          ).results,
+        });
+      if (path === '/api/privacy/requests' && req.method === 'POST')
+        return await requestPrivacy(env, user, await body(req, 4096));
       if (path === '/api/profile' && req.method === 'POST')
         return await env.MATCHMAKER.get(env.MATCHMAKER.idFromName('alpha')).fetch(
           'https://queue/internal',
@@ -224,5 +249,33 @@ export default {
         500,
       );
     }
+  },
+} satisfies ExportedHandler<Env>;
+
+export default {
+  async fetch(req: Request, env: Env): Promise<Response> {
+    const response = await application.fetch(req, env);
+    if (response.status === 101) return response;
+    const protectedResponse = new Response(response.body, response);
+    protectedResponse.headers.set('X-Content-Type-Options', 'nosniff');
+    protectedResponse.headers.set('Referrer-Policy', 'same-origin');
+    protectedResponse.headers.set('X-Frame-Options', 'DENY');
+    protectedResponse.headers.set(
+      'Content-Security-Policy',
+      "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'",
+    );
+    protectedResponse.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    if (new URL(req.url).protocol === 'https:')
+      protectedResponse.headers.set('Strict-Transport-Security', 'max-age=31536000');
+    return protectedResponse;
+  },
+  async scheduled(_event: ScheduledController, env: Env) {
+    const now = Date.now();
+    await env.DB.batch([
+      env.DB.prepare('DELETE FROM sessions WHERE expires_at<?').bind(now),
+      env.DB.prepare('DELETE FROM oauth_states WHERE expires_at<?').bind(now),
+      env.DB.prepare('DELETE FROM email_login_links WHERE expires_at<?').bind(now),
+      env.DB.prepare('DELETE FROM auth_rate_limits WHERE expires_at<?').bind(now),
+    ]);
   },
 } satisfies ExportedHandler<Env>;
