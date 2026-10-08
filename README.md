@@ -4,7 +4,7 @@
 
 CodeClash is a multiplayer coding arena where two players receive the same algorithm problem, write Python against a shared clock, and compete to finish. It brings the focus of solving a programming challenge into a real-time, head-to-head match.
 
-[Try the live demo](https://ranked-dsa-staging.shortlistd.workers.dev/) · [GitHub repository](https://github.com/Prathmesh333/CodeClash) · [Report an issue](https://github.com/Prathmesh333/CodeClash/issues) · [Development guide](DEVELOPMENT.md)
+[Try the live demo](https://code-clash.com/) · [GitHub repository](https://github.com/Prathmesh333/CodeClash) · [Report an issue](https://github.com/Prathmesh333/CodeClash/issues) · [Development guide](DEVELOPMENT.md)
 
 ## The match experience
 
@@ -28,7 +28,7 @@ The clock and match state are shared through WebSockets. Players can reconnect t
 
 ## Current stage: casual beta
 
-The [live demo](https://ranked-dsa-staging.shortlistd.workers.dev/) runs on Cloudflare staging. Matches use **browser-reported, unverified results** and **do not change ratings**. Passing public examples does not prove a solution passes hidden tests.
+The [live demo](https://code-clash.com/) runs on Cloudflare staging. Matches use **browser-reported, unverified results** and **do not change ratings**. Passing public examples does not prove a solution passes hidden tests.
 
 Verified ranked judging is implemented in part but remains disabled pending server isolation and security validation. The ranked leaderboard will reflect verified results when that mode is enabled. Tournaments are planned for a future release.
 

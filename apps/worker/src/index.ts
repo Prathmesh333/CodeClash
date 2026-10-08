@@ -8,6 +8,12 @@ export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const path = url.pathname;
+    if (env.APP_ENV !== 'local' && url.origin !== env.APP_ORIGIN) {
+      const canonical = new URL(env.APP_ORIGIN);
+      canonical.pathname = url.pathname;
+      canonical.search = url.search;
+      return Response.redirect(canonical.toString(), 308);
+    }
     try {
       if (!path.startsWith('/api/')) {
         const asset = env.ASSETS

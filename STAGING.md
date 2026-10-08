@@ -1,6 +1,8 @@
 # Cloudflare staging
 
-URL: https://ranked-dsa-staging.shortlistd.workers.dev
+URL: https://code-clash.com
+
+The custom domain is the canonical application address. The underlying Worker remains `ranked-dsa-staging`; the domain does not change the casual-beta release status. Update the GitHub OAuth app homepage and callback to this domain before validating sign-in. Sessions on the previous hostname do not transfer; sign in again.
 
 The staging Worker and its own D1 database were created on 2026-09-30. Both migrations are applied. The database contains 20 questions with 499 distinct example/hidden cases. Demo users were not copied from local development. Ranked judging remains disabled; no Sandbox container was deployed.
 
@@ -11,8 +13,12 @@ GitHub OAuth is configured. A real sign-in has created one GitHub account and an
 For credential rotation or a fresh environment, create a GitHub OAuth app at https://github.com/settings/applications/new:
 
 - Name: CodeClash Staging
-- Homepage URL: https://ranked-dsa-staging.shortlistd.workers.dev
-- Authorization callback URL: https://ranked-dsa-staging.shortlistd.workers.dev/api/auth/github/callback
+- Homepage URL: https://code-clash.com
+
+The custom domain is the canonical application address. The underlying Worker remains `ranked-dsa-staging`; the domain does not change the casual-beta release status. Update the GitHub OAuth app homepage and callback to this domain before validating sign-in. Sessions on the previous hostname do not transfer; sign in again.
+- Authorization callback URL: https://code-clash.com
+
+The custom domain is the canonical application address. The underlying Worker remains `ranked-dsa-staging`; the domain does not change the casual-beta release status. Update the GitHub OAuth app homepage and callback to this domain before validating sign-in. Sessions on the previous hostname do not transfer; sign in again./api/auth/github/callback
 
 From the project folder, run:
 
@@ -25,7 +31,7 @@ Enter the app's Client ID and Client Secret in the local prompt. The secret is h
 Then verify:
 
 ```powershell
-$env:STAGING_URL = 'https://ranked-dsa-staging.shortlistd.workers.dev'
+$env:STAGING_URL = 'https://code-clash.com'
 pnpm test:staging:accounts
 ```
 
