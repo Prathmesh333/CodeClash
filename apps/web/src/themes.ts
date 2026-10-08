@@ -24,7 +24,7 @@ export const themes: Theme[] = [
     border: '#D9E2EC',
     text: '#0F172A',
     muted: '#64748B',
-    accent: '#A3E635',
+    accent: '#76B900',
     secondary: '#2563EB',
   },
   {
@@ -50,7 +50,7 @@ export const themes: Theme[] = [
     border: '#343E37',
     text: '#F0F4F1',
     muted: '#ADB9B0',
-    accent: '#C4ED72',
+    accent: '#76B900',
     secondary: '#A7C6EF',
   },
   {
@@ -128,7 +128,7 @@ export const themes: Theme[] = [
     border: '#DFE4DA',
     text: '#18221A',
     muted: '#596558',
-    accent: '#C7EF70',
+    accent: '#76B900',
     secondary: '#245CC6',
   },
   {
@@ -141,7 +141,7 @@ export const themes: Theme[] = [
     border: '#DDE4EE',
     text: '#16243B',
     muted: '#55657E',
-    accent: '#C2EF68',
+    accent: '#76B900',
     secondary: '#275DDD',
   },
   {
@@ -154,7 +154,7 @@ export const themes: Theme[] = [
     border: '#E8E2D7',
     text: '#25251E',
     muted: '#686456',
-    accent: '#C8EC6B',
+    accent: '#76B900',
     secondary: '#2D61C8',
   },
 ];

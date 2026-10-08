@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('opening page, registration, session redirect and logout work', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Essential only', exact: true }).click();
-  await expect(page.getByRole('heading', { name: /A good problem/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Put your Python/ })).toBeVisible();
   await page.getByRole('link', { name: 'Create account', exact: true }).click();
   await expect(page).toHaveURL(/\/register$/);
   await expect(page.getByRole('heading', { name: 'Make it your arena.' })).toBeVisible();
@@ -12,10 +12,10 @@ test('opening page, registration, session redirect and logout work', async ({ pa
   await expect(page.getByRole('button', { name: /AdaByte Sign out/ })).toBeVisible();
   await page.goto('/login');
   await expect(page).toHaveURL(/\/app$/);
-  await expect(page.getByRole('heading', { name: /A good problem/ })).not.toBeVisible();
+  await expect(page.getByRole('heading', { name: /Put your Python/ })).not.toBeVisible();
   await page.getByRole('button', { name: /AdaByte Sign out/ }).click();
   await expect(page).toHaveURL(/\/login$/);
-  await expect(page.getByRole('heading', { name: /A good problem/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Put your Python/ })).toBeVisible();
 });
 
 test('opening page is responsive, uses reduced motion and submits provider requests', async ({
@@ -45,7 +45,7 @@ test('opening page is responsive, uses reduced motion and submits provider reque
   await page.emulateMedia({ reducedMotion: 'reduce' });
   expect(
     await page
-      .locator('.duel-track i')
+      .locator('.preview-result-check')
       .first()
       .evaluate((node) => getComputedStyle(node).animationName),
   ).toBe('none');
@@ -66,4 +66,25 @@ test('session failure offers retry instead of treating an unknown session as sig
   );
   await page.goto('/login');
   await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible();
+});
+
+test('match preview follows every palette and lime themes share NVIDIA green', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByRole('button', { name: 'Essential only', exact: true }).click();
+  for (let index = 0; index < 11; index++) {
+    await page.getByRole('button', { name: 'Change theme' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Make the arena yours.' });
+    await dialog.locator('.theme-option').nth(index).click();
+    await dialog.getByRole('button', { name: 'Done', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Two Sum', exact: true })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+    if ([0, 2, 8, 9, 10].includes(index)) {
+      expect(
+        await page.evaluate(() => document.documentElement.style.getPropertyValue('--cc-lime')),
+      ).toBe('#76B900');
+    }
+    if (index === 2) await page.screenshot({ path: 'artifacts/auth-dark.png', fullPage: true });
+  }
 });
