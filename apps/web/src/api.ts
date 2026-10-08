@@ -32,6 +32,13 @@ export async function api<T>(
       throw error;
     }
     if (!response.ok) {
+      if (
+        response.status === 401 &&
+        payload.message &&
+        path !== '/me' &&
+        typeof window !== 'undefined'
+      )
+        window.dispatchEvent(new Event('codeclash:session-expired'));
       const error = new Error(payload.message ?? 'The server could not complete this request.');
       error.name = 'ApiError';
       throw error;

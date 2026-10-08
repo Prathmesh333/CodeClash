@@ -11,6 +11,7 @@ import './theme-picker.css';
 import './redesign.css';
 import './legal.css';
 import './auth.css';
+import './dashboard.css';
 import { initializeTheme } from './themes';
 initializeStorage();
 initializeTheme();

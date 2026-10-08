@@ -29,11 +29,7 @@ test('policies are public, optional storage is controlled, and privacy records b
   expect(await page.locator('html').getAttribute('data-theme')).toBe('codeclash-light');
   await page.getByRole('button', { name: 'Cookie settings', exact: true }).click();
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await page
-    .getByRole('dialog')
-    .getByRole('button', { name: /AdaByte/ })
-    .click();
+  await page.getByRole('button', { name: /AdaByte/ }).click();
   await expect(page.getByRole('button', { name: /AdaByte Sign out/ })).toBeVisible();
   const response = await page.request.post('/api/privacy/requests', {
     headers: { Origin: new URL(page.url()).origin },

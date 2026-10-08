@@ -18,6 +18,30 @@ const application = {
     }
     try {
       if (!path.startsWith('/api/')) {
+        const publicPages = [
+          '/',
+          '/login',
+          '/register',
+          '/privacy',
+          '/cookies',
+          '/terms',
+          '/contact',
+          '/safety',
+        ];
+        const isDocument =
+          publicPages.includes(path) ||
+          path === '/app' ||
+          path.startsWith('/app/') ||
+          !path.split('/').pop()?.includes('.');
+        if (isDocument) {
+          const signedIn = await currentUser(req, env);
+          if (['/', '/login', '/register'].includes(path) && signedIn)
+            return Response.redirect(new URL('/app', url).toString(), 302);
+          if (!publicPages.includes(path)) {
+            if (!signedIn) return Response.redirect(new URL('/login', url).toString(), 302);
+            if (path !== '/app') return Response.redirect(new URL('/app', url).toString(), 302);
+          }
+        }
         const asset = env.ASSETS
           ? await env.ASSETS.fetch(req)
           : new Response('Start the Vite frontend on port 5173.');
@@ -103,6 +127,7 @@ const application = {
             : null,
         });
       if (path === '/api/leaderboard') {
+        assert(user, 401, 'AUTH_REQUIRED', 'Sign in to view the leaderboard.');
         const offset = Math.max(0, Math.min(10000, Number(url.searchParams.get('offset')) || 0));
         return json({
           players: (

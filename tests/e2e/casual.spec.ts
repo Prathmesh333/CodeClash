@@ -13,11 +13,7 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
     ] as const) {
       await page.goto('/app');
       await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
-      await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-      await page
-        .getByRole('dialog')
-        .getByRole('button', { name: new RegExp(name) })
-        .click();
+      await page.getByRole('button', { name: new RegExp(name) }).click();
       await expect(page.getByRole('button', { name: new RegExp(name + ' Sign out') })).toBeVisible({
         timeout: 15000,
       });

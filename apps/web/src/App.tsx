@@ -1,11 +1,10 @@
 import AuthPage from './AuthPage';
-import AuthOptions from './AuthOptions';
 import SiteFooter from './SiteFooter';
 import { readDraft, saveDraft, useStorageChoice } from './storage';
 import ProfileDialog from './ProfileDialog';
 import { useTheme } from './themes';
 import ThemePicker from './ThemePicker';
-import Home from './Home';
+import Dashboard from './Dashboard';
 import { usePythonRun, PythonResults } from './python/usePythonRun';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import type { User } from '../../../packages/shared/game';
@@ -51,7 +50,6 @@ const icons = {
       <path d="M3 10a9 9 0 1 1 1 8M3 4v6h6M12 7v6l4 2" />
     </>
   ),
-  arrow: <path d="M4 12h16m-6-6 6 6-6 6" />,
   code: (
     <>
       <path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18" />
@@ -121,7 +119,6 @@ export default function App() {
     [page, setPage] = useState<Page>('arena');
   const [loading, setLoading] = useState(true),
     [error, setError] = useState(''),
-    [login, setLogin] = useState(false),
     [busy, setBusy] = useState(false);
   const [queue, setQueue] = useState<Queue>({ state: 'IDLE' }),
     [matchId, setMatchId] = useState<string | null>(sessionStorage.getItem('matchId'));
@@ -129,8 +126,9 @@ export default function App() {
     [history, setHistory] = useState<History[]>([]);
   const refresh = useCallback(async () => {
     const { user: u } = await api<{ user: User | null }>('/me');
-    if (u && ['/', '/login', '/register'].includes(location.pathname))
-      window.history.replaceState(null, '', '/app');
+    if (u && location.pathname !== '/app') window.history.replaceState(null, '', '/app');
+    if (!u && !['/', '/login', '/register'].includes(location.pathname))
+      window.history.replaceState(null, '', '/login');
     setUser(u);
     return u;
   }, []);
@@ -139,6 +137,16 @@ export default function App() {
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, [refresh]);
+  useEffect(() => {
+    const expired = () => {
+      setUser(null);
+      setMatchId(null);
+      setQueue({ state: 'IDLE' });
+      location.replace('/login');
+    };
+    window.addEventListener('codeclash:session-expired', expired);
+    return () => window.removeEventListener('codeclash:session-expired', expired);
+  }, []);
   useEffect(() => {
     if (user && user.profile_complete === 0 && promptedProfile.current !== user.id) {
       promptedProfile.current = user.id;
@@ -178,16 +186,16 @@ export default function App() {
     };
   }, [user?.id, matchId, busy, queue.state]);
   useEffect(() => {
-    if (!user && location.pathname !== '/app') return;
-    if (page === 'leaderboard' || page === 'arena')
+    if (!user) return;
+    if (page === 'leaderboard')
       api<{ players: User[] }>('/leaderboard')
         .then((r) => setPlayers(r.players))
         .catch((e) => setError(e.message));
-    if (page === 'history' && user)
+    if ((page === 'history' || (page === 'arena' && !matchId)) && user)
       api<{ matches: History[] }>('/matches')
         .then((r) => setHistory(r.matches))
         .catch((e) => setError(e.message));
-  }, [page, user?.id]);
+  }, [page, user?.id, matchId]);
   async function action(fn: () => Promise<unknown>) {
     setBusy(true);
     setError('');
@@ -205,7 +213,7 @@ export default function App() {
       return;
     }
     if (!user) {
-      setLogin(true);
+      location.assign('/login');
       return;
     }
     setPage('arena');
@@ -220,7 +228,7 @@ export default function App() {
     for (const key of Object.keys(localStorage))
       if (key.startsWith('rdsa:')) localStorage.removeItem(key);
   }
-  if (['/', '/login', '/register'].includes(location.pathname) && !user) {
+  if (!user) {
     return (
       <AuthPage
         loading={loading}
@@ -305,8 +313,8 @@ export default function App() {
               <span className="logout-label">Sign out</span>
             </button>
           ) : (
-            <button className="button small secondary" onClick={() => setLogin(true)}>
-              Sign in <Icon name="arrow" />
+            <button className="button small secondary" onClick={() => location.assign('/login')}>
+              Sign in
             </button>
           )}
         </div>
@@ -358,9 +366,9 @@ export default function App() {
           ) : page === 'arena' ? (
             matchId && user ? null : (
               <>
-                <Home
+                <Dashboard
                   user={user}
-                  players={players}
+                  matches={history}
                   casual={health?.casual ?? false}
                   unavailable={
                     !!health && !health.local && !health.casual && health.judge !== 'configured'
@@ -369,6 +377,7 @@ export default function App() {
                   queued={queue.state === 'QUEUED'}
                   join={join}
                   navigate={setPage}
+                  editProfile={() => setProfileOpen(true)}
                 />
                 {queue.state === 'QUEUED' && (
                   <QueueCard
@@ -378,41 +387,13 @@ export default function App() {
                     }
                   />
                 )}
-                {health?.judge === 'unavailable' && (
-                  <div className="setup-note">
-                    <Icon name="code" />
-                    <span>
-                      {health.casual ? (
-                        <>
-                          <strong>Casual beta.</strong> Python runs in your browser. Completion uses
-                          public examples and is unverified. No rating changes.
-                        </>
-                      ) : health.local ? (
-                        <>
-                          <strong>Local setup in progress.</strong> Matchmaking and the coding room
-                          are available. Run uses Python on your device; ranked Submit needs the
-                          server judge.
-                        </>
-                      ) : (
-                        <>
-                          <strong>Staging preview.</strong> Ranked matches will open after judging
-                          is verified.{' '}
-                          {health.github
-                            ? 'You can sign in and create your account now.'
-                            : 'Account sign-in is being connected.'}
-                        </>
-                      )}
-                    </span>
-                  </div>
-                )}
               </>
             )
           ) : page === 'leaderboard' ? (
             <>
-              <div className="page-eyebrow">Ranked play</div>
-              <h1 className="page-title">The leaderboard.</h1>
+              <h1 className="page-title">Leaderboard</h1>
               <p className="page-intro">
-                The ranked ladder. Every result comes from a completed duel.
+                Verified ranked play is in development. Casual matches do not affect ratings.
               </p>
               <div className="table-card">
                 <table>
@@ -444,30 +425,29 @@ export default function App() {
                   </tbody>
                 </table>
                 {!players.length && (
-                  <div className="empty-state">The ladder is waiting for its first players.</div>
+                  <div className="empty-state">No verified ranked results yet.</div>
                 )}
               </div>
             </>
           ) : (
             <>
-              <div className="page-eyebrow">Your matches</div>
-              <h1 className="page-title">Match history.</h1>
+              <h1 className="page-title">Match history</h1>
               <p className="page-intro">Your completed matches and their final outcomes.</p>
               {!user ? (
                 <div className="empty-state">
                   <Icon name="history" />
                   <h2>Sign in to see your matches.</h2>
-                  <button className="button primary" onClick={() => setLogin(true)}>
+                  <button className="button primary" onClick={() => location.assign('/login')}>
                     Sign in
                   </button>
                 </div>
               ) : !history.length ? (
                 <div className="empty-state">
                   <Icon name="arena" />
-                  <h2>Your first duel starts here.</h2>
+                  <h2>No completed matches yet.</h2>
                   <p>Play your first match to start building your record.</p>
                   <button className="button primary" onClick={join}>
-                    Enter the arena <Icon name="arrow" />
+                    Enter the arena
                   </button>
                 </div>
               ) : (
@@ -500,7 +480,6 @@ export default function App() {
                             {h.mode} · {new Date(h.finished_at).toLocaleDateString()}
                           </span>
                         </div>
-                        <Icon name="arrow" />
                       </button>
                     );
                   })}
@@ -511,23 +490,6 @@ export default function App() {
         </main>
       </div>
       <SiteFooter />
-      {login && (
-        <LoginModal
-          githubReady={health?.github === true}
-          googleReady={health?.google === true}
-          emailReady={health?.email === true}
-          local={health?.local ?? false}
-          busy={busy}
-          close={() => setLogin(false)}
-          choose={(id) =>
-            void action(async () => {
-              await api('/auth/local', { id });
-              await refresh();
-              setLogin(false);
-            })
-          }
-        />
-      )}
     </div>
   );
 }
@@ -582,52 +544,6 @@ function QueueCard({ queue, cancel }: { queue: Queue; cancel: () => void }) {
         Cancel search
       </button>
     </section>
-  );
-}
-function LoginModal({
-  githubReady,
-  googleReady,
-  emailReady,
-  local,
-  busy,
-  close,
-  choose,
-}: {
-  local: boolean;
-  githubReady: boolean;
-  googleReady: boolean;
-  emailReady: boolean;
-  busy: boolean;
-  close: () => void;
-  choose: (id: string) => void;
-}) {
-  const dialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    dialog.current?.showModal();
-  }, []);
-  return (
-    <dialog ref={dialog} className="login-dialog" onCancel={close}>
-      <button className="dialog-close" onClick={close} aria-label="Close sign in">
-        ×
-      </button>
-      <Mark />
-      <h2>Your next rival is waiting.</h2>
-      <p>
-        {local
-          ? 'Choose a local player. Use a separate browser profile for your opponent.'
-          : 'Sign in to find your first opponent and start your climb.'}
-      </p>
-      <AuthOptions {...{ local, githubReady, googleReady, emailReady, busy, choose }} />
-      <p className="legal-signin-note">
-        By signing in, you agree to the <a href="/terms">Terms</a>. Read how we use your data in our{' '}
-        <a href="/privacy">Privacy notice</a>.
-      </p>
-      <span className="dialog-footnote">
-        {local
-          ? 'Demo accounts stay on your local development instance.'
-          : 'By playing ranked, you agree to compete without outside AI assistance.'}
-      </span>
-    </dialog>
   );
 }
 function MatchView({
@@ -910,7 +826,6 @@ function MatchView({
               onClick={() => void mutate('ready')}
             >
               {me.ready ? 'Ready ✓' : 'I’m ready'}
-              <Icon name="arrow" />
             </button>
           )}
           <button className="text-button" onClick={() => void mutate('forfeit')}>
@@ -942,7 +857,7 @@ function MatchView({
               </div>
               <div className="result-actions">
                 <button className="button primary" onClick={onLeave}>
-                  Back to arena <Icon name="arrow" />
+                  Back to arena
                 </button>
                 {now - (game.finishedAt ?? 0) < 30000 && game.settled && (
                   <button
@@ -1080,7 +995,7 @@ function MatchView({
                         void (game.mode === 'casual' ? completeCasual() : execute('submit'))
                       }
                     >
-                      {game.mode === 'casual' ? 'Check & finish' : 'Submit'} <Icon name="arrow" />
+                      {game.mode === 'casual' ? 'Check & finish' : 'Submit'}
                     </button>
                   </div>
                 </div>

@@ -29,15 +29,11 @@ export default function AuthPage({ loading, error, health, busy, choose }: Props
           />
         </a>
         <div>
-          <a className="auth-preview" href="/app">
-            Explore the arena
-          </a>
           <ThemePicker />
         </div>
       </header>
       <main className="auth-layout">
         <section className="auth-hero" aria-labelledby="auth-title">
-          <p className="auth-eyebrow">PYTHON · LIVE 1V1</p>
           <h1 id="auth-title">
             Put your Python
             <br />
@@ -102,11 +98,6 @@ export default function AuthPage({ loading, error, health, busy, choose }: Props
           <p className="auth-alpha">Casual beta. Verified ranked play is coming later.</p>
         </section>
         <section id="access" className="auth-access" aria-labelledby="access-title" tabIndex={-1}>
-          <div className="auth-access-top">
-            <span className="auth-eyebrow">
-              {registering ? 'YOUR FIRST MOVE' : 'WELCOME TO CODECLASH'}
-            </span>
-          </div>
           <h2 id="access-title">{registering ? 'Make it your arena.' : 'Welcome to CodeClash.'}</h2>
           <p>
             {registering

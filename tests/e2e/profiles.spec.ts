@@ -2,11 +2,7 @@ import { test, expect } from '@playwright/test';
 test('players can update their profile and retain it after reload', async ({ page }) => {
   await page.goto('/app');
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await page
-    .getByRole('dialog')
-    .getByRole('button', { name: /AdaByte/ })
-    .click();
+  await page.getByRole('button', { name: /AdaByte/ }).click();
   await page.getByRole('button', { name: 'Edit profile' }).click();
   const dialog = page.getByRole('dialog', { name: 'Your player profile.' });
   await dialog.getByLabel('Username', { exact: true }).fill('ArenaNinja');

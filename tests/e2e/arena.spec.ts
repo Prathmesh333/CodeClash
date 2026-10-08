@@ -1,22 +1,15 @@
 import { test, expect } from '@playwright/test';
-test('arena is responsive and sign-in has real local accounts', async ({ page }) => {
-  await page.goto('/app');
+test('signed-in arena is a responsive player dashboard', async ({ page }) => {
+  await page.goto('/login');
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
-  await expect(page.getByRole('heading', { name: /Compete. Solve./ })).toBeVisible();
-  await expect(page.getByText('Local setup in progress.')).toBeVisible();
-  await page.waitForLoadState('networkidle');
-  await page.screenshot({ path: 'artifacts/arena-desktop.png', fullPage: true });
+  await page.getByRole('button', { name: /AdaByte/ }).click();
+  await expect(page.getByRole('heading', { name: 'Arena', exact: true })).toBeVisible();
+  await expect(page.locator('.cc-home')).toHaveCount(0);
+  await page.screenshot({ path: 'artifacts/dashboard-desktop.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('button', { name: 'Find a match' })).toBeVisible();
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
-    true,
-  );
-  await page.screenshot({ path: 'artifacts/arena-mobile.png', fullPage: true });
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await expect(page.getByRole('dialog')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'AdaByte' })).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog')).not.toBeVisible();
+  await expect(page.getByRole('button', { name: 'Find a match', exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: 'artifacts/dashboard-mobile.png', fullPage: true });
 });
 test('two users pair, ready, reconnect, see unavailable judge honestly, and persist a forfeit', async ({
   browser,
@@ -37,11 +30,7 @@ test('two users pair, ready, reconnect, see unavailable judge honestly, and pers
     ] as const) {
       await page.goto('/app');
       await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
-      await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-      await page
-        .getByRole('dialog')
-        .getByRole('button', { name: new RegExp(name) })
-        .click();
+      await page.getByRole('button', { name: new RegExp(name) }).click();
       await expect(page.getByRole('button', { name: new RegExp(name + ' Sign out') })).toBeVisible({
         timeout: 15000,
       });

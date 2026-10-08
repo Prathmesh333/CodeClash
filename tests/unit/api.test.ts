@@ -1,6 +1,18 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import { api } from '../../apps/web/src/api';
 afterEach(() => vi.unstubAllGlobals());
+it('signals an expired session on an authoritative 401 without retrying', async () => {
+  const dispatchEvent = vi.fn();
+  const fetch = vi
+    .fn()
+    .mockResolvedValue(Response.json({ message: 'Sign in to enter the arena.' }, { status: 401 }));
+  vi.stubGlobal('window', { dispatchEvent });
+  vi.stubGlobal('fetch', fetch);
+  await expect(api('/matchmaking/join', {})).rejects.toThrow('Sign in to enter the arena.');
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(dispatchEvent).toHaveBeenCalledTimes(1);
+  expect(dispatchEvent.mock.calls[0][0].type).toBe('codeclash:session-expired');
+});
 it('recovers an idempotent queue join after a non-JSON proxy failure', async () => {
   const fetch = vi
     .fn()

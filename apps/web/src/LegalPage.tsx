@@ -35,7 +35,6 @@ export default function LegalPage() {
         <a href="/">Back to the arena</a>
       </header>
       <main id="main" className="legal-page">
-        <p className="page-eyebrow">CodeClash policies</p>
         <h1>{titles[path]}</h1>
         <p className="legal-date">Updated 8 October 2026</p>
         {path === '/privacy' && (
