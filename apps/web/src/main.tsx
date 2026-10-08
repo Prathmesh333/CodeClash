@@ -6,6 +6,7 @@ import './home.css';
 import './theme-motion.css';
 import './light-theme.css';
 import './theme-picker.css';
+import './redesign.css';
 import { initializeTheme } from './themes';
 initializeTheme();
 createRoot(document.getElementById('root')!).render(

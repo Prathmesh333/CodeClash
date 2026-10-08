@@ -1,5 +1,5 @@
 import { useTheme } from './themes';
-import { useSectionMotion } from './useSectionMotion';
+
 import type { User } from '../../../packages/shared/game';
 
 type Props = {
@@ -34,7 +34,6 @@ export default function Home({
   join,
   navigate,
 }: Props) {
-  const motionRef = useSectionMotion();
   const theme = useTheme();
   const label = unavailable
     ? 'Ranked matches coming soon'
@@ -51,17 +50,21 @@ export default function Home({
     </button>
   );
   return (
-    <div className="cc-home" ref={motionRef}>
+    <div className="cc-home">
       <section className="cc-hero">
         <div className="cc-hero-copy">
-          <p className="cc-eyebrow">YOUR NEXT CHALLENGE STARTS HERE</p>
+          <p className="cc-match-status">
+            <span />
+            The Python arena is open
+          </p>
           <h1>
             Compete. Solve.
             <br />
-            <em>Clash.</em>
+            Clash.
           </h1>
           <p className="cc-intro">
-            One problem. Two programmers. Put your Python skills to the test in a live coding duel.
+            A good problem gets better with an opponent. Meet another programmer, write your
+            solution, and see who gets there first.
           </p>
           <div className="cc-actions">
             {cta}
@@ -72,8 +75,8 @@ export default function Home({
           </div>
           <p className="cc-disclosure">
             {casual
-              ? 'Casual beta · Browser-checked results · No rating changes'
-              : 'Python alpha · Ranked judging in development'}
+              ? 'Casual beta. Play for the challenge; your rating stays unchanged.'
+              : 'Python alpha. Verified ranked play is in development.'}
           </p>
           <div className="cc-features">
             {[
@@ -91,62 +94,68 @@ export default function Home({
             ))}
           </div>
         </div>
-        <div className="cc-preview" aria-label="Illustrative coding match preview">
-          <div className="cc-preview-top">
-            <img
-              src={`/brand/logo/codeclash-mark${theme.mode === 'dark' ? '-dark' : ''}.svg`}
-              alt=""
-            />
-            <strong>
-              CODE<span>CLASH</span>
-            </strong>
-            <small>Match preview</small>
-            <b>20:00</b>
+        <div className="cc-demo-stage">
+          <div className="cc-demo-caption">
+            <span>Inside a duel</span>
+            <span>Same problem. Same clock.</span>
           </div>
-          <div className="cc-preview-players">
-            <span>
-              <i>YOU</i> Your next challenge
-            </span>
-            <small>VS</small>
-            <span>
-              {' '}
-              A worthy opponent <i>?</i>
-            </span>
-          </div>
-          <div className="cc-preview-body">
-            <div className="cc-problem">
-              <span className="cc-eyebrow">THE PROBLEM</span>
-              <h3>
-                Pair Sum <small>Easy</small>
-              </h3>
-              <p>Find two numbers that add up to the target. Return their indices.</p>
-              <div className="cc-preview-tabs">
-                Example <span>Python 3</span>
-              </div>
-              <pre>{'Input:  [2, 7, 11, 15]\nTarget: 9\nOutput: [0, 1]'}</pre>
-              <p className="cc-example-note">Two minds. The same starting line.</p>
+          <div className="cc-preview" aria-label="Illustrative coding match preview">
+            <div className="cc-preview-top">
+              <img
+                src={`/brand/logo/codeclash-mark${theme.mode === 'dark' ? '-dark' : ''}.svg`}
+                alt=""
+              />
+              <strong>
+                CODE<span>CLASH</span>
+              </strong>
+              <small>Match preview</small>
+              <b>20:00</b>
             </div>
-            <div className="cc-code">
-              <div>
-                solution.py <span>PYTHON 3</span>
-              </div>
-              <pre>
-                <span className="code-purple">def</span>
-                {' two_sum(nums, target):\n'}
-                <span className="code-muted">{'    # Find your approach\n'}</span>
-                {'    seen = {}\n'}
-                <span className="code-purple">{'    for'}</span>
-                {' i, n in enumerate(nums):\n        other = target - n\n'}
-                <span className="code-purple">{'        if'}</span>
-                {' other in seen:\n'}
-                <span className="code-lime">{'            return'}</span>
-                {' [seen[other], i]\n        seen[n] = i'}
-              </pre>
+            <div className="cc-preview-players">
+              <span>
+                <i>YOU</i> Your next challenge
+              </span>
+              <small>VS</small>
+              <span>
+                {' '}
+                A worthy opponent <i>?</i>
+              </span>
             </div>
-          </div>
-          <div className="cc-preview-foot">
-            <span>● Python in your browser</span>
-            <small>Illustrative preview · not a live match</small>
+            <div className="cc-preview-body">
+              <div className="cc-problem">
+                <span className="cc-eyebrow">Your shared problem</span>
+                <h3>
+                  Pair Sum <small>Easy</small>
+                </h3>
+                <p>Find two numbers that add up to the target. Return their indices.</p>
+                <div className="cc-preview-tabs">
+                  Example <span>Python 3</span>
+                </div>
+                <pre>{'Input:  [2, 7, 11, 15]\nTarget: 9\nOutput: [0, 1]'}</pre>
+                <p className="cc-example-note">Two minds. The same starting line.</p>
+              </div>
+              <div className="cc-code">
+                <div>
+                  solution.py <span>PYTHON 3</span>
+                </div>
+                <pre>
+                  <span className="code-purple">def</span>
+                  {' two_sum(nums, target):\n'}
+                  <span className="code-muted">{'    # Find your approach\n'}</span>
+                  {'    seen = {}\n'}
+                  <span className="code-purple">{'    for'}</span>
+                  {' i, n in enumerate(nums):\n        other = target - n\n'}
+                  <span className="code-purple">{'        if'}</span>
+                  {' other in seen:\n'}
+                  <span className="code-lime">{'            return'}</span>
+                  {' [seen[other], i]\n        seen[n] = i'}
+                </pre>
+              </div>
+            </div>
+            <div className="cc-preview-foot">
+              <span>● Python in your browser</span>
+              <small>Example match</small>
+            </div>
           </div>
         </div>
       </section>
@@ -154,25 +163,25 @@ export default function Home({
         {[
           [
             'crossed-swords',
-            'YOUR RANKED MATCHES',
+            'Ranked matches',
             String(user?.games_played ?? 0),
             'Casual matches appear in history',
           ],
           [
             'target',
-            'YOUR RANKED WIN RATE',
+            'Ranked win rate',
             user?.games_played ? `${Math.round((user.wins / user.games_played) * 100)}%` : '—',
             'Ratings stay unchanged in casual play',
           ],
           [
             'chart',
-            'YOUR RATING',
+            'Your rating',
             user ? user.rating.toLocaleString() : '—',
             user ? 'Your saved account rating' : 'Sign in to create your profile',
           ],
           [
             'code',
-            'CURRENT GAME MODE',
+            'Game mode',
             casual ? 'Casual 1v1' : 'Python alpha',
             'Public examples · browser execution',
           ],
@@ -191,7 +200,7 @@ export default function Home({
       </section>
       <section id="how-it-works" className="cc-how cc-panel">
         <div className="cc-section-title">
-          <h2>HOW IT WORKS</h2>
+          <h2>From queue to code.</h2>
           <span>Same problem. Same clock.</span>
         </div>
         <div className="cc-steps">
@@ -227,13 +236,13 @@ export default function Home({
       </section>
       <section className="cc-bottom-grid">
         <article className="cc-panel cc-feature-card">
-          <p className="cc-eyebrow">YOUR CODING JOURNEY</p>
+          <p className="cc-eyebrow">Match history</p>
           <div className="cc-card-body">
             <div className="cc-icon-box">
               <AssetIcon name="file-code" />
             </div>
             <section>
-              <h3>Every duel, remembered.</h3>
+              <h3>Pick up where you left off.</h3>
               <p>Revisit your completed matches and see how each round ended.</p>
             </section>
           </div>
@@ -242,20 +251,20 @@ export default function Home({
           </button>
         </article>
         <article className="cc-panel cc-feature-card">
-          <p className="cc-eyebrow">ON THE HORIZON</p>
+          <p className="cc-eyebrow">Coming next</p>
           <div className="cc-card-body">
             <div className="cc-icon-box">
               <AssetIcon name="trophy" />
             </div>
             <section>
-              <h3>A bigger stage awaits.</h3>
+              <h3>More ways to compete.</h3>
               <p>Tournaments and verified ranked matches are planned for a future release.</p>
             </section>
           </div>
-          <span className="cc-soon">COMING LATER</span>
+          <span className="cc-soon">In development</span>
         </article>
         <article className="cc-panel cc-feature-card cc-leaders">
-          <p className="cc-eyebrow">THE RANKED LADDER</p>
+          <p className="cc-eyebrow">Leaderboard</p>
           {players.filter((p) => p.games_played > 0).length ? (
             <ol>
               {players
@@ -274,7 +283,7 @@ export default function Home({
                 <AssetIcon name="chart" />
               </div>
               <section>
-                <h3>The climb is still ahead.</h3>
+                <h3>Your next goal: the ladder.</h3>
                 <p>
                   Verified ranked results will appear here. Casual duels don’t affect this ladder.
                 </p>
@@ -289,9 +298,8 @@ export default function Home({
       <footer className="cc-banner cc-panel">
         <img src={`/brand/logo/codeclash-mark${theme.mode === 'dark' ? '-dark' : ''}.svg`} alt="" />
         <div>
-          <p className="cc-eyebrow">BUILT FOR YOUR NEXT BREAKTHROUGH</p>
-          <h2>Ready to enter the arena?</h2>
-          <p>Bring a friend. Bring your best approach.</p>
+          <h2>Your next opponent is out there.</h2>
+          <p>A fresh problem. A shared clock. Your best approach.</p>
         </div>
         <button className="button primary" disabled={busy || queued || unavailable} onClick={join}>
           <AssetIcon name="crossed-swords" />

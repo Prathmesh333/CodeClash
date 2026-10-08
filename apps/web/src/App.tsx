@@ -385,8 +385,8 @@ export default function App() {
             )
           ) : page === 'leaderboard' ? (
             <>
-              <div className="page-eyebrow">THE CLIMB</div>
-              <h1 className="page-title">Earned, line by line.</h1>
+              <div className="page-eyebrow">Ranked play</div>
+              <h1 className="page-title">The leaderboard.</h1>
               <p className="page-intro">
                 The ranked ladder. Every result comes from a completed duel.
               </p>
@@ -426,13 +426,13 @@ export default function App() {
             </>
           ) : (
             <>
-              <div className="page-eyebrow">YOUR RECORD</div>
-              <h1 className="page-title">Every duel tells a story.</h1>
+              <div className="page-eyebrow">Your matches</div>
+              <h1 className="page-title">Match history.</h1>
               <p className="page-intro">Your completed matches and their final outcomes.</p>
               {!user ? (
                 <div className="empty-state">
                   <Icon name="history" />
-                  <h2>Your history starts with you.</h2>
+                  <h2>Sign in to see your matches.</h2>
                   <button className="button primary" onClick={() => setLogin(true)}>
                     Sign in
                   </button>
@@ -440,7 +440,7 @@ export default function App() {
               ) : !history.length ? (
                 <div className="empty-state">
                   <Icon name="arena" />
-                  <h2>A clean slate.</h2>
+                  <h2>Your first duel starts here.</h2>
                   <p>Play your first match to start building your record.</p>
                   <button className="button primary" onClick={join}>
                     Enter the arena <Icon name="arrow" />
@@ -895,7 +895,9 @@ function MatchView({
       </div>
       <div className="versus-bar">
         <div className="duelist">
-          <span className={`avatar avatar-${me.avatar_color ?? 'blue'}`}>{me.username.slice(0, 2)}</span>
+          <span className={`avatar avatar-${me.avatar_color ?? 'blue'}`}>
+            {me.username.slice(0, 2)}
+          </span>
           <div>
             <strong>
               {me.username} <span className="you-tag">YOU</span>
@@ -926,7 +928,9 @@ function MatchView({
               {rank(opponent.rating)} · {opponent.rating} MMR
             </span>
           </div>
-          <span className={`avatar rival avatar-${opponent.avatar_color ?? 'blue'}`}>{opponent.username.slice(0, 2)}</span>
+          <span className={`avatar rival avatar-${opponent.avatar_color ?? 'blue'}`}>
+            {opponent.username.slice(0, 2)}
+          </span>
         </div>
       </div>
       {game.phase === 'WAITING_READY' || game.phase === 'COUNTDOWN' ? (
@@ -1135,7 +1139,11 @@ function MatchView({
           )}
           {!done && (
             <div className="match-foot">
-              <span>First correct submission wins. Server time is authoritative.</span>
+              <span>
+                {game.mode === 'casual'
+                  ? 'First reported completion ends the duel. Casual results are unverified.'
+                  : 'First correct submission wins. The server keeps the match clock.'}
+              </span>
               <button
                 className="text-button"
                 onClick={() => {
