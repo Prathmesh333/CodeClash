@@ -1,4 +1,5 @@
 import Presence from './Presence';
+import { BrandSpinner } from './BrandReveal';
 import SplitPane from './SplitPane';
 import CustomRun from './python/CustomRun';
 import AuthPage from './AuthPage';
@@ -398,7 +399,7 @@ export default function App() {
               Connecting to the arena…
             </div>
           ) : page === 'practice' ? (
-            <Suspense fallback={<p>Loading practice…</p>}>
+            <Suspense fallback={<BrandSpinner label="Loading practice…" />}>
               <Practice userId={user.id} />
             </Suspense>
           ) : page === 'arena' ? (
@@ -1033,7 +1034,7 @@ function MatchView({
                     </span>
                   </div>
                   <div className="editor-container">
-                    <Suspense fallback={<div className="editor-loading">Loading editor…</div>}>
+                    <Suspense fallback={<BrandSpinner label="Loading editor…" />}>
                       <CodeEditor value={source} onChange={setSource} disabled={done} />
                     </Suspense>
                   </div>
