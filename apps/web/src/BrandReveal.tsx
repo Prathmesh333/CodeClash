@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './brand-reveal.css';
-
-let introduced = false;
 
 export function BrandSpinner({ label }: { label: string }) {
   return (
@@ -17,77 +15,42 @@ export function BrandSpinner({ label }: { label: string }) {
   );
 }
 
-function firstArrival() {
-  if (introduced) return false;
-  // Internal links reload this SPA too. Avoid replaying the wordmark on those
-  // navigations without adding cookies or browser-storage preferences.
-  try {
-    return !document.referrer || new URL(document.referrer).origin !== location.origin;
-  } catch {
-    return true;
-  }
-}
-
-/** A finite brand sequence. Login controls remain available throughout. */
+/** Decorative branding; the native CSS timeline does not rerender each frame. */
 export default function BrandReveal() {
-  const [fullIntro, setFullIntro] = useState(firstArrival);
-  const [playing, setPlaying] = useState(true);
-  const [take, setTake] = useState(0);
-
+  const root = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(true);
   useEffect(() => {
-    introduced = true;
-    const motion = matchMedia('(prefers-reduced-motion: reduce)');
-    const settle = () => {
-      if (motion.matches) setPlaying(false);
+    let intersecting = true;
+    const update = () => setVisible(intersecting && !document.hidden);
+    const observer = new IntersectionObserver(([entry]) => {
+      intersecting = entry.isIntersecting;
+      update();
+    });
+    if (root.current) observer.observe(root.current);
+    document.addEventListener('visibilitychange', update);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', update);
     };
-    settle();
-    motion.addEventListener('change', settle);
-    return () => motion.removeEventListener('change', settle);
   }, []);
-
-  useEffect(() => {
-    if (!playing) return;
-    const timer = window.setTimeout(() => setPlaying(false), fullIntro ? 2400 : 700);
-    return () => clearTimeout(timer);
-  }, [playing, take, fullIntro]);
-
   return (
-    <div className="brand-reveal">
-      <div
-        key={take}
-        className={`brand-reveal-stage ${fullIntro ? 'is-intro' : 'is-symbol-only'} ${playing ? 'is-playing' : ''}`}
-      >
-        <div className="brand-reveal-frame" aria-hidden="true" />
-        <svg className="brand-reveal-symbol" viewBox="0 0 160 92" aria-hidden="true">
-          <g className="brand-reveal-turn">
-            <path className="brand-reveal-left" d="M52 18 16 46 52 74 52 59 35 46 52 33Z" />
-            <path className="brand-reveal-slash" d="M88 6 65 86H81L104 6Z" />
-            <path className="brand-reveal-right" d="M108 18 144 46 108 74 108 59 125 46 108 33Z" />
-          </g>
-        </svg>
-        {fullIntro && (
-          <>
-            <div className="brand-reveal-name" aria-label="CodeClash">
-              <span>CODE</span>
-              <span>CLASH</span>
-            </div>
-            <span className="brand-reveal-domain">code-clash.com</span>
-          </>
-        )}
+    <div ref={root} className={`brand-reveal ${visible ? '' : 'is-paused'}`}>
+      <div className="brand-reveal-stage">
+        <div className="brand-reveal-symbol-wrap" aria-hidden="true">
+          <div className="brand-reveal-frame" />
+          <svg className="brand-reveal-symbol" viewBox="0 0 132 92">
+            <g className="brand-reveal-turn">
+              <path className="brand-reveal-left" d="M49 18 13 46 49 74 49 59 32 46 49 33Z" />
+              <path className="brand-reveal-slash" d="M70 6 47 86H63L86 6Z" />
+              <path className="brand-reveal-right" d="M83 18 119 46 83 74 83 59 100 46 83 33Z" />
+            </g>
+          </svg>
+        </div>
+        <div className="brand-reveal-name" aria-label="Code Clash">
+          <span>Code</span>
+          <span>Clash</span>
+        </div>
       </div>
-      <button
-        className="brand-reveal-control"
-        onClick={() => {
-          if (playing) setPlaying(false);
-          else {
-            setFullIntro(false);
-            setTake((value) => value + 1);
-            setPlaying(true);
-          }
-        }}
-      >
-        {playing ? 'Skip animation' : 'Replay animation'}
-      </button>
     </div>
   );
 }

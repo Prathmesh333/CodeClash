@@ -2,7 +2,6 @@ import AuthOptions from './AuthOptions';
 import BrandReveal from './BrandReveal';
 import ThemePicker from './ThemePicker';
 import SiteFooter from './SiteFooter';
-import { useTheme } from './themes';
 
 type Props = {
   loading: boolean;
@@ -13,7 +12,6 @@ type Props = {
 };
 
 export default function AuthPage({ loading, error, health, busy, choose }: Props) {
-  const theme = useTheme();
   const registering = location.pathname === '/register';
   return (
     <div className="auth-page">
@@ -21,14 +19,6 @@ export default function AuthPage({ loading, error, health, busy, choose }: Props
         Skip to sign in
       </a>
       <header className="auth-header">
-        <a href="/" aria-label="CodeClash home">
-          <img
-            width="190"
-            height="42"
-            src={`/brand/logo/codeclash-wordmark${theme.mode === 'dark' ? '-dark' : ''}.svg`}
-            alt="CodeClash"
-          />
-        </a>
         <div>
           <ThemePicker />
         </div>

@@ -5,7 +5,7 @@ test('opening page, registration, session redirect and logout work', async ({ pa
   await page.getByRole('button', { name: 'Essential only', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Put your Python/ })).toBeVisible();
   await page.getByRole('link', { name: 'Create account', exact: true }).click();
-  await expect(page.locator('.brand-reveal-name')).toHaveCount(0);
+  await expect(page.locator('.brand-reveal-name')).toHaveText('CodeClash');
   await expect(page).toHaveURL(/\/register$/);
   await expect(page.getByRole('heading', { name: 'Make it your arena.' })).toBeVisible();
   await page.getByRole('button', { name: /AdaByte/ }).click();
@@ -50,7 +50,7 @@ test('opening page is responsive, uses reduced motion and submits provider reque
   await expect(page.getByRole('status')).toHaveText('Check your inbox.');
   await page.screenshot({ path: 'artifacts/auth-desktop.png', fullPage: true });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(page.getByRole('button', { name: 'Replay animation' })).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Replay animation' })).toHaveCount(0);
   expect(
     await page
       .locator('.brand-reveal-slash')
