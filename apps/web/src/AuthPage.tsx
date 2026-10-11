@@ -1,4 +1,5 @@
 import AuthOptions from './AuthOptions';
+import BrandReveal from './BrandReveal';
 import ThemePicker from './ThemePicker';
 import SiteFooter from './SiteFooter';
 import { useTheme } from './themes';
@@ -34,6 +35,7 @@ export default function AuthPage({ loading, error, health, busy, choose }: Props
       </header>
       <main className="auth-layout">
         <section className="auth-hero" aria-labelledby="auth-title">
+          <BrandReveal />
           <h1 id="auth-title">
             Put your Python
             <br />

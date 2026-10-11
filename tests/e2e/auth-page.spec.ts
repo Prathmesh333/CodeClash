@@ -49,6 +49,12 @@ test('opening page is responsive, uses reduced motion and submits provider reque
   await expect(page.getByRole('status')).toHaveText('Check your inbox.');
   await page.screenshot({ path: 'artifacts/auth-desktop.png', fullPage: true });
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(page.getByRole('button', { name: 'Replay intro' })).toBeHidden();
+  expect(
+    await page
+      .locator('.brand-reveal-slash')
+      .evaluate((node) => getComputedStyle(node).animationName),
+  ).toBe('none');
   expect(
     await page
       .locator('.preview-result-check')

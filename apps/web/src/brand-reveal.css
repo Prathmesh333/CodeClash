@@ -1,0 +1,168 @@
+.brand-reveal {
+  position: relative;
+  width: 260px;
+  max-width: 100%;
+  margin: 0 0 24px;
+  color: var(--cc-text);
+}
+.brand-reveal-stage {
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  isolation: isolate;
+}
+.brand-reveal-frame {
+  position: absolute;
+  inset: 0;
+  background: var(--cc-lime);
+  opacity: 0;
+  transform: scale(0.05, 0.5) skewX(-16deg);
+  z-index: -1;
+}
+.brand-reveal-symbol {
+  width: 120px;
+  height: 70px;
+  overflow: visible;
+  fill: currentColor;
+}
+.brand-reveal-turn {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.brand-reveal-slash {
+  fill: var(--cc-lime);
+}
+.brand-reveal-name {
+  display: flex;
+  gap: 5px;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+  margin-top: 8px;
+}
+.brand-reveal-name span:last-child {
+  color: var(--cc-lime);
+}
+.brand-reveal-domain {
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  color: var(--cc-secondary);
+  margin-top: 6px;
+}
+.brand-reveal-control {
+  display: block;
+  margin: 4px auto 0;
+  border: 0;
+  background: transparent;
+  color: var(--cc-secondary);
+  font: inherit;
+  font-size: 11px;
+  padding: 8px 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.brand-reveal-control:focus-visible {
+  outline: 2px solid var(--cc-lime);
+  outline-offset: 2px;
+}
+.brand-reveal-control:hover {
+  color: var(--cc-text);
+}
+.is-playing .brand-reveal-frame {
+  animation: brand-collapse 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.is-playing .brand-reveal-slash {
+  animation: brand-slash 300ms 350ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.is-playing .brand-reveal-left {
+  animation: brand-left 350ms 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.is-playing .brand-reveal-right {
+  animation: brand-right 350ms 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.is-playing .brand-reveal-turn {
+  animation: brand-turn 500ms 1050ms cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+.is-playing .brand-reveal-name span {
+  animation: brand-word 350ms 1500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.is-playing .brand-reveal-name span:last-child {
+  animation-delay: 1600ms;
+}
+.is-playing .brand-reveal-domain {
+  animation: brand-word 300ms 1850ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes brand-collapse {
+  0% {
+    transform: scale(1);
+    opacity: 0.12;
+  }
+  75% {
+    transform: scale(0.05, 0.5) skewX(-16deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.05, 0.5) skewX(-16deg);
+    opacity: 0;
+  }
+}
+@keyframes brand-slash {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes brand-left {
+  from {
+    opacity: 0;
+    transform: translateX(-42px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes brand-right {
+  from {
+    opacity: 0;
+    transform: translateX(42px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes brand-turn {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes brand-word {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-reveal .is-playing * {
+    animation: none;
+  }
+  .brand-reveal-control {
+    display: none;
+  }
+}
