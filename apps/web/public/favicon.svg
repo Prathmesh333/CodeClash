@@ -1,12 +1,4 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="g" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#65A30D"/>
-      <stop offset="1" stop-color="#0891B2"/>
-    </linearGradient>
-  </defs>
-  <path d="M32 4L54 16V48L32 60L10 48V16L32 4Z" stroke="url(#g)" stroke-width="5" stroke-linejoin="round"/>
-  <path d="M25 22L16 32L25 42" stroke="#65A30D" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M39 22L48 32L39 42" stroke="#0891B2" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M35.5 20L28.5 44" stroke="#0F172A" stroke-width="4.5" stroke-linecap="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 132">
+<style>.turn{transform-origin:66px 66px;animation:spin 2.5s infinite}@keyframes spin{0%,60%{transform:rotate(0)}100%{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.turn{animation:none}}</style>
+<rect width="132" height="132" rx="26" fill="#0f172a"/>
+<g class="turn"><g transform="translate(0 20)"><path fill="#fff" d="M49 18 13 46 49 74 49 59 32 46 49 33Z M83 18 119 46 83 74 83 59 100 46 83 33Z"/><path fill="#76b900" d="M70 6 47 86H63L86 6Z"/></g></g></svg>

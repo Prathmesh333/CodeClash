@@ -86,14 +86,11 @@ function Icon({ name }: { name: keyof typeof icons }) {
   );
 }
 function Mark() {
-  const theme = useTheme();
   return (
-    <img
-      src={`/brand/logo/codeclash-mark${theme.mode === 'dark' ? '-dark' : ''}.svg`}
-      width="40"
-      height="44"
-      alt=""
-    />
+    <svg width="40" height="40" viewBox="0 0 132 92" aria-hidden="true" fill="var(--cc-text)">
+      <path d="M49 18 13 46 49 74 49 59 32 46 49 33Z M83 18 119 46 83 74 83 59 100 46 83 33Z" />
+      <path fill="var(--cc-lime)" d="M70 6 47 86H63L86 6Z" />
+    </svg>
   );
 }
 function RankBadge({ small = false }: { small?: boolean }) {
@@ -286,10 +283,11 @@ export default function App() {
             setPage('arena');
           }}
         >
-          <img
-            src={`/brand/logo/codeclash-wordmark${theme.mode === 'dark' ? '-dark' : ''}.svg`}
-            alt="CodeClash"
-          />
+          <Mark />
+          <span className="cc-brand-name">
+            <span>CODE</span>
+            <span>CLASH</span>
+          </span>
         </a>
         <nav aria-label="Main navigation">
           {(['arena', 'practice', 'leaderboard', 'history'] as Page[]).map((p) => (
