@@ -38,6 +38,7 @@ jobs:
             playwright-report/
             test-results/
             work/
+            artifacts/practice-validation.json
             version-manifest.json
           retention-days: 14
   judge:

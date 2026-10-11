@@ -86,7 +86,7 @@ The Solo practice tab offers 153 original CodeClash questions with topic/difficu
 
 This is an original interview foundations bank, not a copy or complete one-to-one implementation of NeetCode 150. Links to the NeetCode roadmap and LeetCode library are available in practice. Existing 20 multiplayer problems remain eligible for duels; 133 new questions are practice-only until independent fixture and multiplayer fairness review.
 
-Run `pnpm test:problems` to verify reference output consistency for all fixtures, and `python scripts/check-practice-oracles.py` for independent checks of 33 algorithms. The authoring script is project-owned code only; never run player submissions in these scripts. The server judge remains disabled.
+Run `pnpm test:problems` to verify reference output consistency for all fixtures, and `python scripts/check-practice-oracles.py` for independent checks of all 133 JSON practice algorithms (3,231 fixtures and 13,300 deterministic generated cases). The authoring script is project-owned code only; never run player submissions in these scripts. The server judge remains disabled.
 
 ### Coding workspace
 

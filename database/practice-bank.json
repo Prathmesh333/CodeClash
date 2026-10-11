@@ -8160,7 +8160,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    a=data[\"values\"];k=data[\"k\"];counts=Counter();left=best=0\n    for right,x in enumerate(a):\n        counts[x]+=1\n        while len(counts)>k:\n            y=a[left];counts[y]-=1;left+=1\n            if not counts[y]:del counts[y]\n        best=max(best,right-left+1)\n    return best\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Extend a sliding window and keep character counts. While the number of distinct characters exceeds k, shrink from the left and remove zero counts. Record the largest valid window.",
+      "explanation": "Extend a sliding window and keep counts of array values. While the number of distinct values exceeds k, shrink from the left and remove zero counts. Record the largest valid window.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -8820,7 +8820,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    latest={0:-1};total=0;best=math.inf\n    for i,x in enumerate(data[\"values\"]):\n        total+=x\n        if total-data[\"k\"] in latest:best=min(best,i-latest[total-data[\"k\"]])\n        latest[total]=i\n    return best if best<math.inf else 0\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "All values are positive, so expanding the window can only increase its sum. After reaching the target, shrink from the left while the window still meets the target, recording the shortest length.",
+      "explanation": "Track each prefix sum and its latest position. If the current sum minus the target appeared earlier, the intervening nonempty span totals the target. Keeping the latest occurrence minimizes its length. Check before recording the current prefix so a zero target cannot create an empty span. This works with negative values and zeros.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
