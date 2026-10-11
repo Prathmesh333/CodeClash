@@ -147,6 +147,21 @@ const application = {
       assert(user, 401, 'AUTH_REQUIRED', 'Sign in to enter the arena.');
       if (req.method === 'POST' || req.headers.get('Upgrade'))
         await rateLimit(env, 'player:' + user.id, 60, 60000);
+      if (path === '/api/presence' && req.method === 'GET') {
+        assert(
+          req.headers.get('Upgrade')?.toLowerCase() === 'websocket',
+          426,
+          'UPGRADE_REQUIRED',
+          'WebSocket required.',
+        );
+        const headers = new Headers(req.headers);
+        headers.set('X-Player', user.id);
+        headers.set('X-Session-Expires', String(user.session_expires_at));
+        return env.MATCHMAKER.get(env.MATCHMAKER.idFromName('alpha')).fetch(
+          'https://queue/presence',
+          { headers },
+        );
+      }
       if (path === '/api/privacy/export' && req.method === 'GET') {
         const offset = Number(url.searchParams.get('offset') ?? 0);
         assert(
@@ -307,10 +322,23 @@ export default {
       env.ASSETS
     ) {
       const nonce = crypto.randomUUID().replaceAll('-', '');
-      const html = (await response.text()).replace(
-        '<head>',
-        `<head><meta name="csp-nonce" content="${nonce}">`,
+      const country = String(req.cf?.country ?? '');
+      const excluded = new Set(
+        'AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE IS LI NO'.split(
+          ' ',
+        ),
       );
+      const analytics =
+        env.APP_ENV !== 'local' &&
+        /^[a-f0-9]{32}$/.test(env.WEB_ANALYTICS_TOKEN ?? '') &&
+        country &&
+        !excluded.has(country);
+      const beacon = analytics
+        ? `<script defer nonce="${nonce}" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${env.WEB_ANALYTICS_TOKEN}"}'></script>`
+        : '';
+      const html = (await response.text())
+        .replace('</body>', beacon + '</body>')
+        .replace('<head>', `<head><meta name="csp-nonce" content="${nonce}">`);
       protectedResponse = new Response(html, response);
       protectedResponse.headers.delete('Content-Length');
       protectedResponse.headers.delete('ETag');
@@ -318,7 +346,7 @@ export default {
       const socketOrigin = origin.replace(/^http/, 'ws');
       protectedResponse.headers.set(
         'Content-Security-Policy',
-        `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'wasm-unsafe-eval' blob: ${origin}/python-runtime/; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' ${socketOrigin} ${origin}/python-runtime/; worker-src 'self' blob:; frame-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'`,
+        `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'wasm-unsafe-eval' blob: ${origin}/python-runtime/ https://static.cloudflareinsights.com/beacon.min.js; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' ${socketOrigin} ${origin}/python-runtime/ https://cloudflareinsights.com/cdn-cgi/rum; worker-src 'self' blob:; frame-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'`,
       );
     }
     protectedResponse.headers.set('X-Content-Type-Options', 'nosniff');

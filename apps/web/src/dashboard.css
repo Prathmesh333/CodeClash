@@ -151,3 +151,14 @@
     padding: 8px;
   }
 }
+
+.arena-presence {
+  margin: 0;
+  padding: 0.65rem max(1rem, calc((100vw - 1440px) / 2));
+  border-bottom: 1px solid var(--cc-border);
+  color: var(--cc-secondary);
+  font-size: 0.9rem;
+}
+.arena-presence strong {
+  color: var(--cc-text);
+}

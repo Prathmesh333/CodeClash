@@ -81,18 +81,21 @@ export default function LegalPage() {
                 device storage relies on your choice in Cookie settings.
               </p>
               <p>
-                We do not sell personal data or use it for advertising. There are no analytics
-                trackers or marketing mail subscriptions in this release. We do not send your code
-                to an AI provider.
+                We do not sell personal data or use it for advertising. We use cookie-free
+                Cloudflare Web Analytics to measure visits, page views and page performance outside
+                the EU/EEA. Visits are not an exact count of unique people. Browser blockers may
+                prevent collection. We do not offer marketing mail subscriptions. We do not send
+                your code to an AI provider.
               </p>
             </Section>
             <Section title="What other players can see">
               <p>
-                Your username, avatar color, rating, and statistics may appear in matches and the
-                public leaderboard. Match participants can see their shared result. Your bio is
-                currently shown in your own profile editor. Local Python code drafts and browser
-                execution output stay on your device unless you deliberately send them to a server
-                feature.
+                Your connection contributes to an aggregate online count while signed in. We do not
+                display a list of online accounts. Your username, avatar color, rating, and
+                statistics may appear in matches and the public leaderboard. Match participants can
+                see their shared result. Your bio is currently shown in your own profile editor.
+                Local Python code drafts and browser execution output stay on your device unless you
+                deliberately send them to a server feature.
               </p>
             </Section>
             <Section title="Services we use">
@@ -158,8 +161,9 @@ export default function LegalPage() {
             <p>
               Cookies are small browser records. Local storage saves information on your device
               across visits; session storage lasts for the browser tab. We use essential sign-in
-              storage and offer an optional setting for saved themes and drafts. No analytics or
-              advertising trackers are installed.
+              storage and offer an optional setting for saved themes and drafts. Cloudflare Web
+              Analytics measures visits without analytics cookies outside the EU/EEA. We do not use
+              advertising trackers.
             </p>
             <Section title="Essential sign-in and match storage">
               <div className="legal-table">

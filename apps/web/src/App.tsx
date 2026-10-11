@@ -1,3 +1,4 @@
+import Presence from './Presence';
 import AuthPage from './AuthPage';
 import SiteFooter from './SiteFooter';
 import { readDraft, saveDraft, useStorageChoice } from './storage';
@@ -341,6 +342,7 @@ export default function App() {
           )}
         </div>
       </header>
+      <Presence userId={user.id} />
       {profileOpen && user && (
         <ProfileDialog
           user={user}

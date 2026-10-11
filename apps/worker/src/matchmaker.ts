@@ -12,12 +12,72 @@ type Ticket = {
 };
 export class MatchmakerDO extends DurableObject<Env> {
   private statusWindows = new Map<string, { start: number; count: number }>();
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping', 'pong'));
+  }
+  private async broadcastPresence(excluded?: WebSocket) {
+    const now = Date.now();
+    const ids = new Set<string>();
+    const sockets = this.ctx.getWebSockets().filter((ws) => ws !== excluded);
+    if (!sockets.length) return;
+    for (const ws of sockets) {
+      const a = ws.deserializeAttachment() as { id: string; expires: number; connected: number };
+      const seen = this.ctx.getWebSocketAutoResponseTimestamp(ws)?.getTime() ?? a.connected;
+      if (a.expires <= now || now - seen > 180000) {
+        ws.close(1000, 'Presence expired');
+        continue;
+      }
+      ids.add(a.id);
+    }
+    const tickets = (await this.ctx.storage.get<Record<string, Ticket>>('tickets')) ?? {};
+    const looking = Object.values(tickets).filter(
+      (t) => !t.matchId && now - t.heartbeat <= 30000 && now - t.joinedAt < 120000,
+    ).length;
+    const message = JSON.stringify({ online: ids.size, looking });
+    for (const ws of sockets) {
+      try {
+        const a = ws.deserializeAttachment();
+        if (ids.has(a.id) && a.last !== message) {
+          ws.send(message);
+          ws.serializeAttachment({ ...a, last: message });
+        }
+      } catch {
+        ws.close(1011, 'Connection unavailable');
+      }
+    }
+  }
+  async webSocketMessage(ws: WebSocket) {
+    ws.close(1008, 'Unsupported message');
+  }
+  async webSocketClose(ws: WebSocket, code: number) {
+    ws.close(code === 1005 || code === 1006 ? 1000 : code);
+    await this.broadcastPresence(ws);
+  }
+  async webSocketError(ws: WebSocket) {
+    ws.close(1011);
+    await this.broadcastPresence(ws);
+  }
   async fetch(req: Request) {
+    if (new URL(req.url).pathname === '/presence') {
+      const id = req.headers.get('X-Player');
+      const expires = Number(req.headers.get('X-Session-Expires'));
+      if (!id || expires <= Date.now() || !Number.isFinite(expires)) return json({}, 401);
+      if (this.ctx.getWebSockets().length >= 1000 || this.ctx.getWebSockets(id).length >= 5)
+        return json({ message: 'Too many connections.' }, 429);
+      const pair = new WebSocketPair();
+      this.ctx.acceptWebSocket(pair[1], [id]);
+      pair[1].serializeAttachment({ id, expires, connected: Date.now() });
+      await this.broadcastPresence();
+      return new Response(null, { status: 101, webSocket: pair[0] });
+    }
     // Errors must be caught inside the callback: workerd does not route a rejected
     // blockConcurrencyWhile callback back to the awaiting request's try/catch.
     return this.ctx.blockConcurrencyWhile(async () => {
       try {
-        return await this.queue(req);
+        const response = await this.queue(req);
+        await this.broadcastPresence();
+        return response;
       } catch (error) {
         if (error instanceof ApiError)
           return json({ code: error.code, message: error.message }, error.status);
@@ -278,6 +338,7 @@ export class MatchmakerDO extends DurableObject<Env> {
           }
         }
         await this.ctx.storage.put('tickets', tickets);
+        await this.broadcastPresence();
         if (Object.keys(tickets).length) await this.ctx.storage.setAlarm(now + 10000);
       } catch (error) {
         console.error(

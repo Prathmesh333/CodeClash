@@ -3,15 +3,14 @@
   "name": "ranked-dsa-staging",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-01",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "APP_ENV": "staging",
     "APP_ORIGIN": "https://code-clash.com",
     "JUDGE_ENABLED": "false",
     "TEST_EVIDENCE": "false",
-    "CASUAL_WASM": "true"
+    "CASUAL_WASM": "true",
+    "WEB_ANALYTICS_TOKEN": "42b3e2b53e5343faa2fded01e17a7450"
   },
   "d1_databases": [
     {
@@ -36,10 +35,7 @@
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": [
-        "MatchmakerDO",
-        "MatchDO"
-      ]
+      "new_sqlite_classes": ["MatchmakerDO", "MatchDO"]
     }
   ],
   "observability": {
@@ -61,8 +57,6 @@
     }
   ],
   "triggers": {
-    "crons": [
-      "0 * * * *"
-    ]
+    "crons": ["0 * * * *"]
   }
 }

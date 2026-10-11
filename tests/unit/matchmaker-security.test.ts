@@ -9,11 +9,22 @@ vi.mock('cloudflare:workers', () => ({
     }
   },
 }));
+vi.stubGlobal(
+  'WebSocketRequestResponsePair',
+  class {
+    constructor(
+      public request: string,
+      public response: string,
+    ) {}
+  },
+);
 import { MatchmakerDO } from '../../apps/worker/src/matchmaker';
 function fixture(tickets: Record<string, unknown> = {}) {
   const records = new Map<string, unknown>([['tickets', tickets]]);
   const get = vi.fn(async (key: string) => structuredClone(records.get(key)));
   const ctx: any = {
+    getWebSockets: () => [],
+    setWebSocketAutoResponse: vi.fn(),
     blockConcurrencyWhile: async (fn: any) => fn(),
     storage: {
       get,

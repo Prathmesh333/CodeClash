@@ -73,3 +73,9 @@ CodeClash began as **Ranked DSA**; some infrastructure names and original docume
 
 See the [development guide](DEVELOPMENT.md) to run the project and verify changes. Report bugs and suggest improvements through [GitHub issues](https://github.com/Prathmesh333/CodeClash/issues). Include the steps to reproduce a bug, the browser used, and the expected behavior.
 - [Security review and reporting](SECURITY.md) — verified fixes, security boundaries, and remaining release gates.
+
+### Presence and visitor analytics
+
+Signed-in accounts see live Clashers online and looking-for-a-match counts. Multiple tabs count as one account. Presence uses hibernating matchmaking WebSockets with automatic heartbeats; counts change on connection and queue events. Disconnected or stale sockets are excluded; background browser suspension may delay updates. This is current availability, not historical traffic.
+
+Cookie-free Cloudflare Web Analytics tracks visits and page views outside the EU/EEA. Browser blockers may prevent collection; visits are not unique people. View private statistics in [Cloudflare Web Analytics](https://dash.cloudflare.com/7447e0e5c2ec96ece6059c89855c639f/web-analytics/overview?siteTag~in=20b0c76547d24ab8b85c27e529425e0d&excludeBots=Yes). The public beacon token is configured only in staging; local environments do not collect analytics.

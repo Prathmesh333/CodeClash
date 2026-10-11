@@ -15,6 +15,7 @@ export interface Env {
   GITHUB_CLIENT_ID?: string;
   GITHUB_CLIENT_SECRET?: string;
   TEST_EVIDENCE?: string;
+  WEB_ANALYTICS_TOKEN?: string;
 }
 export const json = (data: unknown, status = 200) =>
   Response.json(data, { status, headers: { 'Cache-Control': 'no-store' } });
