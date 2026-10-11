@@ -19,6 +19,11 @@ export function BrandSpinner({ label }: { label: string }) {
 export default function BrandReveal() {
   const root = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
+  const [introComplete, setIntroComplete] = useState(false);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setIntroComplete(true), 2150);
+    return () => window.clearTimeout(timer);
+  }, []);
   useEffect(() => {
     let intersecting = true;
     const update = () => setVisible(intersecting && !document.hidden);
@@ -34,11 +39,14 @@ export default function BrandReveal() {
     };
   }, []);
   return (
-    <div ref={root} className={`brand-reveal ${visible ? '' : 'is-paused'}`}>
+    <div
+      ref={root}
+      className={`brand-reveal ${visible ? '' : 'is-paused'} ${introComplete ? 'intro-complete' : ''}`}
+    >
       <div className="brand-reveal-stage">
         <div className="brand-reveal-symbol-wrap" aria-hidden="true">
-          <div className="brand-reveal-frame" />
           <svg className="brand-reveal-symbol" viewBox="0 0 132 92">
+            <path className="brand-reveal-frame" d="M70 6 47 86H63L86 6Z" />
             <g className="brand-reveal-turn">
               <path className="brand-reveal-left" d="M49 18 13 46 49 74 49 59 32 46 49 33Z" />
               <path className="brand-reveal-slash" d="M70 6 47 86H63L86 6Z" />
