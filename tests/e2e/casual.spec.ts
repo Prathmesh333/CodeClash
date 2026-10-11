@@ -14,7 +14,7 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
       await page.goto('/app');
       await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
       await page.getByRole('button', { name: new RegExp(name) }).click();
-      await expect(page.getByRole('button', { name: new RegExp(name + ' Sign out') })).toBeVisible({
+      await expect(page.getByRole('button', { name: 'Settings', exact: true })).toBeVisible({
         timeout: 15000,
       });
       await page.getByRole('button', { name: 'Find a casual match', exact: true }).click();
@@ -35,6 +35,7 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
     }
     await expect(pa.locator('.monaco-editor')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
     await pa.screenshot({ path: 'artifacts/match-light.png', fullPage: true });
+    await pa.getByRole('button', { name: 'Settings', exact: true }).click();
     await pa.getByRole('button', { name: 'Change theme' }).click();
     await pa
       .getByRole('dialog', { name: 'Make the arena yours.' })
@@ -49,6 +50,7 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
       .getByRole('dialog', { name: 'Make the arena yours.' })
       .getByRole('button', { name: 'Done', exact: true })
       .click();
+    await pa.getByRole('button', { name: 'The arena', exact: true }).click();
 
     await enter('print("wrong")');
     await pa.getByRole('button', { name: 'Check & finish' }).click();

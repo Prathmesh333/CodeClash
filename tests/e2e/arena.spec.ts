@@ -31,7 +31,7 @@ test('two users pair, ready, reconnect, see unavailable judge honestly, and pers
       await page.goto('/app');
       await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
       await page.getByRole('button', { name: new RegExp(name) }).click();
-      await expect(page.getByRole('button', { name: new RegExp(name + ' Sign out') })).toBeVisible({
+      await expect(page.getByRole('button', { name: 'Settings', exact: true })).toBeVisible({
         timeout: 15000,
       });
     }

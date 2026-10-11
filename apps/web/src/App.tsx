@@ -6,8 +6,7 @@ import AuthPage from './AuthPage';
 import SiteFooter from './SiteFooter';
 import { readDraft, saveDraft, useStorageChoice } from './storage';
 import ProfileDialog from './ProfileDialog';
-import { useTheme } from './themes';
-import ThemePicker from './ThemePicker';
+import Settings from './Settings';
 import Dashboard from './Dashboard';
 import { usePythonRun, PythonResults } from './python/usePythonRun';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
@@ -38,7 +37,7 @@ type History = {
   finished_at: number;
   outcome_json: string;
 };
-type Page = 'arena' | 'leaderboard' | 'history' | 'practice';
+type Page = 'arena' | 'leaderboard' | 'history' | 'practice' | 'settings';
 const icons = {
   arena: (
     <>
@@ -113,7 +112,6 @@ function RankBadge({ small = false }: { small?: boolean }) {
   );
 }
 export default function App() {
-  const theme = useTheme();
   const [profileOpen, setProfileOpen] = useState(false);
   const promptedProfile = useRef<string | null>(null);
   const [user, setUser] = useState<User | null>(null),
@@ -136,13 +134,14 @@ export default function App() {
       ? location.pathname === '/register'
         ? 'Join'
         : 'Sign in'
-      : matchId
+      : matchId && page === 'arena'
         ? 'Match'
         : {
             arena: 'Arena',
             practice: 'Practice',
             leaderboard: 'Leaderboard',
             history: 'Match history',
+            settings: 'Settings',
           }[page];
     document.title = `${title} | CodeClash`;
   }, [loading, user, page, matchId]);
@@ -327,46 +326,13 @@ export default function App() {
           ))}
         </nav>
         <div className="topbar-right">
-          <ThemePicker />
-          <span className="language-pill">
-            <span className="python-dot" />
-            Python only
-          </span>
-          {user && (
-            <button
-              className="button secondary profile-trigger"
-              onClick={() => setProfileOpen(true)}
-              aria-label="Edit profile"
-            >
-              Profile
-            </button>
-          )}
-          {user ? (
-            <button
-              className="account-button"
-              onClick={() =>
-                void action(async () => {
-                  await api('/auth/logout', {});
-                  clearDrafts();
-                  setUser(null);
-                  setMatchId(null);
-                  setQueue({ state: 'IDLE' });
-                  location.assign('/login');
-                })
-              }
-              title="Sign out"
-            >
-              <span className={`avatar avatar-${user.avatar_color ?? 'blue'}`}>
-                {(user.profile_complete === 0 ? 'You' : user.username).slice(0, 2).toUpperCase()}
-              </span>
-              <span>{user.profile_complete === 0 ? 'Your account' : user.username}</span>
-              <span className="logout-label">Sign out</span>
-            </button>
-          ) : (
-            <button className="button small secondary" onClick={() => location.assign('/login')}>
-              Sign in
-            </button>
-          )}
+          <button
+            className="button secondary"
+            aria-current={page === 'settings' ? 'page' : undefined}
+            onClick={() => setPage('settings')}
+          >
+            Settings
+          </button>
         </div>
       </header>
       <Presence userId={user.id} />
@@ -415,6 +381,22 @@ export default function App() {
               <span className="spinner" />
               Connecting to the arena…
             </div>
+          ) : page === 'settings' ? (
+            <Settings
+              user={user}
+              busy={busy}
+              editProfile={() => setProfileOpen(true)}
+              signOut={() =>
+                void action(async () => {
+                  await api('/auth/logout', {});
+                  clearDrafts();
+                  setUser(null);
+                  setMatchId(null);
+                  setQueue({ state: 'IDLE' });
+                  location.assign('/login');
+                })
+              }
+            />
           ) : page === 'practice' ? (
             <Suspense fallback={<BrandSpinner label="Loading practice…" />}>
               <Practice userId={user.id} />

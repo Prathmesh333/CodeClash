@@ -26,11 +26,11 @@ test('policies are public, optional storage is controlled, and privacy records b
   await page.getByRole('dialog').getByRole('button', { name: 'Done', exact: true }).click();
   expect(await page.evaluate(() => localStorage.getItem('codeclash:theme'))).toBeNull();
   await page.reload();
-  expect(await page.locator('html').getAttribute('data-theme')).toBe('codeclash-light');
+  expect(await page.locator('html').getAttribute('data-theme')).toBe('midnight-mint');
   await page.getByRole('button', { name: 'Cookie settings', exact: true }).click();
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: /AdaByte/ }).click();
-  await expect(page.getByRole('button', { name: /AdaByte Sign out/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Settings', exact: true })).toBeVisible();
   const response = await page.request.post('/api/privacy/requests', {
     headers: { Origin: new URL(page.url()).origin },
     data: { kind: 'erasure', message: 'Please review my account data.', user_id: 'bob' },

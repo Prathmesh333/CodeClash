@@ -15,6 +15,7 @@ test('motion reaches sign-in, navigation and dialogs without delaying controls',
   ).toBe('surface-arrive');
   await page.getByRole('button', { name: 'Leaderboard', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Leaderboard', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await page.getByRole('button', { name: 'Change theme' }).click();
   await expect(page.locator('.theme-dialog')).toBeVisible();
   expect(

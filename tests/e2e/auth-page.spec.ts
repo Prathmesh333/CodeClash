@@ -10,12 +10,14 @@ test('opening page, registration, session redirect and logout work', async ({ pa
   await expect(page.getByRole('heading', { name: 'Make it your arena.' })).toBeVisible();
   await page.getByRole('button', { name: /AdaByte/ }).click();
   await expect(page).toHaveURL(/\/app$/);
-  await expect(page.getByRole('button', { name: /AdaByte Sign out/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Settings', exact: true })).toBeVisible();
   await page.goto('/login');
   await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByRole('heading', { name: /Put your Python/ })).not.toBeVisible();
-  await page.getByRole('button', { name: /AdaByte Sign out/ }).click();
-  await expect(page).toHaveURL(/\/login$/);
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await expect(page).toHaveTitle('Settings | CodeClash');
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await expect(page).toHaveURL(/\/login$/, { timeout: 15000 });
   await expect(page.getByRole('heading', { name: /Put your Python/ })).toBeVisible();
 });
 

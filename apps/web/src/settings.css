@@ -1,0 +1,44 @@
+.settings-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 0;
+  color: var(--cc-text);
+}
+.settings-page h1 {
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 700;
+}
+.settings-intro {
+  margin: 12px 0 32px;
+  color: var(--cc-secondary);
+}
+.settings-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  padding: 28px 0;
+  border-top: 1px solid var(--cc-border);
+}
+.settings-section h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.settings-section p {
+  color: var(--cc-secondary);
+  line-height: 1.6;
+  max-width: 560px;
+  overflow-wrap: anywhere;
+}
+.settings-section .button {
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .settings-section {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px 0;
+  }
+}
