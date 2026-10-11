@@ -69,7 +69,7 @@ test('two users pair, ready, reconnect, see unavailable judge honestly, and pers
     }
     async function run(source: string, verdict: string) {
       await enter(source);
-      await pa.getByRole('button', { name: 'Run', exact: true }).click();
+      await pa.getByRole('button', { name: 'Run examples', exact: true }).click();
       await expect(local.locator('article').first()).toContainText(verdict, { timeout: 60000 });
       await expect(pa.getByText('Live connection', { exact: true })).toBeVisible();
     }
@@ -81,7 +81,7 @@ answers = json.loads(${JSON.stringify(JSON.stringify(mapping))})
 sys.stdout.write(answers[sys.stdin.read().strip()])`,
       'Passed',
     );
-    await expect(local.locator('article')).toHaveCount(examples.length);
+    await expect(local.getByRole('tab')).toHaveCount(examples.length);
     await run('print("local-output")', 'Wrong answer');
     await expect(local).toContainText('local-output');
     await run('import sys; sys.stdout.write("no-newline")', 'Wrong answer');
@@ -97,7 +97,7 @@ sys.stdout.write(answers[sys.stdin.read().strip()])`,
     await run('print("x" * 20000)', 'Output limit');
     await run('while True: pass', 'Time limit');
     await enter('while True: pass');
-    await pa.getByRole('button', { name: 'Run', exact: true }).click();
+    await pa.getByRole('button', { name: 'Run examples', exact: true }).click();
     await pa.getByRole('button', { name: 'Stop run', exact: true }).click();
     await expect(local).toContainText('Run stopped.');
     await run(

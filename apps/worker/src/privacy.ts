@@ -29,36 +29,41 @@ export async function requestPrivacy(env: Env, user: User, value: unknown) {
   return json({ request }, 201);
 }
 export async function exportData(env: Env, user: User, offset: number) {
-  const limit = 1000;
+  // Source-bearing records are paged conservatively to bound Worker memory.
+  const limit = 100;
   const rows = async (sql: string) =>
     (
       await env.DB.prepare(sql)
         .bind(user.id, limit + 1, offset)
         .all()
     ).results;
-  const [submissions, exposure, requests, matches, sessions, practiceProgress] = await Promise.all([
-    rows(
-      'SELECT id,match_id,kind,language,source,verdict,runtime_ms,peak_memory_bytes,created_at FROM submissions WHERE user_id=? ORDER BY created_at,id LIMIT ? OFFSET ?',
-    ),
-    rows(
-      'SELECT problem_id,revealed_at FROM exposure WHERE user_id=? ORDER BY problem_id LIMIT ? OFFSET ?',
-    ),
-    rows(
-      'SELECT id,kind,message,status,response,created_at,resolved_at FROM privacy_requests WHERE user_id=? ORDER BY created_at,id LIMIT ? OFFSET ?',
-    ),
-    (async () =>
-      (
-        await env.DB.prepare(
-          'SELECT id,problem_id,mode,created_at,finished_at,outcome_json FROM matches WHERE player_a=? OR player_b=? ORDER BY created_at,id LIMIT ? OFFSET ?',
-        )
-          .bind(user.id, user.id, limit + 1, offset)
-          .all()
-      ).results)(),
-    rows('SELECT expires_at FROM sessions WHERE user_id=? ORDER BY expires_at LIMIT ? OFFSET ?'),
-    rows(
-      'SELECT problem_id,source,status,updated_at FROM practice_progress WHERE user_id=? ORDER BY problem_id LIMIT ? OFFSET ?',
-    ),
-  ]);
+  const [submissions, exposure, requests, matches, sessions, practiceProgress, practiceAttempts] =
+    await Promise.all([
+      rows(
+        'SELECT id,match_id,kind,language,source,verdict,runtime_ms,peak_memory_bytes,created_at FROM submissions WHERE user_id=? ORDER BY created_at,id LIMIT ? OFFSET ?',
+      ),
+      rows(
+        'SELECT problem_id,revealed_at FROM exposure WHERE user_id=? ORDER BY problem_id LIMIT ? OFFSET ?',
+      ),
+      rows(
+        'SELECT id,kind,message,status,response,created_at,resolved_at FROM privacy_requests WHERE user_id=? ORDER BY created_at,id LIMIT ? OFFSET ?',
+      ),
+      (async () =>
+        (
+          await env.DB.prepare(
+            'SELECT id,problem_id,mode,created_at,finished_at,outcome_json FROM matches WHERE player_a=? OR player_b=? ORDER BY created_at,id LIMIT ? OFFSET ?',
+          )
+            .bind(user.id, user.id, limit + 1, offset)
+            .all()
+        ).results)(),
+      rows('SELECT expires_at FROM sessions WHERE user_id=? ORDER BY expires_at LIMIT ? OFFSET ?'),
+      rows(
+        'SELECT problem_id,source,status,execution_mode,updated_at FROM practice_progress WHERE user_id=? ORDER BY problem_id LIMIT ? OFFSET ?',
+      ),
+      rows(
+        'SELECT id,problem_id,source,execution_mode,results_json,created_at FROM practice_attempts WHERE user_id=? ORDER BY created_at,id LIMIT ? OFFSET ?',
+      ),
+    ]);
   const profile = await env.DB.prepare(
     'SELECT id,auth_subject,username,bio,avatar_color,rating,wins,losses,draws,games_played,created_at FROM users WHERE id=?',
   )
@@ -82,12 +87,21 @@ export async function exportData(env: Env, user: User, offset: number) {
     }),
     sessions: sessions.slice(0, limit),
     practiceProgress: practiceProgress.slice(0, limit),
+    practiceAttempts: practiceAttempts.slice(0, limit),
   };
   return json({
     exportedAt: new Date().toISOString(),
     profile,
     collections,
-    nextOffset: [submissions, exposure, requests, matches, sessions].some((r) => r.length > limit)
+    nextOffset: [
+      submissions,
+      exposure,
+      requests,
+      matches,
+      sessions,
+      practiceProgress,
+      practiceAttempts,
+    ].some((r) => r.length > limit)
       ? offset + limit
       : null,
   });

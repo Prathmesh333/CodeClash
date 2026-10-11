@@ -40,7 +40,7 @@ if (action === 'seed') {
   const sql = problems
     .map(
       (p) =>
-        `INSERT OR IGNORE INTO problems(id,version,public_json,private_json) VALUES (${quote(p.id)},${p.version},${quote(JSON.stringify(publicProblem(p)))},${quote(JSON.stringify([...p.examples.map(({ input, output }) => ({ input, output })), ...p.tests]))});`,
+        `INSERT OR IGNORE INTO problems(id,version,public_json,private_json) VALUES (${quote(p.id)},${p.version},${quote(JSON.stringify(publicProblem(p)))},${quote(JSON.stringify([...p.examples.map(({ input, output }) => ({ input, output })), ...p.tests]))});\nINSERT OR IGNORE INTO problem_editorials(problem_id,version,editorial_json) VALUES (${quote(p.id)},${p.version},${quote(JSON.stringify({ ...p.editorial, code: p.referenceSolution }))});`,
     )
     .join('\n');
   await mkdir('work', { recursive: true });

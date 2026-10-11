@@ -1,0 +1,146 @@
+.split-pane {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  gap: 0;
+}
+
+.split-horizontal {
+  grid-template-columns: minmax(0, var(--split-ratio)) 12px minmax(0, 1fr);
+  height: 760px;
+  max-height: 85vh;
+}
+
+.split-vertical {
+  grid-template-rows: minmax(0, var(--split-ratio)) 12px minmax(0, 1fr);
+  height: 100%;
+}
+
+.split-first,
+.split-second {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.split-vertical > .split-first {
+  overflow: hidden;
+}
+
+.split-handle {
+  background: var(--cc-border);
+  position: relative;
+  touch-action: none;
+  cursor: col-resize;
+  border: 4px solid var(--cc-bg);
+}
+
+.split-vertical > .split-handle {
+  cursor: row-resize;
+}
+
+.split-handle:hover,
+.split-handle:focus-visible {
+  background: var(--cc-lime);
+  outline: 2px solid var(--cc-secondary);
+  outline-offset: 0;
+}
+
+.case-tabs,
+.workspace-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.case-tabs button,
+.workspace-tabs button {
+  padding: 9px 12px;
+  background: var(--cc-surface);
+  color: var(--cc-text);
+  border: 1px solid var(--cc-border);
+  border-radius: 6px;
+}
+
+.case-tabs button[aria-selected='true'],
+.case-tabs button[aria-pressed='true'],
+.workspace-tabs button[aria-pressed='true'] {
+  border-color: var(--cc-lime);
+  box-shadow: inset 0 -2px var(--cc-lime);
+}
+
+.local-results pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.runner-console {
+  padding: 12px;
+}
+
+.runner-console textarea {
+  display: block;
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+  background: var(--cc-surface);
+  color: var(--cc-text);
+  border: 1px solid var(--cc-border);
+  padding: 10px;
+  font-family: monospace;
+}
+
+.runner-console .local-results {
+  margin-top: 12px;
+}
+
+.practice-workspace .practice-editor {
+  height: 100%;
+  margin: 0;
+}
+
+.practice-workspace .practice-statement {
+  min-height: 100%;
+  border-radius: 8px;
+}
+
+.split-pane .editor-panel {
+  height: 100%;
+}
+
+.split-pane .editor-container {
+  height: calc(100% - 170px);
+  min-height: 280px;
+}
+
+@media (max-width: 1000px) {
+  .split-horizontal {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    max-height: none;
+    gap: 16px;
+  }
+  .split-horizontal > .split-handle {
+    display: none;
+  }
+  .split-horizontal > .split-first,
+  .split-horizontal > .split-second {
+    overflow: visible;
+  }
+  .split-horizontal > .split-second {
+    height: 650px;
+  }
+  .split-vertical {
+    height: 650px;
+  }
+  .split-pane .editor-container {
+    height: 400px;
+  }
+}
+
+.split-pane .problem-panel {
+  height: 100%;
+  overflow: auto;
+}

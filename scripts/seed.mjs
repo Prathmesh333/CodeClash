@@ -18,6 +18,9 @@ for (const problem of problems) {
   lines.push(
     `INSERT INTO problems(id,public_json,private_json) VALUES (${quote(problem.id)},${quote(JSON.stringify(pub))},${quote(JSON.stringify([...problem.examples.map((e) => ({ input: e.input, output: e.output })), ...tests]))}) ON CONFLICT(id) DO UPDATE SET private_json=excluded.private_json WHERE problems.version=1 AND problems.public_json=excluded.public_json;`,
   );
+  lines.push(
+    `INSERT OR IGNORE INTO problem_editorials(problem_id,version,editorial_json) VALUES (${quote(problem.id)},${problem.version},${quote(JSON.stringify({ ...problem.editorial, code: problem.referenceSolution }))});`,
+  );
 }
 await mkdir('work', { recursive: true });
 await writeFile('work/seed.sql', lines.join('\n'));

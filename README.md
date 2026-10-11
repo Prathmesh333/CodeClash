@@ -87,3 +87,13 @@ The Solo practice tab offers 153 original CodeClash questions with topic/difficu
 This is an original interview foundations bank, not a copy or complete one-to-one implementation of NeetCode 150. Links to the NeetCode roadmap and LeetCode library are available in practice. Existing 20 multiplayer problems remain eligible for duels; 133 new questions are practice-only until independent fixture and multiplayer fairness review.
 
 Run `pnpm test:problems` to verify reference output consistency for all fixtures, and `python scripts/check-practice-oracles.py` for independent checks of 33 algorithms. The authoring script is project-owned code only; never run player submissions in these scripts. The server judge remains disabled.
+
+### Coding workspace
+
+Practice and duels have resizable panels (drag the divider, or focus it and use the arrow keys). Small screens use a stacked layout. Example results use case tabs; custom input runs independently of progress and match completion. Python errors show a concise message and expandable traceback.
+
+The 133 new JSON practice questions default to a `solve(data)` function. The isolated runner handles JSON stdin/stdout. Full-script mode remains available, and existing saved drafts retain their original script mode.
+
+Solo practice saves the latest 50 example-run attempts per account and problem, including the source and browser-reported result summaries. Older attempts are removed as new attempts are recorded. Custom inputs and outputs are not stored. Users can load a previous attempt, view reference editorials and export their history through the account privacy export. Editorial access is blocked while the account has an unfinished duel. Browser results remain unverified; no rating changes occur.
+
+The shared execution adapter keeps code-format conversion separate from the isolated runtime. A future server judge must produce authoritative results from private tests; local success is never proof of ranked acceptance.

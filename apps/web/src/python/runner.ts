@@ -8,15 +8,16 @@ export type LocalResult = {
   error: string;
   runtimeMs: number;
   expected: string;
+  input: string;
+  compared: boolean;
 };
 export type Progress = (message: string) => void;
-
 function runOne(
   source: string,
   input: string,
   signal: AbortSignal,
   progress: Progress,
-): Promise<Omit<LocalResult, 'expected'>> {
+): Promise<Omit<LocalResult, 'expected' | 'input' | 'compared'>> {
   return new Promise((resolve, reject) => {
     const frame = document.createElement('iframe');
     frame.hidden = true;
@@ -105,12 +106,12 @@ function runOne(
     document.body.appendChild(frame);
   });
 }
-
 export async function runExamples(
   source: string,
   examples: Example[],
   signal: AbortSignal,
   progress: Progress,
+  compare = true,
 ): Promise<LocalResult[]> {
   if (new TextEncoder().encode(source).length > 65536)
     throw new Error('Code must be at most 64 KiB.');
@@ -126,11 +127,14 @@ export async function runExamples(
     results.push({
       ...result,
       verdict:
+        compare &&
         result.verdict === 'PASS' &&
         normalizeOutput(result.output) !== normalizeOutput(example.output)
           ? 'WA'
           : result.verdict,
       expected: example.output,
+      input: example.input,
+      compared: compare,
     });
     if (result.verdict === 'TLE' || result.verdict === 'OLE') break;
   }

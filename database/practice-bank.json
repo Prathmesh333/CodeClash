@@ -124,7 +124,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    return len(set(data)) != len(data)\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is an integer array. Return true if any value occurs twice. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Insert each value into a set. If a value is already present, there is a duplicate. The reference uses the equivalent comparison between the set size and the input length.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -256,7 +256,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    return sorted(set(data))\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is an integer array. Return distinct values sorted in ascending order. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "A set removes duplicate values. Sort the remaining values so the answer has the required ascending order.",
       "timeComplexity": "O(n log n)",
       "spaceComplexity": "O(n)"
     },
@@ -388,7 +388,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    return sorted([x,c] for x,c in Counter(data).items())\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is an integer array. Return [value,count] pairs ordered by value. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Count occurrences in a dictionary, then emit the value-count pairs in sorted value order. Keeping counts separate from output ordering handles negative values and duplicates.",
       "timeComplexity": "O(n log n)",
       "spaceComplexity": "O(n)"
     },
@@ -520,7 +520,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    out=[];total=0\n    for x in data:\n        total+=x;out.append(total)\n    return out\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is an integer array. Return its inclusive prefix sums. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Maintain a running sum. After reading each element, append the current sum; each prefix therefore includes the current element exactly once.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -652,7 +652,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    out=[1]*len(data);p=1\n    for i,x in enumerate(data):\n        out[i]=p;p*=x\n    p=1\n    for i in range(len(data)-1,-1,-1):\n        out[i]*=p;p*=data[i]\n    return out\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is an integer array. Return the product of every other element for each position. Empty input returns []. Do not use division. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Build prefix products from the left and suffix products from the right. At each position, multiply the products on either side. This avoids division and also handles zero values.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n) output; O(1) auxiliary"
     },
@@ -784,7 +784,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    s=set(data);best=0\n    for x in s:\n        if x-1 not in s:\n            end=x\n            while end in s:end+=1\n            best=max(best,end-x)\n    return best\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is an integer array. Return the length of its longest consecutive-value sequence, ignoring duplicates. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Store values in a set. Start a streak only when the preceding integer is absent, then walk forward until the streak ends. Every distinct value participates in at most one forward walk.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -2096,7 +2096,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    out=[0]*len(data);stack=[]\n    for i,x in enumerate(data):\n        while stack and data[stack[-1]]<x:\n            j=stack.pop();out[j]=i-j\n        stack.append(i)\n    return out\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is an integer array of readings. For each position return distance to next strictly greater value, or 0. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Keep unresolved indices in a decreasing temperature stack. A warmer reading resolves all smaller temperatures at the top; the index differences are their waiting times.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -2356,7 +2356,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    stack=[];best=0\n    for i,h in enumerate(data+[0]):\n        start=i\n        while stack and stack[-1][1]>h:\n            start,old=stack.pop();best=max(best,old*(i-start))\n        stack.append((start,h))\n    return best\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is nonnegative histogram heights of unit width. Return largest rectangular area. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Maintain a stack of increasing bar heights and their starting positions. When a shorter bar arrives, pop taller bars and compute rectangles ending at the current position. A final zero-height sentinel flushes remaining bars.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -2484,7 +2484,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    l=0;r=len(data)-1;lm=rm=total=0\n    while l<=r:\n        if lm<=rm:\n            lm=max(lm,data[l]);total+=lm-data[l];l+=1\n        else:\n            rm=max(rm,data[r]);total+=rm-data[r];r-=1\n    return total\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is nonnegative heights. Return total rainwater retained between bars of unit width. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Track the tallest wall on each side. Process the side with the lower bound, where trapped water is determined by that bound minus the current height. Move inward until the pointers meet.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(1)"
     },
@@ -3928,7 +3928,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    seen={};left=best=0\n    for i,ch in enumerate(data):\n        left=max(left,seen.get(ch,-1)+1);seen[ch]=i;best=max(best,i-left+1)\n    return best\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is a string. Return longest substring length with no repeated character. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Use a sliding window and record the last position of each character. When a character repeats inside the window, move its left boundary past that earlier position.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -7236,7 +7236,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    counts=Counter({0:1});total=answer=0\n    for x in data[\"values\"]:\n        total+=x;answer+=counts[total-data[\"k\"]];counts[total]+=1\n    return answer\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input has values and k. Return count of nonempty contiguous subarrays summing to k. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Track prefix sums and how often each has occurred. For a current sum s, every earlier prefix sum s-k identifies a subarray totaling k. Add those counts before recording s.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -8160,7 +8160,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    a=data[\"values\"];k=data[\"k\"];counts=Counter();left=best=0\n    for right,x in enumerate(a):\n        counts[x]+=1\n        while len(counts)>k:\n            y=a[left];counts[y]-=1;left+=1\n            if not counts[y]:del counts[y]\n        best=max(best,right-left+1)\n    return best\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input has values and positive k. Return longest contiguous subarray with at most k distinct values. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Extend a sliding window and keep character counts. While the number of distinct characters exceeds k, shrink from the left and remove zero counts. Record the largest valid window.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -8688,7 +8688,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    first={0:-1};total=best=0\n    for i,x in enumerate(data[\"values\"]):\n        total+=x\n        if total-data[\"k\"] in first:best=max(best,i-first[total-data[\"k\"]])\n        first.setdefault(total,i)\n    return best\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input has values and k. Return longest nonempty contiguous subarray length summing to k, or 0. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Record the earliest index of each prefix sum. If current sum minus target appeared earlier, the span between those positions totals the target. Retaining the earliest occurrence maximizes length.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -8820,7 +8820,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    latest={0:-1};total=0;best=math.inf\n    for i,x in enumerate(data[\"values\"]):\n        total+=x\n        if total-data[\"k\"] in latest:best=min(best,i-latest[total-data[\"k\"]])\n        latest[total]=i\n    return best if best<math.inf else 0\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input has values and k. Return shortest nonempty contiguous subarray length summing exactly to k, or 0. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "All values are positive, so expanding the window can only increase its sum. After reaching the target, shrink from the left while the window still meets the target, recording the shortest length.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
@@ -15328,7 +15328,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    out=[]\n    for a,b in sorted(data):\n        if out and a<=out[-1][1]:out[-1][1]=max(out[-1][1],b)\n        else:out.append([a,b])\n    return out\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is a list of closed intervals [start,end], start<end. Merge overlapping or touching intervals and return sorted merged intervals. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Sort intervals by start. Merge the next interval when it overlaps the current merged interval, extending the end as needed; otherwise start a new interval.",
       "timeComplexity": "O(n log n)",
       "spaceComplexity": "O(n)"
     },
@@ -15724,7 +15724,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    end=-math.inf;kept=0\n    for a,b in sorted(data,key=lambda p:p[1]):\n        if a>=end:kept+=1;end=b\n    return len(data)-kept\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is a list of half-open intervals [start,end]. Return smallest number of intervals to remove so none overlap. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Sort appointments by end time and greedily keep the next nonoverlapping interval. An earlier finishing choice leaves at least as much room for future intervals. Removed count is total minus kept count.",
       "timeComplexity": "O(n log n)",
       "spaceComplexity": "O(n)"
     },
@@ -15984,7 +15984,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    def linear(a):\n        x=y=0\n        for v in a:x,y=y,max(y,x+v)\n        return y\n    if len(data)<=1:return sum(data)\n    return max(linear(data[1:]),linear(data[:-1]))\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is a nonnegative reward array arranged in a circle. Pick nonadjacent positions for maximum sum; first and last are adjacent. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "The first and last positions cannot both be chosen. Solve the linear nonadjacent-reward problem twice, excluding the first position once and the last position once, then take the better answer.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n) slices"
     },
@@ -16116,7 +16116,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    target=data[\"k\"];dp=[0]+[target+1]*target\n    for s in range(1,target+1):\n        for c in data[\"values\"]:\n            if c<=s:dp[s]=min(dp[s],dp[s-c]+1)\n    return dp[-1] if dp[-1]<=target else -1\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input has values (positive coin denominations) and k (target >=0). Coins are unlimited; return minimum coins for k, or -1. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Let dp[s] be the fewest coins needed for sum s. Initialize zero to zero and other sums as unreachable. For every usable coin c, update dp[s] from dp[s-c]+1. Return -1 if the target stays unreachable.",
       "timeComplexity": "O(nk)",
       "spaceComplexity": "O(k)"
     },
@@ -16380,7 +16380,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    root={}\n    for word in data[\"words\"]:\n        node=root\n        for c in word:node=node.setdefault(c,{})\n        node[\"#\"]=node.get(\"#\",0)+1\n    node=root\n    for c in data[\"prefix\"]:\n        if c not in node:return 0\n        node=node[c]\n    def count(node):return node.get(\"#\",0)+sum(count(v) for k,v in node.items() if k!=\"#\")\n    return count(node)\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input has words (lowercase strings) and prefix. Return number of words starting with prefix, counting duplicates. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Insert words into a trie, with a terminal count preserving duplicates. Follow the requested prefix, then sum terminal counts in that subtree. A missing prefix edge means zero matches.",
       "timeComplexity": "O(total word characters)",
       "spaceComplexity": "O(total word characters)"
     },
@@ -16512,7 +16512,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    root={}\n    for word in data[\"words\"]:\n        node=root\n        for c in word:node=node.setdefault(c,{})\n        node[\"#\"]=True\n    node=root\n    for c in data[\"prefix\"]:\n        if c not in node:return []\n        node=node[c]\n    out=[]\n    def visit(node,word):\n        if \"#\" in node:out.append(word)\n        for c in sorted(k for k in node if k!=\"#\"):visit(node[c],word+c)\n    visit(node,data[\"prefix\"]);return out\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input has words and prefix. Return distinct words starting with prefix, sorted alphabetically. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Build a trie with terminal markers, follow the prefix, then visit child characters in sorted order. Emit a word at each terminal marker; this yields unique suggestions in lexical order.",
       "timeComplexity": "O(total word characters + output characters + trie child sorting)",
       "spaceComplexity": "O(total word characters)"
     },
@@ -16640,7 +16640,7 @@
     "starterCode": "import json\n\ndef solve(data):\n    # Return the answer for the JSON input described in the problem.\n    pass\n\ndata = json.loads(input())\nprint(json.dumps(solve(data), separators=(\",\", \":\")))\n",
     "referenceSolution": "import json, sys, math, bisect, heapq, itertools\nfrom collections import Counter, defaultdict, deque\ndef solve(data):\n    built={\"\"};best=\"\"\n    for word in sorted(data):\n        if word[:-1] in built:\n            built.add(word)\n            if len(word)>len(best):best=word\n    return best\ndata=json.loads(sys.stdin.readline())\nprint(json.dumps(solve(data),separators=(\",\",\":\")))\n",
     "editorial": {
-      "explanation": "Input is a list of lowercase words. Return longest word whose every nonempty prefix is also present; ties choose lexicographically smallest. Return empty string if none. The reference implementation maintains the intermediate state needed for this operation; see its stated complexity.",
+      "explanation": "Visit words in lexical order and maintain the set of buildable prefixes, starting with the empty string. A word is buildable when its immediate shorter prefix is buildable. Replace the best only for a strictly longer word, preserving the lexical tie-break.",
       "timeComplexity": "O(W log W * L)",
       "spaceComplexity": "O(total word characters)"
     },

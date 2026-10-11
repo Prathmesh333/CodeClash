@@ -36,7 +36,7 @@ export default function LegalPage() {
       </header>
       <main id="main" className="legal-page">
         <h1>{titles[path]}</h1>
-        <p className="legal-date">Updated 8 October 2026</p>
+        <p className="legal-date">Updated 11 October 2026</p>
         {path === '/privacy' && (
           <>
             <p>
@@ -49,6 +49,10 @@ export default function LegalPage() {
                 <li>
                   Account information: an account identifier from your chosen sign-in provider, your
                   username, optional bio, avatar color, and account creation date.
+                </li>
+                <li>
+                  Solo practice: saved source code, execution format, progress and browser-reported
+                  attempt summaries.
                 </li>
                 <li>
                   Match information: opponents, problem assignments, timing, outcomes, rating
@@ -75,11 +79,12 @@ export default function LegalPage() {
             <Section title="Why we use it">
               <p>
                 We use account and match information to provide sign-in, matchmaking, saved history,
-                competition results, and solo practice drafts and progress. Practice example results
-                are browser-reported and unverified. Where GDPR applies, this processing supports
-                the service you request under our terms. We use limited security and operational
-                information for our legitimate interests in preventing abuse and maintaining
-                reliability. Optional device storage relies on your choice in Cookie settings.
+                competition results, and solo practice drafts, progress and the latest 50 local
+                attempts per problem. Practice example results are browser-reported and unverified.
+                Where GDPR applies, this processing supports the service you request under our
+                terms. We use limited security and operational information for our legitimate
+                interests in preventing abuse and maintaining reliability. Optional device storage
+                relies on your choice in Cookie settings.
               </p>
               <p>
                 We do not sell personal data or use it for advertising. We use cookie-free
@@ -130,8 +135,11 @@ export default function LegalPage() {
                 ten minutes. Expiry prevents further use. Hourly maintenance removes expired sign-in
                 and rate-limit records; delays are possible during outages. Host log and backup
                 retention follows the configured Cloudflare service settings. Contact us for the
-                current settings. Code drafts remain on the device until cleared or optional storage
-                is disabled. Privacy requests remain until handled and retention is reviewed.
+                current settings. Duel drafts remain on the device until cleared or optional storage
+                is disabled. Solo drafts remain in your account. Practice retains the latest 50
+                example-run attempts per problem; new attempts replace older history entries.
+                Custom-run input and output are not stored. Privacy requests remain until handled
+                and retention is reviewed.
               </p>
             </Section>
             <Section title="Your choices and rights">

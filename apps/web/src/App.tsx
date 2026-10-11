@@ -1,4 +1,6 @@
 import Presence from './Presence';
+import SplitPane from './SplitPane';
+import CustomRun from './python/CustomRun';
 import AuthPage from './AuthPage';
 import SiteFooter from './SiteFooter';
 import { readDraft, saveDraft, useStorageChoice } from './storage';
@@ -935,134 +937,140 @@ function MatchView({
             </div>
           )}
           {game.problem && (
-            <div className="workspace">
-              <section className="problem-panel">
-                <div className="panel-tabs">
-                  <button
-                    className={tab === 'problem' ? 'selected' : ''}
-                    onClick={() => setTab('problem')}
-                  >
-                    Problem
-                  </button>
-                  <button
-                    className={tab === 'results' ? 'selected' : ''}
-                    onClick={() => setTab('results')}
-                  >
-                    Your submissions <span>{game.submissions.length}</span>
-                  </button>
-                </div>
-                {tab === 'problem' ? (
-                  <div className="problem-content">
-                    <div className="problem-tags">
-                      <span data-difficulty={game.problem.difficulty.toLowerCase()}>
-                        {game.problem.difficulty}
-                      </span>
-                      <span>{game.problem.topic}</span>
-                    </div>
-                    <h2>{game.problem.title}</h2>
-                    <p>{game.problem.statement}</p>
-                    <h3>Input</h3>
-                    <p>{game.problem.inputFormat}</p>
-                    <h3>Output</h3>
-                    <p>{game.problem.outputFormat}</p>
-                    {game.problem.examples.map((example, i) => (
-                      <div className="example" key={i}>
-                        <h3>Example {i + 1}</h3>
-                        <div>
-                          <label>INPUT</label>
-                          <pre>{example.input}</pre>
-                          <label>OUTPUT</label>
-                          <pre>{example.output}</pre>
-                        </div>
-                        {example.explanation && <p>{example.explanation}</p>}
-                      </div>
-                    ))}
-                    <h3>Constraints</h3>
-                    <ul>
-                      {game.problem.constraints.map((c) => (
-                        <li key={c}>{c}</li>
-                      ))}
-                    </ul>
+            <SplitPane
+              label="Resize duel problem and editor"
+              first={
+                <section className="problem-panel">
+                  <div className="panel-tabs">
+                    <button
+                      className={tab === 'problem' ? 'selected' : ''}
+                      onClick={() => setTab('problem')}
+                    >
+                      Problem
+                    </button>
+                    <button
+                      className={tab === 'results' ? 'selected' : ''}
+                      onClick={() => setTab('results')}
+                    >
+                      Your submissions <span>{game.submissions.length}</span>
+                    </button>
                   </div>
-                ) : (
-                  <div className="submissions-panel">
-                    <PythonResults run={localRun} />
-                    {!game.submissions.length ? (
-                      <div className="empty-state">
-                        <Icon name="code" />
-                        <h3>Test your first idea.</h3>
-                        <p>Run examples or submit a solution to see your results here.</p>
+                  {tab === 'problem' ? (
+                    <div className="problem-content">
+                      <div className="problem-tags">
+                        <span data-difficulty={game.problem.difficulty.toLowerCase()}>
+                          {game.problem.difficulty}
+                        </span>
+                        <span>{game.problem.topic}</span>
                       </div>
-                    ) : (
-                      [...game.submissions].reverse().map((s) => (
-                        <article className="submission" key={s.id}>
+                      <h2>{game.problem.title}</h2>
+                      <p>{game.problem.statement}</p>
+                      <h3>Input</h3>
+                      <p>{game.problem.inputFormat}</p>
+                      <h3>Output</h3>
+                      <p>{game.problem.outputFormat}</p>
+                      {game.problem.examples.map((example, i) => (
+                        <div className="example" key={i}>
+                          <h3>Example {i + 1}</h3>
                           <div>
-                            <strong className={s.verdict === 'AC' ? 'accepted' : ''}>
-                              {s.verdict === 'PENDING'
-                                ? 'Judging…'
-                                : s.verdict === 'JUDGE_ERROR'
-                                  ? 'Judge unavailable'
-                                  : s.verdict}
-                            </strong>
-                            <span>
-                              {s.kind === 'run' ? 'Public examples' : 'Hidden tests'} ·{' '}
-                              {new Date(s.receiptMs).toLocaleTimeString()}
-                            </span>
+                            <label>INPUT</label>
+                            <pre>{example.input}</pre>
+                            <label>OUTPUT</label>
+                            <pre>{example.output}</pre>
                           </div>
-                          {s.output && <pre>{s.output}</pre>}
-                        </article>
-                      ))
-                    )}
+                          {example.explanation && <p>{example.explanation}</p>}
+                        </div>
+                      ))}
+                      <h3>Constraints</h3>
+                      <ul>
+                        {game.problem.constraints.map((c) => (
+                          <li key={c}>{c}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="submissions-panel">
+                      <CustomRun source={source} run={localRun} disabled={!editable} />
+                      <PythonResults run={localRun} />
+                      {!game.submissions.length ? (
+                        <div className="empty-state">
+                          <Icon name="code" />
+                          <h3>Test your first idea.</h3>
+                          <p>Run examples or submit a solution to see your results here.</p>
+                        </div>
+                      ) : (
+                        [...game.submissions].reverse().map((s) => (
+                          <article className="submission" key={s.id}>
+                            <div>
+                              <strong className={s.verdict === 'AC' ? 'accepted' : ''}>
+                                {s.verdict === 'PENDING'
+                                  ? 'Judging…'
+                                  : s.verdict === 'JUDGE_ERROR'
+                                    ? 'Judge unavailable'
+                                    : s.verdict}
+                              </strong>
+                              <span>
+                                {s.kind === 'run' ? 'Public examples' : 'Hidden tests'} ·{' '}
+                                {new Date(s.receiptMs).toLocaleTimeString()}
+                              </span>
+                            </div>
+                            {s.output && <pre>{s.output}</pre>}
+                          </article>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </section>
+              }
+              second={
+                <section className="editor-panel">
+                  <div className="editor-toolbar">
+                    <span>
+                      <Icon name="code" /> solution.py
+                    </span>
+                    <span>
+                      Python 3 <span className="tiny-dot" />
+                    </span>
                   </div>
-                )}
-              </section>
-              <section className="editor-panel">
-                <div className="editor-toolbar">
-                  <span>
-                    <Icon name="code" /> solution.py
-                  </span>
-                  <span>
-                    Python 3 <span className="tiny-dot" />
-                  </span>
-                </div>
-                <div className="editor-container">
-                  <Suspense fallback={<div className="editor-loading">Loading editor…</div>}>
-                    <CodeEditor value={source} onChange={setSource} disabled={done} />
-                  </Suspense>
-                </div>
-                <div className="editor-bottom">
-                  <span>Saved in this browser</span>
-                  <div>
-                    <button
-                      className="button secondary"
-                      disabled={!editable || !!localRun.status}
-                      onClick={() => {
-                        setTab('results');
-                        void localRun.run(source, game.problem!.examples);
-                      }}
-                    >
-                      <span aria-hidden="true">▷</span> Run
-                    </button>
-                    <button
-                      className="button primary"
-                      disabled={!editable || busy || pending || !!localRun.status}
-                      onClick={() =>
-                        void (game.mode === 'casual' ? completeCasual() : execute('submit'))
-                      }
-                    >
-                      {game.mode === 'casual' ? 'Check & finish' : 'Submit'}
-                    </button>
+                  <div className="editor-container">
+                    <Suspense fallback={<div className="editor-loading">Loading editor…</div>}>
+                      <CodeEditor value={source} onChange={setSource} disabled={done} />
+                    </Suspense>
                   </div>
-                </div>
-                {health?.judge === 'unavailable' && (
-                  <div className="editor-notice">
-                    {game.mode === 'casual'
-                      ? 'Pass the public examples to report completion. Results are unverified and never change ratings.'
-                      : 'Run examples on your device. Ranked Submit needs the server judge, which is not configured yet.'}
+                  <div className="editor-bottom">
+                    <span>Saved in this browser</span>
+                    <div>
+                      <button
+                        className="button secondary"
+                        disabled={!editable || !!localRun.status}
+                        onClick={() => {
+                          setTab('results');
+                          void localRun.run(source, game.problem!.examples);
+                        }}
+                      >
+                        Run examples
+                      </button>
+                      <button
+                        className="button primary"
+                        disabled={!editable || busy || pending || !!localRun.status}
+                        onClick={() =>
+                          void (game.mode === 'casual' ? completeCasual() : execute('submit'))
+                        }
+                      >
+                        {game.mode === 'casual' ? 'Check & finish' : 'Submit'}
+                      </button>
+                    </div>
                   </div>
-                )}
-              </section>
-            </div>
+                  {health?.judge === 'unavailable' && (
+                    <div className="editor-notice">
+                      {game.mode === 'casual'
+                        ? 'Pass the public examples to report completion. Results are unverified and never change ratings.'
+                        : 'Run examples on your device. Ranked Submit needs the server judge, which is not configured yet.'}
+                    </div>
+                  )}
+                </section>
+              }
+            />
           )}
           {!done && (
             <div className="match-foot">

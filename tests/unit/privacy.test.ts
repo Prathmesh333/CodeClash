@@ -13,6 +13,7 @@ it('privacy export excludes other accounts and session secrets, pages records, a
     '0004_profiles.sql',
     '0005_privacy_requests.sql',
     '0006_practice.sql',
+    '0007_practice_workspace.sql',
   ])
     db.exec(readFileSync('database/migrations/' + file, 'utf8'));
   db.exec(
@@ -55,18 +56,28 @@ it('privacy export excludes other accounts and session secrets, pages records, a
   const insert = db.prepare(
     "INSERT INTO privacy_requests(id,user_id,kind,message,status,created_at) VALUES (?,'a','other','handled','resolved',?)",
   );
-  for (let i = 0; i < 1001; i++) insert.run('r' + i, i + 1);
+  for (let i = 0; i < 101; i++) insert.run('r' + i, i + 1);
   const first = (await (await exportData(env, a, 0)).json()) as Export;
-  expect(first.collections.requests).toHaveLength(1000);
-  expect(first.nextOffset).toBe(1000);
+  expect(first.collections.requests).toHaveLength(100);
+  expect(first.nextOffset).toBe(100);
   expect(JSON.stringify(first)).not.toContain('secret-a');
   expect(JSON.stringify(first)).not.toContain('secret-b');
-  const second = (await (await exportData(env, a, 1000)).json()) as Export;
+  const second = (await (await exportData(env, a, 100)).json()) as Export;
   expect(second.collections.requests).toHaveLength(2);
   expect(second.nextOffset).toBeNull();
   await expect(requestPrivacy(env, a, { kind: 'wrong', message: '' })).rejects.toThrow();
   await expect(
     requestPrivacy(env, a, { kind: 'erasure', message: 'x'.repeat(1001) }),
   ).rejects.toThrow();
+  db.exec("INSERT INTO problems(id,public_json,private_json) VALUES('p','{}','[]')");
+  const attempt = db.prepare("INSERT INTO practice_attempts(id,user_id,problem_id,source,execution_mode,results_json,created_at) VALUES (?,'b','p','private-b','script','[]',?)");
+  for (let i=0;i<101;i++) attempt.run('a'+i,i);
+  const practicePage = await (await exportData(env,b,0)).json() as {collections:{practiceAttempts:unknown[]};nextOffset:number|null};
+  expect(practicePage.collections.practiceAttempts).toHaveLength(100);
+  expect(practicePage.nextOffset).toBe(100);
+  const practiceLast = await (await exportData(env,b,100)).json() as typeof practicePage;
+  expect(practiceLast.collections.practiceAttempts).toHaveLength(1);
+  expect(practiceLast.nextOffset).toBeNull();
+  expect(JSON.stringify(await (await exportData(env,a,0)).json())).not.toContain('private-b');
   db.close();
 });
