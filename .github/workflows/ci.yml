@@ -19,6 +19,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test:unit
       - run: pnpm test:problems
+      - run: python3 scripts/check-practice-oracles.py
       - run: python3 -m unittest discover -s tests/unit -p "*_test.py"
       # Real local Worker, Durable Objects and D1: needs the wrangler dev server, not a mock.
       - run: pnpm test:integration

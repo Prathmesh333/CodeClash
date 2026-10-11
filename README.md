@@ -79,3 +79,11 @@ See the [development guide](DEVELOPMENT.md) to run the project and verify change
 Signed-in accounts see live Clashers online and looking-for-a-match counts. Multiple tabs count as one account. Presence uses hibernating matchmaking WebSockets with automatic heartbeats; counts change on connection and queue events. Disconnected or stale sockets are excluded; background browser suspension may delay updates. This is current availability, not historical traffic.
 
 Cookie-free Cloudflare Web Analytics tracks visits and page views outside the EU/EEA. Browser blockers may prevent collection; visits are not unique people. View private statistics in [Cloudflare Web Analytics](https://dash.cloudflare.com/7447e0e5c2ec96ece6059c89855c639f/web-analytics/overview?siteTag~in=20b0c76547d24ab8b85c27e529425e0d&excludeBots=Yes). The public beacon token is configured only in staging; local environments do not collect analytics.
+
+### Solo practice
+
+The Solo practice tab offers 153 original CodeClash questions with topic/difficulty filters, title search and random selection, without a timer. Python examples run locally in WASM. Drafts and browser-reported example progress are saved to the signed-in account and included in privacy exports; they never affect ratings. Opening a problem records exposure for fair future matchmaking.
+
+This is an original interview foundations bank, not a copy or complete one-to-one implementation of NeetCode 150. Links to the NeetCode roadmap and LeetCode library are available in practice. Existing 20 multiplayer problems remain eligible for duels; 133 new questions are practice-only until independent fixture and multiplayer fairness review.
+
+Run `pnpm test:problems` to verify reference output consistency for all fixtures, and `python scripts/check-practice-oracles.py` for independent checks of 33 algorithms. The authoring script is project-owned code only; never run player submissions in these scripts. The server judge remains disabled.

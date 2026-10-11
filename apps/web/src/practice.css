@@ -1,0 +1,91 @@
+.practice-page header p {
+  color: var(--cc-secondary);
+}
+.practice-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.practice-filters label {
+  display: grid;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 150px;
+}
+.practice-filters input,
+.practice-filters select {
+  padding: 0.7rem;
+  border: 1px solid var(--cc-border);
+  border-radius: 8px;
+  background: var(--cc-surface);
+  color: var(--cc-text);
+  font: inherit;
+}
+.practice-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.practice-layout aside {
+  max-height: 80vh;
+  overflow: auto;
+}
+.practice-layout aside ul {
+  list-style: none;
+  padding: 0;
+}
+.practice-layout aside button {
+  display: grid;
+  gap: 0.35rem;
+  width: 100%;
+  text-align: left;
+  padding: 1rem;
+  background: var(--cc-surface);
+  color: var(--cc-text);
+  border: 1px solid var(--cc-border);
+  font: inherit;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+.practice-layout aside button span {
+  font-size: 0.8rem;
+  color: var(--cc-secondary);
+}
+.practice-layout aside button[aria-current='true'] {
+  border-color: var(--cc-accent);
+}
+.practice-statement {
+  padding: 1.5rem;
+  background: var(--cc-surface);
+  border: 1px solid var(--cc-border);
+  border-radius: 12px;
+}
+.practice-statement pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.practice-editor {
+  height: 420px;
+  margin-top: 1rem;
+  border: 1px solid var(--cc-border);
+}
+.practice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+@media (max-width: 800px) {
+  .practice-layout {
+    grid-template-columns: 1fr;
+  }
+  .practice-layout aside {
+    max-height: 260px;
+  }
+  .practice-editor {
+    height: 350px;
+  }
+}

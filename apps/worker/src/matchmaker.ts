@@ -296,7 +296,7 @@ export class MatchmakerDO extends DurableObject<Env> {
   }
   async pickProblem(a: string, b: string, rating: number) {
     const p = await this.env.DB.prepare(
-      "SELECT id FROM problems WHERE status='active' AND id NOT IN (SELECT problem_id FROM exposure WHERE user_id IN (?,?)) ORDER BY CASE WHEN json_extract(public_json, '$.difficulty')=? THEN 0 ELSE 1 END, RANDOM() LIMIT 1",
+      "SELECT id FROM problems WHERE status='active' AND COALESCE(json_extract(public_json, '$.matchEligible'),1)=1 AND id NOT IN (SELECT problem_id FROM exposure WHERE user_id IN (?,?)) ORDER BY CASE WHEN json_extract(public_json, '$.difficulty')=? THEN 0 ELSE 1 END, RANDOM() LIMIT 1",
     )
       .bind(a, b, rating < 1400 ? 'Easy' : 'Medium')
       .first<{ id: string }>();

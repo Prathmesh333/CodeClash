@@ -36,7 +36,7 @@ export async function exportData(env: Env, user: User, offset: number) {
         .bind(user.id, limit + 1, offset)
         .all()
     ).results;
-  const [submissions, exposure, requests, matches, sessions] = await Promise.all([
+  const [submissions, exposure, requests, matches, sessions, practiceProgress] = await Promise.all([
     rows(
       'SELECT id,match_id,kind,language,source,verdict,runtime_ms,peak_memory_bytes,created_at FROM submissions WHERE user_id=? ORDER BY created_at,id LIMIT ? OFFSET ?',
     ),
@@ -55,6 +55,9 @@ export async function exportData(env: Env, user: User, offset: number) {
           .all()
       ).results)(),
     rows('SELECT expires_at FROM sessions WHERE user_id=? ORDER BY expires_at LIMIT ? OFFSET ?'),
+    rows(
+      'SELECT problem_id,source,status,updated_at FROM practice_progress WHERE user_id=? ORDER BY problem_id LIMIT ? OFFSET ?',
+    ),
   ]);
   const profile = await env.DB.prepare(
     'SELECT id,auth_subject,username,bio,avatar_color,rating,wins,losses,draws,games_played,created_at FROM users WHERE id=?',
@@ -78,6 +81,7 @@ export async function exportData(env: Env, user: User, offset: number) {
       };
     }),
     sessions: sessions.slice(0, limit),
+    practiceProgress: practiceProgress.slice(0, limit),
   };
   return json({
     exportedAt: new Date().toISOString(),

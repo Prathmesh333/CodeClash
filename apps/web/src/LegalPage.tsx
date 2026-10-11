@@ -75,10 +75,11 @@ export default function LegalPage() {
             <Section title="Why we use it">
               <p>
                 We use account and match information to provide sign-in, matchmaking, saved history,
-                and competition results. Where GDPR applies, this processing supports the service
-                you request under our terms. We use limited security and operational information for
-                our legitimate interests in preventing abuse and maintaining reliability. Optional
-                device storage relies on your choice in Cookie settings.
+                competition results, and solo practice drafts and progress. Practice example results
+                are browser-reported and unverified. Where GDPR applies, this processing supports
+                the service you request under our terms. We use limited security and operational
+                information for our legitimate interests in preventing abuse and maintaining
+                reliability. Optional device storage relies on your choice in Cookie settings.
               </p>
               <p>
                 We do not sell personal data or use it for advertising. We use cookie-free

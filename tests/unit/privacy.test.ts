@@ -12,6 +12,7 @@ it('privacy export excludes other accounts and session secrets, pages records, a
     '0003_email_login.sql',
     '0004_profiles.sql',
     '0005_privacy_requests.sql',
+    '0006_practice.sql',
   ])
     db.exec(readFileSync('database/migrations/' + file, 'utf8'));
   db.exec(

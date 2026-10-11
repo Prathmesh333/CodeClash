@@ -1,3 +1,4 @@
+import { practice } from './practice';
 import { exportData, requestPrivacy } from './privacy';
 import { requestEmail, verifyEmail } from './email-auth';
 import { assert, ApiError, body, hash, json, localRequest, rateLimit, type Env } from './env';
@@ -147,6 +148,8 @@ const application = {
       assert(user, 401, 'AUTH_REQUIRED', 'Sign in to enter the arena.');
       if (req.method === 'POST' || req.headers.get('Upgrade'))
         await rateLimit(env, 'player:' + user.id, 60, 60000);
+      if (path === '/api/practice' || path.startsWith('/api/practice/'))
+        return await practice(req, env, user);
       if (path === '/api/presence' && req.method === 'GET') {
         assert(
           req.headers.get('Upgrade')?.toLowerCase() === 'websocket',

@@ -29,6 +29,7 @@
     "preview": "vite preview --config apps/web/vite.config.ts --host 127.0.0.1",
     "test:staging": "node scripts/staging-check.mjs",
     "evidence:verify": "node scripts/evidence.mjs",
+    "test:practice:oracles": "python scripts/check-practice-oracles.py",
     "test:problems": "node scripts/verify-problems.mjs",
     "problems:solutions": "node scripts/export-solutions.mjs",
     "staging:check": "node scripts/staging.mjs check",

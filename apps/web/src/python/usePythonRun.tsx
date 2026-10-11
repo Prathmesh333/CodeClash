@@ -39,7 +39,15 @@ export function usePythonRun() {
       }
     }
   }
-  return { results, status, error, run, stop: () => controller.current?.abort() };
+  const reset = () => {
+    generation.current++;
+    controller.current?.abort();
+    controller.current = null;
+    setResults([]);
+    setError('');
+    setStatus('');
+  };
+  return { results, status, error, run, reset, stop: () => controller.current?.abort() };
 }
 export function PythonResults({ run }: { run: ReturnType<typeof usePythonRun> }) {
   return (

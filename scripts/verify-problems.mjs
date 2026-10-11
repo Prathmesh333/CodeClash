@@ -48,5 +48,5 @@ for (const p of problems) {
   console.log(`PASS ${p.id}: ${run.stdout.trim()} cases`);
 }
 console.log(
-  `Verified ${problems.length} original ranked questions, ${count} cases. Reference correctness only; server isolation and load gates remain separate.`,
+  `Verified ${problems.length} original questions, ${count} cases. Reference correctness only; server isolation and load gates remain separate.`,
 );

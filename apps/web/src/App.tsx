@@ -12,6 +12,7 @@ import type { User } from '../../../packages/shared/game';
 import { rank } from '../../../packages/shared/game';
 import type { Snapshot } from '../../../packages/protocol';
 import { api } from './api';
+const Practice = lazy(() => import('./Practice'));
 const CodeEditor = lazy(() => import('./CodeEditor'));
 type Health = {
   local: boolean;
@@ -34,7 +35,7 @@ type History = {
   finished_at: number;
   outcome_json: string;
 };
-type Page = 'arena' | 'leaderboard' | 'history';
+type Page = 'arena' | 'leaderboard' | 'history' | 'practice';
 const icons = {
   arena: (
     <>
@@ -288,14 +289,20 @@ export default function App() {
           />
         </a>
         <nav aria-label="Main navigation">
-          {(['arena', 'leaderboard', 'history'] as Page[]).map((p) => (
+          {(['arena', 'practice', 'leaderboard', 'history'] as Page[]).map((p) => (
             <button
               key={p}
               aria-current={page === p ? 'page' : undefined}
               className={page === p ? 'active' : ''}
               onClick={() => setPage(p)}
             >
-              {p === 'arena' ? 'The arena' : p === 'history' ? 'Match history' : 'Leaderboard'}
+              {p === 'arena'
+                ? 'The arena'
+                : p === 'history'
+                  ? 'Match history'
+                  : p === 'practice'
+                    ? 'Solo practice'
+                    : 'Leaderboard'}
             </button>
           ))}
         </nav>
@@ -388,6 +395,10 @@ export default function App() {
               <span className="spinner" />
               Connecting to the arena…
             </div>
+          ) : page === 'practice' ? (
+            <Suspense fallback={<p>Loading practice…</p>}>
+              <Practice userId={user.id} />
+            </Suspense>
           ) : page === 'arena' ? (
             matchId && user ? null : (
               <>

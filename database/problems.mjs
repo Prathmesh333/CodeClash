@@ -1,3 +1,4 @@
+import practiceBank from './practice-bank.json' with { type: 'json' };
 import { extendLegacy } from './legacy-cases.mjs';
 import { expandedProblems, referenceNotes } from './ranked-bank.mjs';
 const make = (
@@ -134,7 +135,7 @@ for (const p of problems) {
   });
 }
 extendLegacy(problems);
-problems.push(...expandedProblems);
+problems.push(...expandedProblems, ...practiceBank);
 // Avoid charging the judge for duplicate generated inputs; conflicting answers fail fast.
 for (const problem of problems) {
   const seen = new Map(problem.examples.map((test) => [test.input, test.output]));
@@ -161,6 +162,8 @@ export function publicProblem(p) {
     examples,
     starterCode,
     difficulty,
+    matchEligible,
+    curriculum,
   } = p;
   return {
     id,
@@ -174,5 +177,7 @@ export function publicProblem(p) {
     examples,
     starterCode,
     difficulty,
+    matchEligible,
+    curriculum,
   };
 }
