@@ -208,13 +208,20 @@ function apply(theme: Theme) {
 export function initializeTheme() {
   try {
     selected =
-      (preferencesAllowed() ? themes.find((t) => t.id === localStorage.getItem(key)) : undefined) ??
-      themes[0];
+      themes.find(
+        (t) =>
+          t.id ===
+          (sessionStorage.getItem(key) ??
+            (preferencesAllowed() ? localStorage.getItem(key) : null)),
+      ) ?? themes[0];
   } catch {}
   apply(selected);
   window.addEventListener('storage', (event) => {
     if (event.key === key && preferencesAllowed()) {
       selected = themes.find((t) => t.id === event.newValue) ?? themes[0];
+      try {
+        sessionStorage.setItem(key, selected.id);
+      } catch {}
       apply(selected);
       listeners.forEach((fn) => fn());
     }
@@ -230,6 +237,7 @@ export function setTheme(id: string) {
   void root.offsetHeight;
   requestAnimationFrame(() => root.removeAttribute('data-theme-switching'));
   try {
+    sessionStorage.setItem(key, id);
     if (preferencesAllowed()) localStorage.setItem(key, id);
   } catch {}
   listeners.forEach((fn) => fn());

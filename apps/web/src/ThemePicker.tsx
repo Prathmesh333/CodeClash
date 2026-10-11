@@ -31,7 +31,7 @@ export default function ThemePicker() {
         <div className="theme-dialog-heading">
           <div>
             <h2 id="theme-heading">Make the arena yours.</h2>
-            <p>Choose a palette. Your preference is saved on this device.</p>
+            <p>Your theme stays after refresh.</p>
           </div>
           <button
             className="theme-close"

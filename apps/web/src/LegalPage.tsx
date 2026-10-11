@@ -249,10 +249,11 @@ export default function LegalPage() {
                 </table>
               </div>
               <p>
-                These are written only after you choose Allow saved preferences. Essential only
-                removes saved themes and drafts and prevents further saves. Changing this choice
-                does not remove your server account or history. Standard browser caching may store
-                website assets and the Python runtime.
+                Persistent preferences are written only after you choose Allow saved preferences.
+                Essential only removes persistent themes and drafts and prevents further persistent
+                saves. A theme you choose is kept in session storage for the current tab so it
+                survives refreshes. Changing this choice does not remove your server account or
+                history. Standard browser caching may store website assets and the Python runtime.
               </p>
             </Section>
             <PrivacyTools signedInRequired={false} />

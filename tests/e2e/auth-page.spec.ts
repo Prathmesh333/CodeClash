@@ -50,6 +50,14 @@ test('opening page is responsive, uses reduced motion and submits provider reque
   await expect(page.getByRole('status')).toHaveText('Check your inbox.');
   await page.screenshot({ path: 'artifacts/auth-desktop.png', fullPage: true });
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.getByRole('button', { name: 'Change theme' }).click();
+  const picker = page.getByRole('dialog', { name: 'Make the arena yours.' });
+  await picker.locator('.theme-option').nth(2).click();
+  await picker.getByRole('button', { name: 'Done', exact: true }).click();
+  const selectedTheme = await page.locator('html').getAttribute('data-theme');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', selectedTheme!);
+  expect(await page.evaluate(() => localStorage.getItem('codeclash:theme'))).toBeNull();
   await expect(page.getByRole('button', { name: 'Replay animation' })).toHaveCount(0);
   expect(
     await page

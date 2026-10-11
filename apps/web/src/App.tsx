@@ -128,6 +128,25 @@ export default function App() {
     [history, setHistory] = useState<History[]>([]);
   const mainRef = useRef<HTMLElement>(null);
   useEffect(() => {
+    if (loading) {
+      document.title = 'CodeClash';
+      return;
+    }
+    const title = !user
+      ? location.pathname === '/register'
+        ? 'Join'
+        : 'Sign in'
+      : matchId
+        ? 'Match'
+        : {
+            arena: 'Arena',
+            practice: 'Practice',
+            leaderboard: 'Leaderboard',
+            history: 'Match history',
+          }[page];
+    document.title = `${title} | CodeClash`;
+  }, [loading, user, page, matchId]);
+  useEffect(() => {
     const surface = mainRef.current;
     if (!surface || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     // Animate the existing surface without remounting the editor or changing focus.
