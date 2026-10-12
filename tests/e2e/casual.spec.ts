@@ -50,7 +50,7 @@ test('casual WASM completion is shared and stays unrated', async ({ browser }) =
       .getByRole('dialog', { name: 'Make the arena yours.' })
       .getByRole('button', { name: 'Done', exact: true })
       .click();
-    await pa.getByRole('button', { name: 'The arena', exact: true }).click();
+    await pa.getByRole('button', { name: 'Close settings', exact: true }).click();
 
     await enter('print("wrong")');
     await pa.getByRole('button', { name: 'Check & finish' }).click();

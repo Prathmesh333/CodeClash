@@ -40,9 +40,7 @@ type History = {
 type Page = 'arena' | 'leaderboard' | 'history' | 'practice' | 'settings';
 function pageFromUrl(): Page {
   const view = new URL(location.href).searchParams.get('view');
-  return ['leaderboard', 'history', 'practice', 'settings'].includes(view ?? '')
-    ? (view as Page)
-    : 'arena';
+  return ['leaderboard', 'history', 'practice'].includes(view ?? '') ? (view as Page) : 'arena';
 }
 const icons = {
   arena: (
@@ -123,48 +121,21 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null),
     [health, setHealth] = useState<Health | null>(null),
     [page, setPageState] = useState<Page>(pageFromUrl);
-  const storedReturn = window.history.state?.settingsReturn;
-  const beforeSettings = useRef<Page>(
-    ['arena', 'leaderboard', 'history', 'practice'].includes(storedReturn) ? storedReturn : 'arena',
-  );
-  const currentPage = useRef<Page>(page);
-  currentPage.current = page;
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const setPage = useCallback((next: Page) => {
-    if (next === 'settings' && currentPage.current !== 'settings') {
-      beforeSettings.current = currentPage.current;
-    }
     const url = new URL(location.href);
     if (pageFromUrl() !== next) {
       if (next === 'arena') url.searchParams.delete('view');
       else url.searchParams.set('view', next);
-      window.history.pushState(
-        next === 'settings' ? { settingsReturn: beforeSettings.current } : null,
-        '',
-        url,
-      );
+      window.history.pushState(null, '', url);
     }
     setPageState(next);
   }, []);
-  const toggleSettings = () => {
-    if (page !== 'settings') {
-      setPage('settings');
-      return;
-    }
-    const next = beforeSettings.current;
-    if (window.history.state?.settingsReturn === next) {
-      window.history.back();
-      return;
-    }
-    const url = new URL(location.href);
-    if (next === 'arena') url.searchParams.delete('view');
-    else url.searchParams.set('view', next);
-    window.history.replaceState(null, '', url);
-    setPageState(next);
-  };
   useEffect(() => {
     const restore = () => {
       setPageState(pageFromUrl());
       setProfileOpen(false);
+      setSettingsOpen(false);
     };
     window.addEventListener('popstate', restore);
     return () => window.removeEventListener('popstate', restore);
@@ -380,32 +351,33 @@ export default function App() {
         <div className="topbar-right">
           <button
             className="button secondary"
-            aria-current={page === 'settings' ? 'page' : undefined}
-            aria-label={page === 'settings' ? 'Close settings' : 'Settings'}
-            onClick={toggleSettings}
+            aria-haspopup="dialog"
+            aria-expanded={settingsOpen}
+            onClick={() => setSettingsOpen(true)}
           >
-            {page === 'settings' ? (
-              <>
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  aria-hidden="true"
-                >
-                  <path d="m6 6 12 12M18 6 6 18" />
-                </svg>
-                <span>Close</span>
-              </>
-            ) : (
-              'Settings'
-            )}
+            Settings
           </button>
         </div>
       </header>
       <Presence userId={user.id} />
+      {settingsOpen && (
+        <Settings
+          onClose={() => setSettingsOpen(false)}
+          user={user}
+          busy={busy}
+          editProfile={() => setProfileOpen(true)}
+          signOut={() =>
+            void action(async () => {
+              await api('/auth/logout', {});
+              clearDrafts();
+              setUser(null);
+              setMatchId(null);
+              setQueue({ state: 'IDLE' });
+              location.assign('/login');
+            })
+          }
+        />
+      )}
       {profileOpen && user && (
         <ProfileDialog
           user={user}
@@ -451,22 +423,6 @@ export default function App() {
               <span className="spinner" />
               Connecting to the arena…
             </div>
-          ) : page === 'settings' ? (
-            <Settings
-              user={user}
-              busy={busy}
-              editProfile={() => setProfileOpen(true)}
-              signOut={() =>
-                void action(async () => {
-                  await api('/auth/logout', {});
-                  clearDrafts();
-                  setUser(null);
-                  setMatchId(null);
-                  setQueue({ state: 'IDLE' });
-                  location.assign('/login');
-                })
-              }
-            />
           ) : page === 'practice' ? (
             <Suspense fallback={<BrandSpinner label="Loading practice…" />}>
               <Practice userId={user.id} />

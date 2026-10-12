@@ -24,6 +24,7 @@ test('motion reaches sign-in, navigation and dialogs without delaying controls',
   await page.keyboard.press('Escape');
   await expect(page.locator('.theme-dialog')).not.toBeVisible();
   await expect(page.getByRole('button', { name: 'Change theme' })).toBeFocused();
+  await page.getByRole('button', { name: 'Close settings', exact: true }).click();
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.getByRole('button', { name: 'The arena', exact: true }).click();
   expect(
