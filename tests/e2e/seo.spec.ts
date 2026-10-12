@@ -31,7 +31,9 @@ test('public content and metadata are served without JavaScript; private pages s
   const sitemap = await request.get('/sitemap.xml');
   expect(sitemap.status()).toBe(200);
   const xml = await sitemap.text();
-  expect(xml.match(/<loc>/g)).toHaveLength(7);
+  expect(xml.match(/<loc>/g)).toHaveLength(
+    Object.values(publicSeo).filter((info) => info.index).length,
+  );
   expect(xml).not.toContain('/app');
   for (const [path, info] of Object.entries(publicSeo)) {
     if (info.index) expect(xml).toContain(`<loc>https://code-clash.com${path}</loc>`);

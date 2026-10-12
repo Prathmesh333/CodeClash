@@ -1,0 +1,242 @@
+[
+  {
+    "id": "practice-product-exclusions",
+    "title": "Product exclusions",
+    "topic": "Arrays & hashing",
+    "difficulty": "Medium",
+    "statement": "Input is an integer array. Return the product of every other element for each position. Empty input returns []. Do not use division.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "[1,2,1]\n",
+        "output": "[2,1,2]\n"
+      },
+      {
+        "input": "[3,2,1]\n",
+        "output": "[2,3,6]\n"
+      }
+    ]
+  },
+  {
+    "id": "practice-longest-consecutive-ids",
+    "title": "Longest consecutive IDs",
+    "topic": "Arrays & hashing",
+    "difficulty": "Medium",
+    "statement": "Input is an integer array. Return the length of its longest consecutive-value sequence, ignoring duplicates.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "[1,2,1]\n",
+        "output": "2\n"
+      },
+      {
+        "input": "[3,2,1]\n",
+        "output": "3\n"
+      }
+    ]
+  },
+  {
+    "id": "practice-largest-histogram-block",
+    "title": "Largest histogram block",
+    "topic": "Stack",
+    "difficulty": "Hard",
+    "statement": "Input is nonnegative histogram heights of unit width. Return largest rectangular area.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "[1,2,1]\n",
+        "output": "3\n"
+      },
+      {
+        "input": "[3,2,1]\n",
+        "output": "4\n"
+      }
+    ]
+  },
+  {
+    "id": "practice-unique-substring-span",
+    "title": "Unique substring span",
+    "topic": "Sliding window",
+    "difficulty": "Medium",
+    "statement": "Input is a string. Return longest substring length with no repeated character.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "\"level\"\n",
+        "output": "3\n"
+      },
+      {
+        "input": "\"abc\"\n",
+        "output": "3\n"
+      }
+    ]
+  },
+  {
+    "id": "practice-palindrome-inventory",
+    "title": "Palindrome inventory",
+    "topic": "Two pointers",
+    "difficulty": "Medium",
+    "statement": "Input is a string. Return number of nonempty palindromic substrings, counting positions separately.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "\"level\"\n",
+        "output": "7\n"
+      },
+      {
+        "input": "\"abc\"\n",
+        "output": "3\n"
+      }
+    ]
+  },
+  {
+    "id": "practice-edit-distance",
+    "title": "Edit distance",
+    "topic": "2-D dynamic programming",
+    "difficulty": "Medium",
+    "statement": "Input is [a,b], strings. Return minimum insertions, deletions or substitutions to transform a into b.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "[\"level\",\"lvl\"]\n",
+        "output": "2\n"
+      },
+      {
+        "input": "[\"abc\",\"cba\"]\n",
+        "output": "2\n"
+      }
+    ]
+  },
+  {
+    "id": "practice-minimum-target-sum-span",
+    "title": "Minimum target-sum span",
+    "topic": "Arrays & hashing",
+    "difficulty": "Medium",
+    "statement": "Input has values and k. Return shortest nonempty contiguous subarray length summing exactly to k, or 0.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "{\"values\":[1,2,1],\"k\":4}\n",
+        "output": "3\n"
+      },
+      {
+        "input": "{\"values\":[3,2,1],\"k\":1}\n",
+        "output": "1\n"
+      }
+    ]
+  },
+  {
+    "id": "practice-connected-districts",
+    "title": "Connected districts",
+    "topic": "Graphs",
+    "difficulty": "Medium",
+    "statement": "Input has n vertices labeled 0..n-1 and edges, an undirected simple graph. Return number of connected components.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "{\"n\":1,\"edges\":[]}\n",
+        "output": "1\n"
+      },
+      {
+        "input": "{\"n\":2,\"edges\":[]}\n",
+        "output": "2\n"
+      }
+    ]
+  },
+  {
+    "id": "practice-dependency-order",
+    "title": "Dependency order",
+    "topic": "Graphs",
+    "difficulty": "Medium",
+    "statement": "Input has n and directed edges [u,v] meaning u must precede v. Return lexicographically smallest topological ordering, or [] for a cycle.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "{\"n\":1,\"edges\":[]}\n",
+        "output": "[0]\n"
+      },
+      {
+        "input": "{\"n\":2,\"edges\":[]}\n",
+        "output": "[0,1]\n"
+      }
+    ]
+  },
+  {
+    "id": "practice-cheapest-route",
+    "title": "Cheapest route",
+    "topic": "Advanced graphs",
+    "difficulty": "Medium",
+    "statement": "Input has n and weighted undirected edges [u,v,w], w>0. Return shortest cost from 0 to n-1, or -1.",
+    "inputFormat": "One JSON value on a single line, with the fields described above. Read it using json.loads(input()).",
+    "outputFormat": "One compact JSON value. Use print(json.dumps(answer, separators=(\",\", \":\"))). Booleans must be JSON true/false. Arrays retain the stated order.",
+    "constraints": [
+      "Array and string lengths are at most 200 unless stated otherwise.",
+      "Integers have absolute value at most 10,000 unless stated otherwise.",
+      "All inputs satisfy the stated preconditions."
+    ],
+    "examples": [
+      {
+        "input": "{\"n\":1,\"edges\":[]}\n",
+        "output": "0\n"
+      },
+      {
+        "input": "{\"n\":2,\"edges\":[]}\n",
+        "output": "-1\n"
+      }
+    ]
+  }
+]

@@ -37,6 +37,15 @@ export default defineConfig({
         try {
           const { renderPublic } = await server.ssrLoadModule('/src/prerender.tsx');
           mkdirSync(join(output, 'prerender'), { recursive: true });
+          writeFileSync(
+            join(output, 'sitemap.xml'),
+            '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+              Object.entries(publicSeo)
+                .filter(([, info]) => info.index)
+                .map(([path]) => '<url><loc>https://code-clash.com' + path + '</loc></url>')
+                .join('') +
+              '</urlset>',
+          );
           for (const path of Object.keys(publicSeo)) {
             const html = base
               .replace(

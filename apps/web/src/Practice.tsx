@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { api } from './api';
 import { usePythonRun, PythonResults } from './python/usePythonRun';
 import './practice.css';
@@ -67,6 +67,14 @@ export default function Practice({ userId }: { userId: string }) {
       cancelled = true;
     };
   }, [userId]);
+  const openedLink = useRef(false);
+  useEffect(() => {
+    const id = new URL(location.href).searchParams.get('problem');
+    if (!openedLink.current && id && catalog.some((p) => p.id === id)) {
+      openedLink.current = true;
+      void open(id);
+    }
+  }, [catalog]);
   const filtered = catalog.filter(
     (p) =>
       (!topic || p.topic === topic) &&

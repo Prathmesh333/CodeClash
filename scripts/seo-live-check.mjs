@@ -21,7 +21,10 @@ const results = await Promise.all(
 const sitemap = await fetch(origin + '/sitemap.xml');
 assert.equal(sitemap.status, 200);
 assert(sitemap.headers.get('content-type').includes('xml'));
-assert.equal((await sitemap.text()).match(/<loc>/g).length, 7);
+assert.equal(
+  (await sitemap.text()).match(/<loc>/g).length,
+  Object.values(publicSeo).filter((info) => info.index).length,
+);
 const robots = await fetch(origin + '/robots.txt');
 assert.equal(robots.status, 200);
 assert((await robots.text()).includes('Sitemap: ' + origin + '/sitemap.xml'));
@@ -38,7 +41,7 @@ await writeFile(
       origin,
       checkedAt: new Date().toISOString(),
       results,
-      sitemapPages: 7,
+      sitemapPages: Object.values(publicSeo).filter((info) => info.index).length,
       privateAccessProtected: true,
     },
     null,

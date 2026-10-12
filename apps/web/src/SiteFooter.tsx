@@ -7,6 +7,10 @@ export default function SiteFooter() {
         <span>A shared clock. Your own approach.</span>
       </div>
       <nav aria-label="Policies and support">
+        <a href="/problems">Problems</a>
+        <a href="/learn">Learn</a>
+        <a href="/about">About</a>
+        <a href="/ai-arena">AI Arena</a>
         <a href="/how-it-works">How it works</a>
         <a href="/privacy">Privacy</a>
         <a href="/cookies">Cookies</a>

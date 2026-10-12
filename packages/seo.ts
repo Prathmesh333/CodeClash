@@ -1,3 +1,4 @@
+import problems from './public-problems.json' with { type: 'json' };
 export const publicSeo: Record<string, { title: string; description: string; index: boolean }> = {
   '/': {
     title: 'Python coding duels and DSA practice | CodeClash',
@@ -54,6 +55,56 @@ export const publicSeo: Record<string, { title: string; description: string; ind
     index: false,
   },
 };
+
+for (const [path, title, description] of [
+  [
+    '/problems',
+    'Original Python DSA problems',
+    'Preview original arrays, strings and graph problems with examples and constraints. Sign in to solve and save progress.',
+  ],
+  [
+    '/topics',
+    'DSA topics',
+    'Explore arrays, strings and graphs through original Python practice problems.',
+  ],
+  [
+    '/learn',
+    'Python problem-solving guides',
+    'Practical Python guides to dictionary lookup, sliding windows and runtime errors.',
+  ],
+  [
+    '/about',
+    'About CodeClash',
+    'Meet the independent project behind CodeClash and learn how its Python practice and coding duels work.',
+  ],
+  [
+    '/ai-arena',
+    'AI Arena benchmark proposal',
+    'Explore the proposed ten-question AI coding benchmark, timing rules and requirements for trustworthy scores.',
+  ],
+])
+  publicSeo[path] = { title: title + ' | CodeClash', description, index: true };
+for (const problem of problems)
+  publicSeo['/problems/' + problem.id] = {
+    title: problem.title + ' Python problem | CodeClash',
+    description: problem.statement.slice(0, 155),
+    index: true,
+  };
+for (const topic of ['arrays', 'strings', 'graphs'])
+  publicSeo['/topics/' + topic] = {
+    title: topic[0].toUpperCase() + topic.slice(1) + ' Python practice | CodeClash',
+    description: 'Explore original ' + topic + ' problems, examples and related Python guides.',
+    index: true,
+  };
+for (const guide of ['dictionary-lookup', 'sliding-windows', 'python-errors'])
+  publicSeo['/learn/' + guide] = {
+    title: guide.replaceAll('-', ' ') + ' | CodeClash',
+    description:
+      'Learn ' +
+      guide.replaceAll('-', ' ') +
+      ' with a working Python example and practical limits.',
+    index: true,
+  };
 
 const escape = (value: string) =>
   value.replace(

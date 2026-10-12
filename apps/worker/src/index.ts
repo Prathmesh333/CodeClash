@@ -20,17 +20,7 @@ const application = {
     }
     try {
       if (!path.startsWith('/api/')) {
-        const publicPages = [
-          '/',
-          '/login',
-          '/register',
-          '/privacy',
-          '/cookies',
-          '/terms',
-          '/contact',
-          '/safety',
-          '/how-it-works',
-        ];
+        const publicPages = Object.keys(publicSeo);
         const isDocument =
           publicPages.includes(path) ||
           path === '/app' ||

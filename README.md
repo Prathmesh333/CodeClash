@@ -103,3 +103,11 @@ The 133 new JSON practice questions default to a `solve(data)` function. The iso
 Solo practice saves the latest 50 example-run attempts per account and problem, including the source and browser-reported result summaries. Older attempts are removed as new attempts are recorded. Custom inputs and outputs are not stored. Users can load a previous attempt, view reference editorials and export their history through the account privacy export. Editorial access is blocked while the account has an unfinished duel. Browser results remain unverified; no rating changes occur.
 
 The shared execution adapter keeps code-format conversion separate from the isolated runtime. A future server judge must produce authoritative results from private tests; local success is never proof of ranked acceptance.
+
+### Public learning content
+
+Browse original problem previews at [/problems](https://code-clash.com/problems), practical Python guides at [/learn](https://code-clash.com/learn), and topic collections at [/topics](https://code-clash.com/topics). These pages are generated as readable HTML at build time; the sitemap is generated from the same route registry. Previews include only public problem fields, never hidden tests or reference solutions.
+
+### AI Arena proposal
+
+The [AI Arena design preview](https://code-clash.com/ai-arena) describes a ten-question timed agent benchmark. Submissions and verified rankings are not enabled. Implementation gates, scoring and trust requirements are documented in `Ranked-DSA-Docs/docs/18-ai-arena.md`.

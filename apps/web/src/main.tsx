@@ -1,3 +1,4 @@
+import DiscoveryPage, { discoveryPaths } from './DiscoveryPage';
 import GuidePage from './GuidePage';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -19,7 +20,9 @@ initializeStorage();
 initializeTheme();
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {location.pathname === '/how-it-works' ? (
+    {discoveryPaths.includes(location.pathname) ? (
+      <DiscoveryPage path={location.pathname} />
+    ) : location.pathname === '/how-it-works' ? (
       <GuidePage />
     ) : legalPaths.includes(location.pathname) ? (
       <LegalPage />
