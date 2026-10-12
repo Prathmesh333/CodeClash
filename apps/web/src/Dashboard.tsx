@@ -23,10 +23,23 @@ export default function Dashboard({
   editProfile,
   navigate,
 }: Props) {
+  const name = user.profile_complete === 0 ? undefined : user.username;
+  const greeting = greetingFor(user.id, name);
+  const nameStart = name ? greeting.lastIndexOf(name) : -1;
   return (
     <div className="player-dashboard">
       <header className="dashboard-heading">
-        <h1>{greetingFor(user.id, user.profile_complete === 0 ? undefined : user.username)}</h1>
+        <h1>
+          {nameStart < 0 ? (
+            greeting
+          ) : (
+            <>
+              {greeting.slice(0, nameStart)}
+              <span className="greeting-username">{name}</span>
+              {greeting.slice(nameStart + name!.length)}
+            </>
+          )}
+        </h1>
         <p>Find a live duel. Put your approach to the test.</p>
       </header>
       <div className="dashboard-workspace">

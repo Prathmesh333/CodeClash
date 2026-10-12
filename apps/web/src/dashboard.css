@@ -162,3 +162,7 @@
 .arena-presence strong {
   color: var(--cc-text);
 }
+.greeting-username {
+  color: var(--cc-lime);
+  overflow-wrap: anywhere;
+}
