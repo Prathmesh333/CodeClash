@@ -1,4 +1,5 @@
 import type { User } from '../../../packages/shared/game';
+import { greetingFor } from './greetings';
 
 type Props = {
   user: User;
@@ -25,10 +26,8 @@ export default function Dashboard({
   return (
     <div className="player-dashboard">
       <header className="dashboard-heading">
-        <h1>Arena</h1>
-        <p>
-          Playing as <strong>{user.profile_complete === 0 ? 'your account' : user.username}</strong>
-        </p>
+        <h1>{greetingFor(user.id, user.profile_complete === 0 ? undefined : user.username)}</h1>
+        <p>Find a live duel. Put your approach to the test.</p>
       </header>
       <div className="dashboard-workspace">
         <section className="dashboard-match" aria-labelledby="find-opponent-title">

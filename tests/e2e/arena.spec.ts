@@ -3,7 +3,7 @@ test('signed-in arena is a responsive player dashboard', async ({ page }) => {
   await page.goto('/login');
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: /AdaByte/ }).click();
-  await expect(page.getByRole('heading', { name: 'Arena', exact: true })).toBeVisible();
+  await expect(page.locator('.dashboard-heading h1')).toBeVisible();
   await expect(page.locator('.cc-home')).toHaveCount(0);
   await page.screenshot({ path: 'artifacts/dashboard-desktop.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });

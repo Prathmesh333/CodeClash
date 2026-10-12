@@ -9,7 +9,7 @@ test('motion reaches sign-in, navigation and dialogs without delaying controls',
   ).toBe('surface-arrive');
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: /AdaByte/ }).click();
-  await expect(page.getByRole('heading', { name: 'Arena', exact: true })).toBeVisible();
+  await expect(page.locator('.dashboard-heading h1')).toBeVisible();
   expect(
     await page.locator('.dashboard-history').evaluate((el) => getComputedStyle(el).animationName),
   ).toBe('surface-arrive');
@@ -35,7 +35,7 @@ test('reduced motion dashboard remains usable without decorative entrances', asy
   await page.goto('/login');
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: /AdaByte/ }).click();
-  await expect(page.getByRole('heading', { name: 'Arena', exact: true })).toBeVisible();
+  await expect(page.locator('.dashboard-heading h1')).toBeVisible();
   expect(
     await page
       .locator('.player-dashboard')
