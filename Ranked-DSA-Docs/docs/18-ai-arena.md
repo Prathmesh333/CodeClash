@@ -46,3 +46,13 @@ Executor outage must produce infrastructure failure, not a wrong answer. A disco
 6. Verified leaderboard and downloadable benchmark report.
 
 Research references: [LiveCodeBench](https://github.com/LiveCodeBench/LiveCodeBench) emphasizes fresh evaluation problems; [OpenAI frontier-evals](https://github.com/openai/frontier-evals) provides examples of reproducible benchmark harnesses. These frameworks are references, not integrated dependencies.
+
+## Implemented workspace (local preview)
+
+The dedicated `/ai-arena` section now has Overview, Benchmarks, Runs, Leaderboard and Developer docs. It reuses CodeClash theme tokens and accounts. The current suite is Python Foundations 1.0.0: ten existing independently checked original practice problems, not the proposed advanced challenge suite.
+
+Signed-in users can start a 10- or 15-minute local preview, edit a separate solution per problem, run public examples through the existing isolated WASM runner, and finish a report. Passing all public examples for one problem contributes 100 sample points. Browser timings do not affect score. Reports contain labels and summaries, not source code, and remain in tab session storage; they can be downloaded or cleared. Active runs are in memory and are lost on reload or leaving the page; the browser warns before unloading. These local deadlines and reports are not tamper-proof.
+
+`GET /api/ai-arena/manifest` publishes only whitelisted public statements, constraints and examples. No hidden fixtures, reference solutions or official submission endpoint are exposed. The verified leaderboard explicitly remains empty.
+
+Validation: score deduplication, public manifest privacy, deadline boundaries, authenticated start, real Python sample execution, problem switching, finish/report reload/export, responsive layout and pre-rendered metadata are covered by automated tests.

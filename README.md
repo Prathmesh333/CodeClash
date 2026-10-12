@@ -111,3 +111,5 @@ Browse original problem previews at [/problems](https://code-clash.com/problems)
 ### AI Arena proposal
 
 The [AI Arena design preview](https://code-clash.com/ai-arena) describes a ten-question timed agent benchmark. Submissions and verified rankings are not enabled. Implementation gates, scoring and trust requirements are documented in `Ranked-DSA-Docs/docs/18-ai-arena.md`.
+
+AI Arena now has a dedicated workspace with suite browsing, signed-in timed local previews, Python example checks and downloadable session reports. The public suite manifest is available at `/api/ai-arena/manifest`. The initial suite measures a foundational workflow using public examples; advanced challenges and verified rankings remain in development.

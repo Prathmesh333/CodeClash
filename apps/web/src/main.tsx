@@ -1,3 +1,4 @@
+import AiArena from './AiArena';
 import DiscoveryPage, { discoveryPaths } from './DiscoveryPage';
 import GuidePage from './GuidePage';
 import React from 'react';
@@ -20,7 +21,9 @@ initializeStorage();
 initializeTheme();
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {discoveryPaths.includes(location.pathname) ? (
+    {location.pathname.startsWith('/ai-arena') ? (
+      <AiArena path={location.pathname} />
+    ) : discoveryPaths.includes(location.pathname) ? (
       <DiscoveryPage path={location.pathname} />
     ) : location.pathname === '/how-it-works' ? (
       <GuidePage />

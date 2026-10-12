@@ -1,0 +1,246 @@
+.ai-arena {
+  color: var(--cc-text);
+  min-height: 100vh;
+}
+.ai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px max(24px, calc((100vw - 1440px) / 2));
+  border-bottom: 1px solid var(--cc-border);
+  gap: 24px;
+}
+.ai-brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 23px;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+  color: var(--cc-text);
+}
+.ai-brand span {
+  color: var(--cc-lime);
+}
+.ai-brand small {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  margin-top: 7px;
+}
+.ai-shell {
+  max-width: 1440px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 48px;
+  padding: 40px 24px 72px;
+}
+.ai-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-self: start;
+  position: sticky;
+  top: 24px;
+}
+.ai-nav a {
+  padding: 14px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--cc-text);
+  border: 1px solid transparent;
+}
+.ai-nav a[aria-current='page'] {
+  border-color: var(--cc-border);
+  background: var(--cc-surface);
+  box-shadow: inset 3px 0 var(--cc-lime);
+  font-weight: 700;
+}
+.ai-main {
+  min-width: 0;
+  max-width: 1050px;
+}
+.ai-main h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(32px, 4vw, 58px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin: 12px 0 24px;
+}
+.ai-main p {
+  line-height: 1.7;
+  max-width: 78ch;
+}
+.ai-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.ai-intro {
+  font-size: 21px;
+}
+.ai-panel {
+  border: 1px solid var(--cc-border);
+  background: var(--cc-surface);
+  padding: 28px;
+  border-radius: 12px;
+  margin: 28px 0;
+}
+.ai-panel h2 {
+  margin-top: 0;
+  font-size: 23px;
+}
+.ai-panel pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--cc-border);
+  padding: 16px;
+  border-radius: 6px;
+}
+.ai-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 40px 0;
+  border-block: 1px solid var(--cc-border);
+}
+.ai-facts div {
+  padding: 24px 12px;
+}
+.ai-facts strong,
+.ai-facts span {
+  display: block;
+}
+.ai-facts strong {
+  font-size: 24px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.ai-facts span {
+  margin-top: 8px;
+}
+.ai-problems {
+  padding-left: 24px;
+}
+.ai-problems li {
+  padding: 12px 0;
+}
+.ai-problems span {
+  display: block;
+  font-size: 14px;
+  margin-top: 4px;
+}
+.ai-panel label {
+  display: block;
+  margin: 20px 0;
+  font-weight: 600;
+}
+.ai-panel input,
+.ai-panel select {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin-top: 8px;
+  padding: 12px;
+  background: var(--cc-surface);
+  color: var(--cc-text);
+  border: 1px solid var(--cc-border);
+  border-radius: 6px;
+}
+.ai-runbar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 16px 0;
+  border-block: 1px solid var(--cc-border);
+}
+.ai-runbar strong {
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+}
+.ai-runbar button {
+  margin-left: auto;
+}
+.ai-workbench {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 20px;
+}
+.ai-workbench nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 28px;
+}
+.ai-workbench nav button {
+  text-align: left;
+  padding: 12px;
+  color: var(--cc-text);
+  background: var(--cc-surface);
+  border: 1px solid var(--cc-border);
+  border-radius: 6px;
+}
+.ai-workbench nav button[aria-current] {
+  box-shadow: inset 3px 0 var(--cc-lime);
+  font-weight: 700;
+}
+.ai-editor {
+  height: 330px;
+  margin: 20px 0;
+  border: 1px solid var(--cc-border);
+  overflow: hidden;
+  border-radius: 6px;
+}
+@media (max-width: 1000px) {
+  .ai-shell {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .ai-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    position: static;
+  }
+  .ai-nav a {
+    white-space: nowrap;
+  }
+  .ai-workbench {
+    grid-template-columns: 1fr;
+  }
+  .ai-workbench nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 550px) {
+  .ai-shell {
+    padding: 24px 16px 48px;
+  }
+  .ai-header {
+    padding: 20px 16px;
+  }
+  .ai-panel {
+    padding: 18px;
+  }
+  .ai-facts {
+    grid-template-columns: 1fr;
+  }
+  .ai-facts div {
+    border-bottom: 1px solid var(--cc-border);
+  }
+  .ai-header > a:last-child {
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ai-main {
+    animation: ai-enter 0.25s ease-out;
+  }
+  @keyframes ai-enter {
+    from {
+      transform: translateY(6px);
+    }
+    to {
+      transform: none;
+    }
+  }
+}

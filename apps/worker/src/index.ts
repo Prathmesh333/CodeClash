@@ -1,3 +1,4 @@
+import { arenaSuite } from '../../../packages/ai-arena';
 import { practice } from './practice';
 import { publicSeo, seoHead, prerenderFile } from '../../../packages/seo';
 import { exportData, requestPrivacy } from './privacy';
@@ -50,6 +51,14 @@ const application = {
         }
         return asset;
       }
+      if (path === '/api/ai-arena/manifest' && req.method === 'GET')
+        return json({
+          ...arenaSuite,
+          submissionApi: null,
+          verifiedJudge: false,
+          durationsMinutes: [10, 15],
+          scoring: '100 local sample points per problem; unverified',
+        });
       if (req.method !== 'GET' || req.headers.get('Upgrade')) {
         const origin = req.headers.get('Origin');
         const allowed =

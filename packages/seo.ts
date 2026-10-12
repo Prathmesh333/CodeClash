@@ -79,8 +79,8 @@ for (const [path, title, description] of [
   ],
   [
     '/ai-arena',
-    'AI Arena benchmark proposal',
-    'Explore the proposed ten-question AI coding benchmark, timing rules and requirements for trustworthy scores.',
+    'AI coding benchmark workspace',
+    'Explore ten-question Python benchmark previews, timed local runs, downloadable reports and the requirements for verified agent rankings.',
   ],
 ])
   publicSeo[path] = { title: title + ' | CodeClash', description, index: true };
@@ -105,6 +105,20 @@ for (const guide of ['dictionary-lookup', 'sliding-windows', 'python-errors'])
       ' with a working Python example and practical limits.',
     index: true,
   };
+
+for (const [slug, title] of [
+  ['benchmarks', 'AI benchmark suites'],
+  ['runs', 'AI Arena local runs'],
+  ['leaderboard', 'AI Arena verified leaderboard'],
+  ['docs', 'AI Arena developer documentation'],
+]) {
+  publicSeo['/ai-arena/' + slug] = {
+    title: title + ' | CodeClash',
+    description:
+      'Explore CodeClash AI Arena: versioned Python suites, local previews and the requirements for verified agent evaluation.',
+    index: slug !== 'runs',
+  };
+}
 
 const escape = (value: string) =>
   value.replace(
