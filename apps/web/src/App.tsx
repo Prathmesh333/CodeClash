@@ -38,6 +38,12 @@ type History = {
   outcome_json: string;
 };
 type Page = 'arena' | 'leaderboard' | 'history' | 'practice' | 'settings';
+function pageFromUrl(): Page {
+  const view = new URL(location.href).searchParams.get('view');
+  return ['leaderboard', 'history', 'practice', 'settings'].includes(view ?? '')
+    ? (view as Page)
+    : 'arena';
+}
 const icons = {
   arena: (
     <>
@@ -116,7 +122,24 @@ export default function App() {
   const promptedProfile = useRef<string | null>(null);
   const [user, setUser] = useState<User | null>(null),
     [health, setHealth] = useState<Health | null>(null),
-    [page, setPage] = useState<Page>('arena');
+    [page, setPageState] = useState<Page>(pageFromUrl);
+  const setPage = useCallback((next: Page) => {
+    const url = new URL(location.href);
+    if (pageFromUrl() !== next) {
+      if (next === 'arena') url.searchParams.delete('view');
+      else url.searchParams.set('view', next);
+      window.history.pushState(null, '', url);
+    }
+    setPageState(next);
+  }, []);
+  useEffect(() => {
+    const restore = () => {
+      setPageState(pageFromUrl());
+      setProfileOpen(false);
+    };
+    window.addEventListener('popstate', restore);
+    return () => window.removeEventListener('popstate', restore);
+  }, []);
   const [loading, setLoading] = useState(true),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false);

@@ -21,7 +21,7 @@ test('all palettes apply, persist, and remain usable on mobile', async ({ page }
   await expect(page.locator('.cc-brand-name')).toHaveText('CODECLASH');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'midnight-mint');
-  await expect(page.locator('.player-dashboard')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible();
   await page.screenshot({ path: 'artifacts/arena-spacing-dark.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
