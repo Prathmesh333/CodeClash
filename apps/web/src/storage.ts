@@ -37,6 +37,7 @@ export function useStorageChoice() {
       };
     },
     () => `${chosen}:${preference}`,
+    () => 'false:false',
   );
 }
 export function readDraft(key: string) {
@@ -59,9 +60,10 @@ export function clearDrafts() {
   } catch {}
 }
 
-window.addEventListener('storage', (event) => {
-  if (event.key === 'codeclash:storage-choice') {
-    initializeStorage();
-    listeners.forEach((fn) => fn());
-  }
-});
+if (typeof window !== 'undefined')
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'codeclash:storage-choice') {
+      initializeStorage();
+      listeners.forEach((fn) => fn());
+    }
+  });

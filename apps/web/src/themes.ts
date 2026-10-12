@@ -251,5 +251,6 @@ export function useTheme() {
       };
     },
     () => selected,
+    () => themes[0],
   );
 }

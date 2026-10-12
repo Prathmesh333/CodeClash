@@ -69,6 +69,12 @@ Cloudflare coordinates matches and stores results. The player’s browser handle
 
 CodeClash began as **Ranked DSA**; some infrastructure names and original documentation retain that name.
 
+### Public pages and search discovery
+
+The [How it works guide](https://code-clash.com/how-it-works) explains Python duels, untimed practice, and casual beta limitations. Public pages are pre-rendered at build time so their content and links are readable without JavaScript. Each has its own title, description and canonical URL; shared links include a branded preview card. Account pages remain protected and excluded from indexing.
+
+The [sitemap](https://code-clash.com/sitemap.xml) lists indexable public pages. See the [search discovery and growth plan](Ranked-DSA-Docs/docs/17-search-discovery.md) for verification, Search Console setup, and next steps.
+
 ## Contributing
 
 See the [development guide](DEVELOPMENT.md) to run the project and verify changes. Report bugs and suggest improvements through [GitHub issues](https://github.com/Prathmesh333/CodeClash/issues). Include the steps to reproduce a bug, the browser used, and the expected behavior.

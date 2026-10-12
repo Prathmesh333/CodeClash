@@ -1,3 +1,4 @@
+import GuidePage from './GuidePage';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
@@ -18,6 +19,12 @@ initializeStorage();
 initializeTheme();
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {legalPaths.includes(location.pathname) ? <LegalPage /> : <App />}
+    {location.pathname === '/how-it-works' ? (
+      <GuidePage />
+    ) : legalPaths.includes(location.pathname) ? (
+      <LegalPage />
+    ) : (
+      <App />
+    )}
   </React.StrictMode>,
 );

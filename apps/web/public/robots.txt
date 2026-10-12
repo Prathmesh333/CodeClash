@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /api/
+Allow: /api/health
+Allow: /api/me
+Disallow: /prerender/
+
+Sitemap: https://code-clash.com/sitemap.xml

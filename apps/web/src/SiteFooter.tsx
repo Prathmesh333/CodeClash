@@ -7,6 +7,7 @@ export default function SiteFooter() {
         <span>A shared clock. Your own approach.</span>
       </div>
       <nav aria-label="Policies and support">
+        <a href="/how-it-works">How it works</a>
         <a href="/privacy">Privacy</a>
         <a href="/cookies">Cookies</a>
         <a href="/terms">Terms</a>

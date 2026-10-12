@@ -4,6 +4,7 @@ import ThemePicker from './ThemePicker';
 import SiteFooter from './SiteFooter';
 
 type Props = {
+  pathname?: string;
   loading: boolean;
   error: string;
   busy: boolean;
@@ -11,8 +12,15 @@ type Props = {
   choose: (id: string) => void;
 };
 
-export default function AuthPage({ loading, error, health, busy, choose }: Props) {
-  const registering = location.pathname === '/register';
+export default function AuthPage({
+  loading,
+  error,
+  health,
+  busy,
+  choose,
+  pathname = typeof location === 'undefined' ? '/' : location.pathname,
+}: Props) {
+  const registering = pathname === '/register';
   return (
     <div className="auth-page">
       <a className="skip-link" href="#access">
@@ -87,7 +95,10 @@ export default function AuthPage({ loading, error, health, busy, choose }: Props
               <p>Revisit completed matches and the problems you played.</p>
             </div>
           </div>
-          <p className="auth-alpha">Casual beta. Verified ranked play is coming later.</p>
+          <p className="auth-alpha">
+            Casual beta. Verified ranked play is coming later.{' '}
+            <a href="/how-it-works">How CodeClash works</a>
+          </p>
         </section>
         <section id="access" className="auth-access" aria-labelledby="access-title" tabIndex={-1}>
           <h2 id="access-title">{registering ? 'Make it your arena.' : 'Welcome to CodeClash.'}</h2>

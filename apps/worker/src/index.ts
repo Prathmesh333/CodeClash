@@ -1,4 +1,5 @@
 import { practice } from './practice';
+import { publicSeo, seoHead, prerenderFile } from '../../../packages/seo';
 import { exportData, requestPrivacy } from './privacy';
 import { requestEmail, verifyEmail } from './email-auth';
 import { assert, ApiError, body, hash, json, localRequest, rateLimit, type Env } from './env';
@@ -28,6 +29,7 @@ const application = {
           '/terms',
           '/contact',
           '/safety',
+          '/how-it-works',
         ];
         const isDocument =
           publicPages.includes(path) ||
@@ -43,23 +45,13 @@ const application = {
             if (path !== '/app') return Response.redirect(new URL('/app', url).toString(), 302);
           }
         }
+        if (env.ASSETS && publicSeo[path])
+          return await env.ASSETS.fetch(new Request(new URL(prerenderFile(path), url), req));
+        if (env.ASSETS && path === '/app')
+          return await env.ASSETS.fetch(new Request(new URL('/', url), req));
         const asset = env.ASSETS
           ? await env.ASSETS.fetch(req)
           : new Response('Start the Vite frontend on port 5173.');
-        if (
-          env.ASSETS &&
-          [
-            '/privacy',
-            '/cookies',
-            '/terms',
-            '/contact',
-            '/safety',
-            '/login',
-            '/register',
-            '/app',
-          ].includes(path)
-        )
-          return await env.ASSETS.fetch(new Request(new URL('/', url), req));
         if (path.startsWith('/python-runtime/')) {
           const response = new Response(asset.body, asset);
           response.headers.set('Access-Control-Allow-Origin', '*');
@@ -339,9 +331,19 @@ export default {
       const beacon = analytics
         ? `<script defer nonce="${nonce}" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${env.WEB_ANALYTICS_TOKEN}"}'></script>`
         : '';
-      const html = (await response.text())
+      let html = await response.text();
+      const documentPath = new URL(req.url).pathname;
+      if (documentPath === '/app')
+        html = html
+          .replace(/<!--prerender:start-->[\s\S]*?<!--prerender:end-->/, '')
+          .replace(/<!--seo:start-->[\s\S]*?<!--seo:end-->/, seoHead('/app', env.APP_ORIGIN));
+      html = html
         .replace('</body>', beacon + '</body>')
-        .replace('<head>', `<head><meta name="csp-nonce" content="${nonce}">`);
+        .replace('<head>', `<head><meta name="csp-nonce" content="${nonce}">`)
+        .replace(
+          '<script type="application/ld+json">',
+          `<script nonce="${nonce}" type="application/ld+json">`,
+        );
       protectedResponse = new Response(html, response);
       protectedResponse.headers.delete('Content-Length');
       protectedResponse.headers.delete('ETag');
@@ -363,6 +365,13 @@ export default {
       );
     // Auth-dependent redirects and documents must never be shared by a cache.
     const path = new URL(req.url).pathname;
+    if (
+      path.startsWith('/api/') ||
+      path.startsWith('/app') ||
+      path.startsWith('/prerender/') ||
+      ['/login', '/register'].includes(path)
+    )
+      protectedResponse.headers.set('X-Robots-Tag', 'noindex, follow');
     if (
       path.startsWith('/api/') ||
       (protectedResponse.status >= 300 && protectedResponse.status < 400) ||

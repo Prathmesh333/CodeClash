@@ -166,7 +166,10 @@ export default function App() {
             history: 'Match history',
             settings: 'Settings',
           }[page];
-    document.title = `${title} | CodeClash`;
+    document.title =
+      !user && location.pathname === '/'
+        ? 'Python coding duels and DSA practice | CodeClash'
+        : `${title} | CodeClash`;
   }, [loading, user, page, matchId]);
   useEffect(() => {
     const surface = mainRef.current;

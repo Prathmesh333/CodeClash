@@ -21,8 +21,8 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     </section>
   );
 }
-export default function LegalPage() {
-  const path = location.pathname;
+export default function LegalPage({ pathname }: { pathname?: string } = {}) {
+  const path = pathname ?? location.pathname;
   useEffect(() => {
     document.title = `${titles[path]} | CodeClash`;
   }, [path]);
