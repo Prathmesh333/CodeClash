@@ -49,5 +49,6 @@ await writeFile(
   ) + '\n',
 );
 console.log(
-  'PASS: nine public routes, seven sitemap URLs, robots, social card, and private access',
+  'PASS: all registered public routes, generated sitemap, robots, social card, and private access',
 );
+
