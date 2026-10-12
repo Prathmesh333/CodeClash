@@ -3,8 +3,10 @@ test('players can update their profile and retain it after reload', async ({ pag
   await page.goto('/app');
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: /AdaByte/ }).click();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  if (await page.getByRole('button', { name: 'Settings', exact: true }).count())
+    await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  if (await page.getByRole('button', { name: 'Settings', exact: true }).count())
+    await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await page.getByRole('button', { name: 'Edit profile' }).click();
   const dialog = page.getByRole('dialog', { name: 'Your player profile.' });
   await dialog.getByLabel('Username', { exact: true }).fill('ArenaNinja');
@@ -14,8 +16,10 @@ test('players can update their profile and retain it after reload', async ({ pag
   await expect(dialog).not.toBeVisible();
   await expect(page.getByText('Playing as ArenaNinja', { exact: true })).toBeVisible();
   await page.reload();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  if (await page.getByRole('button', { name: 'Settings', exact: true }).count())
+    await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  if (await page.getByRole('button', { name: 'Settings', exact: true }).count())
+    await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await page.getByRole('button', { name: 'Edit profile' }).click();
   await expect(dialog.getByLabel('Username', { exact: true })).toHaveValue('ArenaNinja');
   await expect(dialog.getByLabel('About you')).toHaveValue('Learning Python, one duel at a time.');

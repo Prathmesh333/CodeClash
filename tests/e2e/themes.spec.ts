@@ -3,8 +3,10 @@ test('all palettes apply, persist, and remain usable on mobile', async ({ page }
   await page.goto('/app');
   await page.getByRole('button', { name: 'Allow saved preferences', exact: true }).click();
   await page.getByRole('button', { name: /AdaByte/ }).click();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  if (await page.getByRole('button', { name: 'Settings', exact: true }).count())
+    await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  if (await page.getByRole('button', { name: 'Settings', exact: true }).count())
+    await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await page.getByRole('button', { name: 'Change theme' }).click();
   const dialog = page.getByRole('dialog', { name: 'Make the arena yours.' });
   await expect(dialog.locator('.theme-option')).toHaveCount(11);
@@ -24,8 +26,10 @@ test('all palettes apply, persist, and remain usable on mobile', async ({ page }
   await expect(page.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible();
   await page.screenshot({ path: 'artifacts/arena-spacing-dark.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  if (await page.getByRole('button', { name: 'Settings', exact: true }).count())
+    await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  if (await page.getByRole('button', { name: 'Settings', exact: true }).count())
+    await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await page.getByRole('button', { name: 'Change theme' }).click();
   await dialog.getByRole('button', { name: /White \/ Citrus Play/ }).click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

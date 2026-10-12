@@ -16,6 +16,14 @@ test('opening page, registration, session redirect and logout work', async ({ pa
   await expect(page.getByRole('heading', { name: /Put your Python/ })).not.toBeVisible();
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await expect(page).toHaveTitle('Settings | CodeClash');
+  await page.getByRole('button', { name: 'Close settings', exact: true }).click();
+  await expect(page.locator('.player-dashboard')).toBeVisible();
+  await page.getByRole('button', { name: 'Leaderboard', exact: true }).click();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await page.getByRole('button', { name: 'Close settings', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Leaderboard', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'The arena', exact: true }).click();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await page.goBack();
   await expect(page.locator('.player-dashboard')).toBeVisible();
   await page.goForward();

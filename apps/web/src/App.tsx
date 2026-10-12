@@ -123,15 +123,44 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null),
     [health, setHealth] = useState<Health | null>(null),
     [page, setPageState] = useState<Page>(pageFromUrl);
+  const storedReturn = window.history.state?.settingsReturn;
+  const beforeSettings = useRef<Page>(
+    ['arena', 'leaderboard', 'history', 'practice'].includes(storedReturn) ? storedReturn : 'arena',
+  );
+  const currentPage = useRef<Page>(page);
+  currentPage.current = page;
   const setPage = useCallback((next: Page) => {
+    if (next === 'settings' && currentPage.current !== 'settings') {
+      beforeSettings.current = currentPage.current;
+    }
     const url = new URL(location.href);
     if (pageFromUrl() !== next) {
       if (next === 'arena') url.searchParams.delete('view');
       else url.searchParams.set('view', next);
-      window.history.pushState(null, '', url);
+      window.history.pushState(
+        next === 'settings' ? { settingsReturn: beforeSettings.current } : null,
+        '',
+        url,
+      );
     }
     setPageState(next);
   }, []);
+  const toggleSettings = () => {
+    if (page !== 'settings') {
+      setPage('settings');
+      return;
+    }
+    const next = beforeSettings.current;
+    if (window.history.state?.settingsReturn === next) {
+      window.history.back();
+      return;
+    }
+    const url = new URL(location.href);
+    if (next === 'arena') url.searchParams.delete('view');
+    else url.searchParams.set('view', next);
+    window.history.replaceState(null, '', url);
+    setPageState(next);
+  };
   useEffect(() => {
     const restore = () => {
       setPageState(pageFromUrl());
@@ -352,9 +381,27 @@ export default function App() {
           <button
             className="button secondary"
             aria-current={page === 'settings' ? 'page' : undefined}
-            onClick={() => setPage('settings')}
+            aria-label={page === 'settings' ? 'Close settings' : 'Settings'}
+            onClick={toggleSettings}
           >
-            Settings
+            {page === 'settings' ? (
+              <>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  aria-hidden="true"
+                >
+                  <path d="m6 6 12 12M18 6 6 18" />
+                </svg>
+                <span>Close</span>
+              </>
+            ) : (
+              'Settings'
+            )}
           </button>
         </div>
       </header>
